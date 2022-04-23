@@ -24,14 +24,14 @@ const copyFile = (sourcePath: string, targetPath: string) => {
         const currentTargetPath = path.join(targetPath, file);
         // 判断当前文件是否是目录
         if (fs.statSync(currentSourcePath).isDirectory()) {
-            // 最终项目中排除ts文件
-            if (!currentSourcePath.endsWith(path.sep + "ts")) {
-                fs.mkdirSync(currentTargetPath);
-                copyFile(currentSourcePath, currentTargetPath);
-            }
+            fs.mkdirSync(currentTargetPath);
+            copyFile(currentSourcePath, currentTargetPath);
+
         } else {
-            // 当前文件不是目录，则复制
-            fs.copyFileSync(currentSourcePath, currentTargetPath);
+            // 最终项目中排除ts文件
+            if (!currentSourcePath.endsWith("ts")) {
+                fs.copyFileSync(currentSourcePath, currentTargetPath);
+            }
         }
     });
 }
