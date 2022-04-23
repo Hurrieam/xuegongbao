@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "rootDir": "./scripts/ts",
+    "outDir": "./scripts/js",
+    "strict": true
+  }
+}

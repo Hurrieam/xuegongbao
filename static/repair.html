@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>宿舍报修</title>
+    <link rel="stylesheet" href="./styles/pico.min.css"/>
+    <link rel="stylesheet" href="./styles/repair.css"/>
+    <script src="scripts/js/repair.js" defer="defer"></script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="J_dialog_wrapper"></div>
+    <form>
+        <label for="dormitory">
+            宿舍楼
+            <input type="text" id="dormitory" name="dormitory" placeholder="请输入宿舍楼号" required>
+        </label>
+        <label for="room">
+            房间号
+            <input type="text" id="room" name="room" placeholder="请输入宿舍号" required>
+        </label>
+        <label for="content">
+            报修内容
+            <textarea id="content" name="content" placeholder="请输入报修内容" required></textarea>
+        </label>
+        <label for="contact">
+            联系方式
+            <input type="text" id="contact" name="contact" placeholder="请输入联系电话" required>
+        </label>
+        <button type="submit">提交</button>
+    </form>
+    <template id="J_dialog">
+        <dialog open>
+            <article style="min-width: 250px">
+                <a href="#" aria-label="Close" class="close J_close_dialog"></a>
+                <h5>提示</h5>
+                <p>{{description}}</p>
+                <footer>
+                    <button class="secondary J_close_dialog">确定</button>
+                </footer>
+            </article>
+        </dialog>
+    </template>
+</div>
+</body>
+</html>
