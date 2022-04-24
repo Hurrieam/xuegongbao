@@ -1,16 +1,11 @@
 import express from 'express';
 import path from 'path';
 import {routes} from "./routes";
+import bodyParser from "./middleware/body-parser";
+import cors from "./middleware/cors";
 
 const app = express();
 const PORT = 3000;
-
-// 跨域处理
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
-});
 
 // 静态页面
 app.use("/static", express.static(path.resolve(__dirname, "static")));
@@ -18,7 +13,7 @@ app.use("/static", express.static(path.resolve(__dirname, "static")));
 // 路由
 routes.forEach((route) => {
     const {method, path, middleware, handler} = route;
-    app[method](path, ...middleware, handler);
+    app[method](path, [...middleware, bodyParser, cors], handler);
 });
 
 app.listen(PORT, () => {
