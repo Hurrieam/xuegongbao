@@ -1,6 +1,9 @@
-import { RequestHandler as Middleware } from 'express';
+import {Middleware} from "../types";
 
-export const logger: Middleware = (req, res, next) => {
-    console.log(req.path);
+// Middleware: 日志
+const logger: Middleware = (req, res, next) => {
+    console.log("path: [", req.path, "]\tmethod: [", req.method, "]\tquery: [", req.query, "]\tbody: [", req.body, "]");
     next();
 };
+
+export default logger;

@@ -1,4 +1,4 @@
-import {ModelCtor, Model} from "sequelize";
+import {ModelCtor, Model, Op} from "sequelize";
 import {IModel} from "../types";
 
 /**
@@ -11,9 +11,13 @@ const CommonDAO = {
      * @param model 模型(数据表)
      * @param start 开始位置
      * @param limit 每页数量
+     * @returns  数据列表
      */
-    getSome: async (model: ModelCtor<Model<any, any>>, start: number, limit: number) => {
+    getSome: async (model: ModelCtor<any>, start: number, limit: number): Promise<IModel[]> => {
         return await model.findAll({
+            where: {
+                isDeleted: false
+            },
             offset: start,
             limit: limit
         });
@@ -25,7 +29,7 @@ const CommonDAO = {
      * @param item 新记录
      * @returns 此条记录
      */
-    addOne: async (model: ModelCtor<Model<any, any>>, item: IModel) => {
+    addOne: async (model: ModelCtor<Model<any, any>>, item: IModel): Promise<IModel> => {
         return await model.create(item);
     },
 
@@ -33,10 +37,12 @@ const CommonDAO = {
      * 根据id删除一条记录
      * @param model 模型(数据表)
      * @param id 记录id
-     * @returns 影响行数
+     * @returns 影响行数(数组形式)
      */
-    delOne: async (model: ModelCtor<Model<any, any>>, id: number) => {
-        return await model.destroy({
+    delOne: async (model: ModelCtor<any>, id: number): Promise<[affectedCount: number]> => {
+        return await model.update({
+            isDeleted: true
+        }, {
             where: {
                 id: id
             }
@@ -48,9 +54,9 @@ const CommonDAO = {
      * @param model 模型(数据表)
      * @param id 记录的id
      * @param item 更新的记录
-     * @returns 影响行数
+     * @returns 影响行数(数组形式)
      */
-    updateOne: async (model: ModelCtor<Model<any, any>>, id: number, item: IModel) => {
+    updateOne: async (model: ModelCtor<Model<any, any>>, id: number, item: IModel): Promise<[affectedCount: number]> => {
         return await model.update(item, {
             where: {
                 id: id

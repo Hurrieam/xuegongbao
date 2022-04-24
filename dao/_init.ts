@@ -32,11 +32,11 @@ export const PhoneBook = sequelize.define("PhoneBook", {
         allowNull: false,
         comment: "电话"
     },
-    status: {
+    isDeleted: {
         type: DataTypes.BOOLEAN,
         allowNull: true,
-        defaultValue: true,
-        comment: "状态: true-正常, false-禁用"
+        defaultValue: false,
+        comment: "状态: true-已删除, false-正常"
     }
 });
 
@@ -87,6 +87,12 @@ export const LostAndFound = sequelize.define("LostAndFound", {
         allowNull: true,
         defaultValue: false,
         comment: "状态: true-完成, false-未完成"
+    },
+    isDeleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: false,
+        comment: "状态: true-已删除, false-正常"
     }
 });
 
@@ -132,6 +138,12 @@ export const Consultation = sequelize.define("Consultation", {
         allowNull: true,
         defaultValue: false,
         comment: "状态: true-完成, false-未完成"
+    },
+    isDeleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: false,
+        comment: "状态: true-已删除, false-正常"
     }
 });
 
@@ -157,11 +169,11 @@ export const Comment = sequelize.define("Comment", {
         allowNull: false,
         comment: "评论时间"
     },
-    status: {
+    isDeleted: {
         type: DataTypes.BOOLEAN,
         allowNull: true,
-        defaultValue: true,
-        comment: "状态: true-正常, false-已删除"
+        defaultValue: false,
+        comment: "状态: true-已删除, false-正常"
     }
 });
 
@@ -182,11 +194,11 @@ export const Feedback = sequelize.define("Feedback", {
         allowNull: false,
         comment: "反馈时间"
     },
-    status: {
+    isDeleted: {
         type: DataTypes.BOOLEAN,
         allowNull: true,
-        defaultValue: true,
-        comment: "状态: true-正常, false-已删除"
+        defaultValue: false,
+        comment: "状态: true-已删除, false-正常"
     }
 });
 
@@ -232,8 +244,15 @@ export const RepairItem = sequelize.define("Repair",{
         allowNull: true,
         defaultValue: false,
         comment: "状态: true-完成, false-未完成"
+    },
+    isDeleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: false,
+        comment: "状态: true-已删除, false-正常"
     }
 });
+
 (async () => {
     await sequelize.sync({force: false});
 })();
