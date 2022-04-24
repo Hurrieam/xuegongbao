@@ -10,6 +10,14 @@
 .icon {
     font-size: 2em;
 }
+.back{
+    position: absolute;
+    color: white;
+    right: 5em;
+    text-decoration: none;
+    font-size: 1em;
+    text-align: center;
+}
 .banner-title{
     display: inline-block;
     width: 100%;
@@ -73,6 +81,13 @@
 
 .words-summary{
     font-size: 1.5em;
+    font-family: "微软雅黑", serif;
+}
+
+.msg{
+    text-align: center;
+}
+.status{
     font-family: "微软雅黑", serif;
 }
 

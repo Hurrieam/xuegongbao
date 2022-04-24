@@ -56,7 +56,7 @@ const CommonDAO = {
      * @param item 更新的记录
      * @returns 影响行数(数组形式)
      */
-    updateOne: async (model: ModelCtor<Model<any, any>>, id: number, item: IModel): Promise<[affectedCount: number]> => {
+    updateOne: async (model: ModelCtor<any>, id: number, item: IModel): Promise<[affectedCount: number]> => {
         return await model.update(item, {
             where: {
                 id: id
@@ -64,4 +64,5 @@ const CommonDAO = {
         });
     },
 }
+
 export default CommonDAO;
