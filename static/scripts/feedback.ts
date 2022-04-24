@@ -4,15 +4,15 @@ interface IFeedbackItem {
     content: FormDataEntryValue | null;
 }
 
-((doc) => {
+;((doc) => {
         const oForm = doc.getElementsByTagName('form')[0] as HTMLFormElement,
-            oSubmit = oForm.getElementsByTagName('button')[0] as HTMLButtonElement,
+            oSubmitBtn = oForm.getElementsByTagName('button')[0] as HTMLButtonElement,
             oDialogWrapper = doc.getElementsByClassName("J_dialog_wrapper")[0] as HTMLDivElement,
-            oDialog = doc.getElementById('J_dialog') as HTMLTemplateElement;
+            oDialogTemplate = doc.getElementById('J_dialog') as HTMLTemplateElement;
 
-        const dialogHTML = oDialog.innerHTML;
+        const dialogTplFragment = oDialogTemplate.content;
         const init = () => {
-            oSubmit!.addEventListener('click', onSubmit, false);
+            oSubmitBtn!.addEventListener('click', onSubmit, false);
         }
 
         const onSubmit = (e: Event) => {
@@ -27,10 +27,9 @@ interface IFeedbackItem {
             // 3. 提交数据
             doSubmit(formData);
         }
-        // 提交表单给服务器
+        // TODO: 提交表单给服务器
         const doSubmit = (formData: IFeedbackItem) => {
-            oDialogWrapper.innerHTML = handleTemplate(dialogHTML, "提交成功!");
-            bindCloseEvent(oDialogWrapper);
+            handleTemplate(dialogTplFragment, "提交成功!");
         }
 
         const onDialogClose = () => {
@@ -56,8 +55,8 @@ interface IFeedbackItem {
         const validate = ({name, contact, content}: IFeedbackItem) => {
             // 1. 校验数据
             if (isBlank(name) || isBlank(contact) || isBlank(content)) {
-                oDialogWrapper.innerHTML = handleTemplate(dialogHTML, "请将表单信息填写完整!");
-                bindCloseEvent(oDialogWrapper);
+                handleTemplate(dialogTplFragment, "请填写完整信息!");
+                bindCloseEvent(oDialogWrapper);  // 绑定关闭事件
                 return false;
             }
             return true;
@@ -68,8 +67,11 @@ interface IFeedbackItem {
             return formData === null || formData === undefined || formData.toString().replace(/\s+/g, '').length === 0;
         }
 
-        const handleTemplate = (template: string, content: string) => {
-            return template.replace("{{description}}", content);
+        // 替换模板中的占位字符串并渲染
+        const handleTemplate = (documentFragment: DocumentFragment, content: string) => {
+            const newDocFragment = documentFragment.cloneNode(true) as DocumentFragment;
+            newDocFragment.getElementById("J_dialog_content")!.innerHTML = content;
+            oDialogWrapper.appendChild(newDocFragment);
         }
 
         init();

@@ -4,7 +4,7 @@ interface IPhoneItem {
     phone: string;
 }
 
-((doc) => {
+;((doc) => {
     const oWrapper = doc.getElementsByClassName('J_wrapper')[0],
         oTable = oWrapper.getElementsByTagName("table")[0],
         oSearch = oWrapper.getElementsByTagName("input")[0],
