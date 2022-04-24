@@ -3,6 +3,7 @@
     "target": "es5",
     "rootDir": "./scripts",
     "outDir": "./scripts/js",
-    "strict": true
+    "strict": true,
+    "sourceMap": true
   }
 }
