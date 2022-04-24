@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>留言板</title>
+    <link rel="stylesheet" href="./styles/leave-a-message.css">
+    <link rel="stylesheet" href="./font-awesome-4.7.0/css/font-awesome.css">
+</head>
+<body>
+
+<header class="banner">
+    <span class="icon message"><i class="fa fa-envelope" aria-hidden="true"></i></span>
+    <span class="icon banner-title">留言板</span>
+    <span class="icon user"><i class="fa fa-user" aria-hidden="true"></i></span>
+</header>
+
+<div class="content">
+    <div class="icon close"><i class="fa fa-times" aria-hidden="true"></i></div>
+    <label>
+        <textarea class="input" maxlength="140"></textarea>
+    </label>
+    <div class="words-summary"></div>
+    <div class="button submit">提交</div>
+    <div class="button all-clear">全清</div>
+</div>
+
+</body>
+
+<script src="./scripts/js/showElements.js"></script>
+<script src="./scripts/js/wordsSummary.js"></script>
+<script src="./scripts/js/buttonEvents.js"></script>
+
+</html>
+
+<!-- created by Hurrieam on 20220424 -->
