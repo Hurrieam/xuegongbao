@@ -1,0 +1,23 @@
+.return-to-dashboard{
+    font-size: 1.25em;
+    font-family: Arial, serif;
+    text-decoration: none;
+}
+
+.headline, .text-yellow{
+    font-family: "Arial Black", serif;
+    text-indent: 1em;
+}
+
+.text-yellow{
+    color: yellow;
+}
+
+body{
+    background-color: deepskyblue;
+    color: yellow;
+}
+
+.description{
+    text-indent: 2em;
+}
