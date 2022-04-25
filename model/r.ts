@@ -1,4 +1,5 @@
 import {IR} from "../types";
+import {StatusCode} from "../constant/status";
 
 /**
  * 统一响应结构
@@ -18,7 +19,7 @@ class R implements IR {
 
     static ok(data?: any, message?: string, description?: string): IR {
         return new R({
-            code: 0,
+            code: StatusCode.OK,
             data: data,
             message: message,
             description: description,

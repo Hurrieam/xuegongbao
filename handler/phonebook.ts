@@ -1,35 +1,39 @@
-import {Handler, ILostAndFound, IPhoneBook} from "../types";
-import R from "../model/r";
+import {isDigit, isValidString, toValidDigit} from "../util/checker";
+import {StatusCode, StatusMessage} from "../constant/status";
+import {Handler, IPhoneBook} from "../types";
 import CommonDAO from "../dao/common";
 import model from "../dao/model";
-import {PhoneBook} from "../dao/_init";
-import {isDigit, isValidString, toValidDigit} from "../util/checker";
+import R from "../model/r";
 
 export const addPhoneNumber: Handler = async (req, res) => {
     const phoneItem: IPhoneBook = req.body;
     if (!isValidString(phoneItem.deptName) || !isValidString(phoneItem.phone)) {
-        res.send(R.error(-1, "非法参数"));
+        res.send(
+            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
+        );
         return;
     }
     const item = await CommonDAO.addOne(model.PHONE_BOOK, phoneItem)
-    const r = item ? R.ok(item, "添加成功") : R.error(-1, "添加失败")
+    const r = item ? R.ok(item, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
     res.send(r);
 }
 
 export const delPhoneNumber: Handler = async (req, res) => {
     const {id} = req.body;
     if (!isDigit(id) || id <= 0) {
-        res.send(R.error(-1, "非法参数"));
+        res.send(
+            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
+        );
         return;
     }
     await CommonDAO.delOne(model.PHONE_BOOK, toValidDigit(id));
-    res.send(R.ok(null, "删除成功"));
+    res.send(R.ok(null, StatusMessage.OK));
 }
 
 export const findPhoneBook: Handler = async (req, res) => {
     const {start, limit} = req.query;
     if (!isDigit(start) || !isDigit(limit)) {
-        res.send(R.error(-1, "非法参数"));
+        res.send(R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM));
         return;
     }
     const phonebook = await CommonDAO.getSome(model.PHONE_BOOK, toValidDigit(start), toValidDigit(limit));
@@ -37,7 +41,6 @@ export const findPhoneBook: Handler = async (req, res) => {
         total: phonebook.length,
         items: phonebook
     }
-    const r = phonebook ? R.ok(data, "查询成功") : R.error(-1, "查询失败")
+    const r = phonebook ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
     res.send(r);
 }
-

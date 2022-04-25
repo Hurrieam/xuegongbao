@@ -1,6 +1,7 @@
 import sha1 from "sha1";
 import {Handler} from "../types";
 import wechatConfig from "../config/wechat";
+import {StatusMessage} from "../constant/status";
 
 /**
  * 用于验证微信服务器的请求
@@ -18,6 +19,6 @@ export const authentic: Handler = (req, res) => {
     if (sha1Str === signature) {
         res.send(echostr);
     } else {
-        res.end('error');
+        res.end(StatusMessage.UNKNOWN_ERROR);
     }
 };

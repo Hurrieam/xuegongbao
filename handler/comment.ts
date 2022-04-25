@@ -1,39 +1,44 @@
+import {Op} from "sequelize";
 import {isDigit, isValidString, toValidDigit} from "../util/checker";
-
-const {Op} = require("sequelize");
+import {StatusCode, StatusMessage} from "../constant/status";
 import {Handler, IComment} from "../types";
-import R from "../model/r";
 import CommonDAO from "../dao/common";
-import model from "../dao/model";
 import {Comment} from "../dao/_init";
-
+import model from "../dao/model";
+import R from "../model/r";
 
 export const addComment: Handler = async (req, res) => {
     const comment: IComment = req.body;
-    if(!isValidString(comment.openid) || !isValidString(comment.content)) {
-        res.send("非法参数");
+    if (!isValidString(comment.openid) || !isValidString(comment.content)) {
+        res.send(
+            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
+        );
         return;
     }
     comment.time = new Date().getTime().toString();
     const item = await CommonDAO.addOne(model.COMMENT, comment)
-    const r = item ? R.ok(null, "添加成功") : R.error(-1, "添加失败")
+    const r = item ? R.ok(null, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
     res.send(r);
 }
 
 export const delComment: Handler = async (req, res) => {
     const {id} = req.body;
     if (!isDigit(id)) {
-        res.send(R.error(-1, "非法参数"));
+        res.send(
+            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
+        );
         return;
     }
     await CommonDAO.delOne(model.COMMENT, toValidDigit(id));
-    res.send(R.ok(null, "删除成功"));
+    res.send(R.ok(null, StatusMessage.OK));
 }
 
 export const findComments: Handler = async (req, res) => {
     const {openid} = req.query;
     if (!isValidString(openid)) {
-        res.send(R.error(-1, "无效openid"));
+        res.send(
+            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
+        );
         return;
     }
     const comments = await Comment.findAll({
@@ -51,6 +56,6 @@ export const findComments: Handler = async (req, res) => {
         total: comments.length,
         items: comments
     }
-    const r = comments ? R.ok(data, "查询成功") : R.error(-1, "查询失败");
+    const r = comments ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
     res.send(r);
 }

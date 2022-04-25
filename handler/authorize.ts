@@ -43,6 +43,5 @@ const getAccessTokenFromWechat = async (code: string) => {
         return null;
     }
 
-    const {access_token, refresh_token, openid} = data;
-    return {access_token, refresh_token, openid};
+    return data;
 }
