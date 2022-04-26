@@ -42,10 +42,10 @@ export interface IPhoneBook extends IModel {
 export interface ILostAndFound extends IModel {
     openid: string;
     itemName: string;
-    location: string;
+    location?: string;
     lostTime?: string;
     description: string;
-    image?: string;
+    images?: string;
     stuName?: string;
     contact: string;
 }
@@ -64,13 +64,11 @@ export interface IComment extends IModel {
     openid: string;
     content: string;
     parentId?: number;
-    time?: string;
 }
 
 export interface IFeedback extends IModel {
     openid: string;
     content: string;
-    time?: string;
 }
 
 export interface IRepairItem extends IModel {

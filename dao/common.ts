@@ -68,11 +68,11 @@ const CommonDAO = {
      * 根据id更改状态
      * @param model
      * @param id 记录的id
-     * @param hasReply 状态
+     * @param status 状态
      */
-    updateStatus: async (model: ModelCtor<any>, id: number, hasReply: boolean): Promise<[affectedCount: number]> => {
+    updateStatus: async (model: ModelCtor<any>, id: number, status: boolean): Promise<[affectedCount: number]> => {
         return await model.update({
-            hasReply: hasReply ? 1 : 0
+            status: status ? 1 : 0
         }, {
             where: {
                 id: id

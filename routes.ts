@@ -2,8 +2,15 @@ import {Route} from './types';
 import logger from "./middleware/logger";
 import {authentic} from "./handler/authentic";
 import {authorize} from "./handler/authorize";
-import {addComment, delComment, findComments, findCommentsByOpenid, updateCommentStatus} from "./handler/comment";
-import {addLAF, delLAF, findLAFs} from "./handler/lostandfound";
+import {
+    addComment,
+    delComment,
+    findComments,
+    findCommentsById,
+    findCommentsByOpenid,
+    updateCommentStatus
+} from "./handler/comment";
+import {addLAF, delLAF, findLAFs, updateLAFStatus} from "./handler/lostandfound";
 import {addPhoneNumber, delPhoneNumber, findPhoneBook} from "./handler/phonebook";
 
 export const routes: Route[] = [
@@ -45,6 +52,12 @@ export const routes: Route[] = [
     },
     {
         method: "get",
+        path: '/comment/detail',
+        middleware: [logger],
+        handler: findCommentsById
+    },
+    {
+        method: "get",
         path: '/comment/list',
         middleware: [logger],
         handler: findComments
@@ -60,6 +73,12 @@ export const routes: Route[] = [
         path: '/laf/delete',
         middleware: [logger],
         handler: delLAF
+    },
+    {
+        method: "post",
+        path: '/laf/status',
+        middleware: [logger],
+        handler: updateLAFStatus
     },
     {
         method: "get",

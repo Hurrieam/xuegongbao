@@ -5,6 +5,9 @@ import CommonDAO from "../dao/common";
 import model from "../dao/model";
 import R from "../model/r";
 
+/**
+ * @description 新增联系人 参数: (deptName, phone)
+ */
 export const addPhoneNumber: Handler = async (req, res) => {
     const phoneItem: IPhoneBook = req.body;
     if (!isValidString(phoneItem.deptName) || !isValidString(phoneItem.phone)) {
@@ -18,6 +21,9 @@ export const addPhoneNumber: Handler = async (req, res) => {
     res.send(r);
 }
 
+/**
+ * @description 根据id删除联系人 参数: id
+ */
 export const delPhoneNumber: Handler = async (req, res) => {
     const {id} = req.body;
     if (!isDigit(id) || id <= 0) {
@@ -30,6 +36,9 @@ export const delPhoneNumber: Handler = async (req, res) => {
     res.send(R.ok(null, StatusMessage.OK));
 }
 
+/**
+ * @description 分页查找联系人 参数: {page, limit}
+ */
 export const findPhoneBook: Handler = async (req, res) => {
     const {start, limit} = req.query;
     if (!isDigit(start) || !isDigit(limit)) {

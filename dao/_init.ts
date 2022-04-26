@@ -18,6 +18,13 @@ const sequelize = new Sequelize(database, username, password, {
 });
 
 /**
+ * 初始化数据库模型
+ */
+(async () => {
+    await sequelize.sync({force: false});
+})();
+
+/**
  * 初始化数据库表结构
  */
 // 数据库表: 电话簿
@@ -38,7 +45,7 @@ export const PhoneBook = sequelize.define("PhoneBook", {
         defaultValue: false,
         comment: "状态: true-已删除, false-正常"
     }
-},{
+}, {
     freezeTableName: true
 });
 
@@ -88,7 +95,7 @@ export const LostAndFound = sequelize.define("LostAndFound", {
         type: DataTypes.BOOLEAN,
         allowNull: true,
         defaultValue: false,
-        comment: "状态: true-完成, false-未完成"
+        comment: "状态: true-已找到, false-未找到"
     },
     isDeleted: {
         type: DataTypes.BOOLEAN,
@@ -96,7 +103,7 @@ export const LostAndFound = sequelize.define("LostAndFound", {
         defaultValue: false,
         comment: "状态: true-已删除, false-正常"
     }
-},{
+}, {
     freezeTableName: true
 });
 
@@ -149,7 +156,7 @@ export const Consultation = sequelize.define("Consultation", {
         defaultValue: false,
         comment: "状态: true-已删除, false-正常"
     }
-},{
+}, {
     freezeTableName: true
 });
 
@@ -170,11 +177,6 @@ export const Comment = sequelize.define("Comment", {
         allowNull: true,
         comment: "父评论ID"
     },
-    time: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        comment: "评论时间"
-    },
     hasReply: {
         type: DataTypes.BOOLEAN,
         allowNull: true,
@@ -187,7 +189,7 @@ export const Comment = sequelize.define("Comment", {
         defaultValue: false,
         comment: "状态: true-已删除, false-正常"
     }
-},{
+}, {
     freezeTableName: true
 });
 
@@ -203,10 +205,10 @@ export const Feedback = sequelize.define("Feedback", {
         allowNull: false,
         comment: "反馈内容"
     },
-    time: {
+    contact: {
         type: DataTypes.STRING,
         allowNull: false,
-        comment: "反馈时间"
+        comment: "联系方式"
     },
     isDeleted: {
         type: DataTypes.BOOLEAN,
@@ -214,12 +216,12 @@ export const Feedback = sequelize.define("Feedback", {
         defaultValue: false,
         comment: "状态: true-已删除, false-正常"
     }
-},{
+}, {
     freezeTableName: true
 });
 
 // 数据库表: 宿舍报修
-export const RepairItem = sequelize.define("Repair",{
+export const RepairItem = sequelize.define("Repair", {
     openid: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -267,10 +269,7 @@ export const RepairItem = sequelize.define("Repair",{
         defaultValue: false,
         comment: "状态: true-已删除, false-正常"
     }
-},{
+}, {
     freezeTableName: true
 });
 
-(async () => {
-    await sequelize.sync({force: false});
-})();
