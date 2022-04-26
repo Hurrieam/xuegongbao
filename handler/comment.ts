@@ -143,7 +143,7 @@ export const findComments: Handler = async (req, res) => {
                 }
             ]
         },
-        offset: toValidDigit(start) - 1,
+        offset: toValidDigit(start),
         limit: toValidDigit(limit),
     })
     const data = {

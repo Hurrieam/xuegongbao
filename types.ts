@@ -34,6 +34,11 @@ export interface IModel extends Optional<any, string> {
     [key: string]: any;
 }
 
+export interface IAdmin extends IModel{
+    username: string;
+    password: string;
+    status: boolean;
+}
 export interface IPhoneBook extends IModel {
     deptName: string;
     phone: string;

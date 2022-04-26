@@ -1,5 +1,6 @@
 import {Sequelize, DataTypes} from 'sequelize';
 import dbConfig from '../config/database';
+import {encrypt} from "../util/encryptor";
 
 /**
  * 初始化数据库连接池
@@ -18,15 +19,31 @@ const sequelize = new Sequelize(database, username, password, {
 });
 
 /**
- * 初始化数据库模型
- */
-(async () => {
-    await sequelize.sync({force: false});
-})();
-
-/**
  * 初始化数据库表结构
  */
+
+export const Admin = sequelize.define("Admin", {
+    username: {
+        type: DataTypes.STRING(30),
+        allowNull: false,
+        unique: true,
+        comment: "用户名"
+    },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: "密码"
+    },
+    status: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: true,
+        comment: "账号状态 true:正常 false:禁用"
+    },
+}, {
+    freezeTableName: true
+});
+
 // 数据库表: 电话簿
 export const PhoneBook = sequelize.define("PhoneBook", {
     deptName: {
@@ -63,7 +80,7 @@ export const LostAndFound = sequelize.define("LostAndFound", {
     },
     location: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         comment: "丢失地点"
     },
     lostTime: {
@@ -72,12 +89,12 @@ export const LostAndFound = sequelize.define("LostAndFound", {
         comment: "丢失时间"
     },
     description: {
-        type: DataTypes.STRING,
-        allowNull: true,
+        type: DataTypes.STRING(500),
+        allowNull: false,
         comment: "描述信息"
     },
     images: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(1024),
         allowNull: true,
         comment: "图片列表"
     },
@@ -168,7 +185,7 @@ export const Comment = sequelize.define("Comment", {
         comment: "用户唯一标识"
     },
     content: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(1024),
         allowNull: false,
         comment: "评论内容"
     },
@@ -201,7 +218,7 @@ export const Feedback = sequelize.define("Feedback", {
         comment: "用户唯一标识"
     },
     content: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(1024),
         allowNull: false,
         comment: "反馈内容"
     },
@@ -233,7 +250,7 @@ export const RepairItem = sequelize.define("Repair", {
         comment: "物品名称"
     },
     description: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(1024),
         allowNull: false,
         comment: "描述信息"
     },
@@ -273,3 +290,63 @@ export const RepairItem = sequelize.define("Repair", {
     freezeTableName: true
 });
 
+
+/**
+ * 初始化数据库模型
+ */
+// (async () => {
+//     await sequelize.sync({force: false});
+//     // Admin.create({
+//     //     username: "admin",
+//     //     password: encrypt("admin")
+//     // });
+//     Comment.create({
+//         openid: "123",
+//         content: "不要以为你长的狼样，我就能把你看成是灰太狼"
+//     });
+//     Comment.create({
+//         openid: "123",
+//         content: "每个人都会死，但并非每个人都真正活过。每个人都在追求高质量的生活，但并非每个人都活出了自我。"
+//     });
+//     Comment.create({
+//         openid: "123",
+//         content: "我们都是灰太狼，但我们都不是灰太狼。"
+//     });
+//     LostAndFound.create({
+//         openid: "123",
+//         itemName: "钱包",
+//         description: "钱包是我的，我没有了，你有吗？",
+//         dorm: "1栋",
+//         room: "1-101",
+//         stuName: "张三",
+//         contact: "12345678901",
+//         isDeleted: false
+//     });
+//     LostAndFound.create({
+//         openid: "123",
+//         itemName: "钱包",
+//         description: "钱包是我的，我没有了，你有吗？",
+//         dorm: "1栋",
+//         room: "1-101",
+//         stuName: "张三",
+//         contact: "12345678901",
+//         isDeleted: false
+//     });
+//     LostAndFound.create({
+//         openid: "123",
+//         itemName: "钱包",
+//         description: "钱包是我的，我没有了，你有吗？",
+//         dorm: "1栋",
+//         room: "1-101",
+//         stuName: "张三",
+//         contact: "12345678901"
+//     });
+//     PhoneBook.create({
+//         deptName: "张三",
+//         phone: "12345678901"
+//     });
+//     PhoneBook.create({
+//         deptName: "张三",
+//         phone: "12345678901"
+//     });
+// })();

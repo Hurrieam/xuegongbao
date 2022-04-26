@@ -18,7 +18,7 @@ const CommonDAO = {
             where: {
                 isDeleted: 0
             },
-            offset: start - 1,
+            offset: start,
             limit: limit
         });
     },

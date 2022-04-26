@@ -1,7 +1,7 @@
 import {Route} from './types';
 import logger from "./middleware/logger";
 import {authentic} from "./handler/authentic";
-import {authorize} from "./handler/authorize";
+import {authorize, login} from "./handler/authorize";
 import {
     addComment,
     delComment,
@@ -25,6 +25,12 @@ export const routes: Route[] = [
         path: '/authorize',
         middleware: [logger],
         handler: authorize,
+    },
+    {
+        method: "post",
+        path: '/login',
+        middleware: [logger],
+        handler: login,
     },
     {
         method: "post",
