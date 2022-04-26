@@ -16,9 +16,9 @@ const CommonDAO = {
     getSome: async (model: ModelCtor<any>, start: number, limit: number): Promise<IModel[]> => {
         return await model.findAll({
             where: {
-                isDeleted: false
+                isDeleted: 0
             },
-            offset: start,
+            offset: start - 1,
             limit: limit
         });
     },
@@ -41,7 +41,7 @@ const CommonDAO = {
      */
     delOne: async (model: ModelCtor<any>, id: number): Promise<[affectedCount: number]> => {
         return await model.update({
-            isDeleted: true
+            isDeleted: 1
         }, {
             where: {
                 id: id
@@ -58,6 +58,22 @@ const CommonDAO = {
      */
     updateOne: async (model: ModelCtor<any>, id: number, item: IModel): Promise<[affectedCount: number]> => {
         return await model.update(item, {
+            where: {
+                id: id
+            }
+        });
+    },
+
+    /**
+     * 根据id更改状态
+     * @param model
+     * @param id 记录的id
+     * @param hasReply 状态
+     */
+    updateStatus: async (model: ModelCtor<any>, id: number, hasReply: boolean): Promise<[affectedCount: number]> => {
+        return await model.update({
+            hasReply: hasReply ? 1 : 0
+        }, {
             where: {
                 id: id
             }

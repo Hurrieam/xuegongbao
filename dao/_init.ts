@@ -38,6 +38,8 @@ export const PhoneBook = sequelize.define("PhoneBook", {
         defaultValue: false,
         comment: "状态: true-已删除, false-正常"
     }
+},{
+    freezeTableName: true
 });
 
 // 数据库表: 失物招领
@@ -94,6 +96,8 @@ export const LostAndFound = sequelize.define("LostAndFound", {
         defaultValue: false,
         comment: "状态: true-已删除, false-正常"
     }
+},{
+    freezeTableName: true
 });
 
 // 数据库表: 咨询服务
@@ -145,6 +149,8 @@ export const Consultation = sequelize.define("Consultation", {
         defaultValue: false,
         comment: "状态: true-已删除, false-正常"
     }
+},{
+    freezeTableName: true
 });
 
 // 数据库表: 评论
@@ -169,12 +175,20 @@ export const Comment = sequelize.define("Comment", {
         allowNull: false,
         comment: "评论时间"
     },
+    hasReply: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: false,
+        comment: "是否被回复: true-有, false-无"
+    },
     isDeleted: {
         type: DataTypes.BOOLEAN,
         allowNull: true,
         defaultValue: false,
         comment: "状态: true-已删除, false-正常"
     }
+},{
+    freezeTableName: true
 });
 
 // 数据库表: 反馈
@@ -200,6 +214,8 @@ export const Feedback = sequelize.define("Feedback", {
         defaultValue: false,
         comment: "状态: true-已删除, false-正常"
     }
+},{
+    freezeTableName: true
 });
 
 // 数据库表: 宿舍报修
@@ -251,6 +267,8 @@ export const RepairItem = sequelize.define("Repair",{
         defaultValue: false,
         comment: "状态: true-已删除, false-正常"
     }
+},{
+    freezeTableName: true
 });
 
 (async () => {

@@ -9,7 +9,7 @@ import R from "../model/r";
 
 export const addComment: Handler = async (req, res) => {
     const comment: IComment = req.body;
-    if (!isValidString(comment.openid) || !isValidString(comment.content)) {
+    if (!comment || !isValidString(comment.openid) || !isValidString(comment.content)) {
         res.send(
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
@@ -33,7 +33,19 @@ export const delComment: Handler = async (req, res) => {
     res.send(R.ok(null, StatusMessage.OK));
 }
 
-export const findComments: Handler = async (req, res) => {
+export const updateCommentStatus: Handler = async (req, res) => {
+    const {id} = req.body;
+    if (!isDigit(id)) {
+        res.send(
+            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
+        );
+        return;
+    }
+    await CommonDAO.updateStatus(model.COMMENT, id, true);
+    res.send(R.ok(null, StatusMessage.OK));
+}
+
+export const findCommentsByOpenid: Handler = async (req, res) => {
     const {openid} = req.query;
     if (!isValidString(openid)) {
         res.send(
@@ -52,6 +64,23 @@ export const findComments: Handler = async (req, res) => {
             }
         }
     });
+    const data = {
+        total: comments.length,
+        items: comments
+    }
+    const r = comments ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
+    res.send(r);
+}
+
+export const findComments: Handler = async (req, res) => {
+    const {start, limit} = req.query;
+    if (!isDigit(start) || !isDigit(limit)) {
+        res.send(
+            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
+        );
+        return;
+    }
+    const comments = await CommonDAO.getSome(model.COMMENT, toValidDigit(start), toValidDigit(limit));
     const data = {
         total: comments.length,
         items: comments

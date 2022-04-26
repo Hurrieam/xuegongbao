@@ -2,7 +2,7 @@ import {Route} from './types';
 import logger from "./middleware/logger";
 import {authentic} from "./handler/authentic";
 import {authorize} from "./handler/authorize";
-import {addComment, delComment, findComments} from "./handler/comment";
+import {addComment, delComment, findComments, findCommentsByOpenid, updateCommentStatus} from "./handler/comment";
 import {addLAF, delLAF, findLAFs} from "./handler/lostandfound";
 import {addPhoneNumber, delPhoneNumber, findPhoneBook} from "./handler/phonebook";
 
@@ -30,6 +30,18 @@ export const routes: Route[] = [
         path: '/comment/delete',
         middleware: [logger],
         handler: delComment
+    },
+    {
+        method: "post",
+        path: '/comment/status',
+        middleware: [logger],
+        handler: updateCommentStatus
+    },
+    {
+        method: "get",
+        path: '/comment/by-user',
+        middleware: [logger],
+        handler: findCommentsByOpenid
     },
     {
         method: "get",

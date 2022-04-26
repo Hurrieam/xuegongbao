@@ -1,10 +1,10 @@
-import BodyParser from 'body-parser';
 import {Middleware} from "../types";
+import express from "express";
 
 // Middleware: body-parser
 const bodyParser: Middleware = (req, res, next) => {
-    BodyParser.json()(req, res, () => {
-        BodyParser.urlencoded({extended: false})(req, res, next);
+    express.urlencoded({extended: true})(req, res, () => {
+        express.json()(req, res, next);
     });
 };
 export default bodyParser;
