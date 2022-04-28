@@ -34,3 +34,15 @@ body {
 .btn-color:not(.weui-btn_disabled):active {
     background-color: rgb(104,146,242);
 }
+
+.loading_wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 70vh;
+    padding: 10px;
+    text-align: center;
+    color: #333;
+}
+

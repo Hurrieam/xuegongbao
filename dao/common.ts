@@ -1,4 +1,4 @@
-import {ModelCtor, Model, Op} from "sequelize";
+import {Model, ModelCtor} from "sequelize";
 import {IModel} from "../types";
 
 /**
@@ -19,7 +19,10 @@ const CommonDAO = {
                 isDeleted: 0
             },
             offset: start,
-            limit: limit
+            limit: limit,
+            order: [
+                ['id', 'DESC']
+            ]
         });
     },
 
@@ -79,6 +82,19 @@ const CommonDAO = {
             }
         });
     },
+
+    /**
+     * 根据id获取一条记录
+     * @param model
+     * @param id 记录的id
+     */
+    getOne: async (model: ModelCtor<any>, id: number): Promise<IModel> => {
+        return await model.findOne({
+            where: {
+                id: id
+            }
+        });
+    }
 }
 
 export default CommonDAO;

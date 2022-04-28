@@ -5,26 +5,11 @@
 
     const init = async () => {
         tools.createHeader(oWrapper,"留言详情");
-        const params = getPathParam();
+        const params = tools.getPathParam(win);
         // @ts-ignore
         const id = params["id"];
         const data = await fetchData(id);
         renderList(data);
-    }
-
-    // 获取url参数
-    const getPathParam = () => {
-        const search = win.location.search;
-        const params = {};
-        if (search) {
-            const searchArr = search.slice(1).split('&');
-            searchArr.forEach(item => {
-                const arr = item.split('=');
-                // @ts-ignore
-                params[arr[0]] = arr[1];
-            });
-        }
-        return params;
     }
 
     // 根据id获取留言详情

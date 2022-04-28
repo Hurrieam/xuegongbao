@@ -63,11 +63,43 @@ const tools = (() => {
         oWordLimit.innerText = `${oTarget.value.length}`;
     }
 
+    // 获取url参数
+    const getPathParam = (win: any) => {
+        const search = win.location.search;
+        const params = {};
+        if (search) {
+            const searchArr = search.slice(1).split('&');
+            searchArr.forEach((item: string) => {
+                const arr = item.split('=');
+                // @ts-ignore
+                params[arr[0]] = arr[1];
+            });
+        }
+        return params;
+    }
+    // 格式化时间
+    const formatDate = (date: string) => {
+        let res: string = "";
+        try {
+            res = new Date(date).toLocaleString().substring(0, 15);
+        } catch (e) {
+            res = date;
+        }
+        return res;
+    };
+
+    const getOpenid = ()=>{
+       return localStorage.getItem("openid");
+    }
+
     return {
         isBlank,
         createHeader,
         showAlert,
         hideAlert,
-        computeWordCount
+        computeWordCount,
+        getPathParam,
+        formatDate,
+        getOpenid
     }
 })();

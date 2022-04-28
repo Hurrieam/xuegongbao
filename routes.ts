@@ -10,7 +10,7 @@ import {
     findCommentsByOpenid,
     updateCommentStatus
 } from "./handler/comment";
-import {addLAF, delLAF, findLAFs, updateLAFStatus} from "./handler/lostandfound";
+import {addLAF, delLAF, findLAFbyId, findLAFbyUser, findLAFs, updateLAFStatus} from "./handler/lostandfound";
 import {addPhoneNumber, delPhoneNumber, findPhoneBook} from "./handler/phonebook";
 import {ping} from "./handler/ping";
 
@@ -92,6 +92,18 @@ export const routes: Route[] = [
         path: '/laf/list',
         middleware: [logger],
         handler: findLAFs
+    },
+    {
+      method: "get",
+      path: '/laf/get',
+      middleware: [logger],
+      handler: findLAFbyId
+    },
+    {
+        method: "get",
+        path: '/laf/by-user',
+        middleware: [logger],
+        handler: findLAFbyUser
     },
     {
         method: "post",

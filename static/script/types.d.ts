@@ -28,3 +28,16 @@ declare interface IPhoneItem {
     deptName: string;
     phone: string;
 }
+
+declare interface ILostAndFound {
+    id?: number;
+    openid?: string;
+    itemName: string;
+    location?: string;
+    lostTime?: string;
+    description: string;
+    images?: string;
+    stuName?: string;
+    contact: string;
+    createdAt?: string;
+}

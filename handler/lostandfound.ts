@@ -73,3 +73,34 @@ export const findLAFs: Handler = async (req, res) => {
     const r = lafs ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
     res.send(r);
 }
+/**
+ * @description 根据id查找失物招领信息 参数: {id}
+ */
+export const findLAFbyId: Handler = async (req, res) => {
+    const {id} = req.query;
+    if (!isDigit(id)) {
+        res.send(R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM));
+        return;
+    }
+    const laf = await CommonDAO.getOne(model.LOST_AND_FOUND, toValidDigit(id));
+    const r = laf ? R.ok(laf, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
+    res.send(r);
+}
+
+/**
+ * @description 根据openid查找失物招领信息 参数: {openid}
+ */
+export const findLAFbyUser: Handler = async (req, res) => {
+    const {openid, start, limit} = req.query;
+    if (!isValidString(openid) || !isDigit(start) || !isDigit(limit)) {
+        res.send(R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM));
+        return;
+    }
+    const laf = await CommonDAO.getSome(model.LOST_AND_FOUND,toValidDigit(start), toValidDigit(limit));
+    const data = {
+        total: laf.length,
+        items: laf
+    }
+    const r = laf ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
+    res.send(r);
+}
