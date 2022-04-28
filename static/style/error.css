@@ -1,0 +1,14 @@
+body {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.icon-box{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.weui-msg__opr-area{
+    margin-top: 50px;
+}

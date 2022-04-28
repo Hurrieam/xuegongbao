@@ -1,0 +1,36 @@
+@import "weui.min.css";
+
+body {
+    background-color: #efefef;
+}
+.nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    color: #333;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .08%);
+}
+.nav-header>.header-back{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 17px;
+    padding-top: 1px;
+    color: #2c2c2c;
+}
+.nav-header svg{
+    padding-bottom: 1px;
+}
+.weui-icon-warn {
+    color: hsla(0, 0%, 100%, .9);
+}
+
+.btn-color {
+    background-color: rgb(59, 108, 228);
+}
+.btn-color:not(.weui-btn_disabled):active {
+    background-color: rgb(104,146,242);
+}

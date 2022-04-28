@@ -1,6 +1,5 @@
 import {Sequelize, DataTypes} from 'sequelize';
 import dbConfig from '../config/database';
-import {encrypt} from "../util/encryptor";
 
 /**
  * 初始化数据库连接池
@@ -12,7 +11,7 @@ const sequelize = new Sequelize(database, username, password, {
     dialect: "mysql",
     pool: {
         max: 5,
-        min: 0,
+        min: 1,
         acquire: 30000,
         idle: 10000
     }

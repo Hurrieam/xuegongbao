@@ -1,0 +1,25 @@
+.loading_wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 70vh;
+    padding: 10px;
+    text-align: center;
+    color: #333;
+}
+.weui-cells{
+    margin: 10px;
+    border-radius: 5px;
+}
+.weui-cell__bd>span:nth-child(1){
+    color: #333333;
+    font-size: 14px;
+}
+.weui-cell__bd>span:nth-child(2){
+    display: block;
+    font-size: 12px;
+    color: #999;
+    text-align: end;
+    margin-top: 6px;
+}

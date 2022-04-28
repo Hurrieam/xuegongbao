@@ -79,7 +79,10 @@ export const findCommentsByOpenid: Handler = async (req, res) => {
                     {parentId: openid}
                 ]
             }
-        }
+        },
+        order: [
+            ['id', 'DESC']
+        ]
     });
     const data = {
         total: comments.length,
@@ -92,7 +95,7 @@ export const findCommentsByOpenid: Handler = async (req, res) => {
  * @description 根据id查找留言,包含回复留言 参数：id
  */
 export const findCommentsById: Handler = async (req, res) => {
-    const {id} = req.query;
+    const {id} = req.query;  // TODO 此处需要加个openid
     if (!isDigit(id)) {
         res.send(
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
@@ -110,7 +113,7 @@ export const findCommentsById: Handler = async (req, res) => {
             }
         },
         order: [
-            ['createdAt', 'ASC']
+            ['id', 'DESC']
         ]
     });
     const data = {
@@ -145,6 +148,9 @@ export const findComments: Handler = async (req, res) => {
         },
         offset: toValidDigit(start),
         limit: toValidDigit(limit),
+        order: [
+            ['id', 'DESC']
+        ]
     })
     const data = {
         total: comments.length,

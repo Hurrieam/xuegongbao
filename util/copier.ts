@@ -25,13 +25,12 @@ const copyFiles = (sourcePath: string, targetPath: string) => {
         const currentTargetPath = path.join(targetPath, file);
         // 判断当前文件是否是目录
         if (fs.statSync(currentSourcePath).isDirectory()) {
-            fs.mkdirSync(currentTargetPath);
-            copyFiles(currentSourcePath, currentTargetPath);
-        } else {
-            // 最终项目中排除ts文件
-            if (!currentSourcePath.endsWith("ts")) {
-                fs.copyFileSync(currentSourcePath, currentTargetPath);
+            if (!currentSourcePath.endsWith("script")) { // 最终项目中排除ts文件
+                fs.mkdirSync(currentTargetPath);
+                copyFiles(currentSourcePath, currentTargetPath);
             }
+        } else {
+            fs.copyFileSync(currentSourcePath, currentTargetPath);
         }
     });
 }

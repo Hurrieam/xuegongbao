@@ -1,0 +1,16 @@
+body{
+    background-color: #FFFFFF;
+}
+.weui-cells__group_form .weui-cells::before,
+.weui-cells__group_form .weui-cells::after,
+.weui-cells__group_form .weui-cell:before,
+.weui-cells__group_form .weui-cell:after{
+    left: 16px;
+    right: 16px;
+}
+.weui-cells__group_form .weui-cell{
+    padding: 16px 16px;
+}
+.weui-cells__group_form .weui-cell__hd{
+    padding-right: 8px;
+}

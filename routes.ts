@@ -12,6 +12,7 @@ import {
 } from "./handler/comment";
 import {addLAF, delLAF, findLAFs, updateLAFStatus} from "./handler/lostandfound";
 import {addPhoneNumber, delPhoneNumber, findPhoneBook} from "./handler/phonebook";
+import {ping} from "./handler/ping";
 
 export const routes: Route[] = [
     {
@@ -109,5 +110,11 @@ export const routes: Route[] = [
         path: '/phonebook/list',
         middleware: [logger],
         handler: findPhoneBook
+    },
+    {
+        method: "get",
+        path: '/ping',
+        middleware: [logger],
+        handler: ping
     }
 ];

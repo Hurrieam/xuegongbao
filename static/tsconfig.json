@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "rootDir": "./scripts",
-    "outDir": "./scripts/js",
-    "strict": true,
-    "sourceMap": true
+    "allowJs": true,
+    "rootDir": "./script",
+    "outDir": "./js",
+    "strict": true
   }
 }

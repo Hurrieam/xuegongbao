@@ -6,4 +6,4 @@ build
 .idea
 .vscode
 
-static/scripts/js/
+static/js

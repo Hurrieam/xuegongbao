@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style/base.css">
+    <link rel="stylesheet" href="style/comment-create.css">
+    <script src="js/tools.js"></script>
+    <script src="js/comment-create.js" defer></script>
+    <title>我要留言</title>
+</head>
+<body data-weui-theme="light">
+<div class="J_wrapper">
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell weui-cell_active">
+            <div class="weui-cell__bd">
+                <textarea class="weui-textarea" placeholder="请在这里写下你的留言" rows="8" maxlength="400"></textarea>
+                <div role="option" aria-live="polite" class="weui-textarea-counter">
+                    <span class="J_word_limit">0</span>/400
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="button_wrapper">
+        <button class="weui-btn weui-btn_primary btn-color">提交</button>
+    </div>
+</div>
+</body>
+</html>

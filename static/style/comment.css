@@ -1,0 +1,49 @@
+.list_wrapper{
+    margin-bottom: 100px;
+}
+
+.loading_wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 70vh;
+    padding: 10px;
+    text-align: center;
+    color: #333;
+}
+
+.weui-media-box__desc {
+    color: #666;
+}
+
+.js_p4m1_desc {
+    box-shadow: 2px 2px 2px #ccc;
+}
+
+.weui-panel__bd {
+    margin: 10px 10px 5px 10px;
+    background-color: #FFFFFF;
+    border-radius: 5px;
+}
+
+.weui-media-box__info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.button_wrapper {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    background-color: #fff;
+    padding: 15px;
+    box-shadow: 0 1px 4px #ccc;
+}
+
+.button_wrapper > a {
+    width: 94%;
+}

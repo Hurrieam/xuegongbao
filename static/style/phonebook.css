@@ -1,0 +1,32 @@
+.loading_wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 70vh;
+    padding: 10px;
+    text-align: center;
+    color: #333;
+}
+
+.weui-cells{
+    border-radius: 5px;
+    margin: 10px;
+}
+.weui-cell{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+
+    font-size: 14px;
+}
+.weui-cell__bd>svg{
+    display: block;
+    margin-right: 10px;
+}
+.weui-cell>div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
