@@ -1,6 +1,6 @@
 const tools = ((win, doc) => {
     // 判断字符串是否为空
-    const isBlank = (str: string) => {
+    const isBlank = (str: any) => {
         return str === null || str === undefined || str.replace(/\s+/g, '').length === 0;
     };
 
@@ -71,9 +71,10 @@ const tools = ((win, doc) => {
     }
     // 格式化时间
     const formatDate = (date: string) => {
-        let res: string = "";
+        let res: string;
         try {
-            res = new Date(date).toLocaleString().substring(0, 15);
+            const d = new Date(date);
+            res = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours() < 10 ? "0" + d.getHours() : d.getHours()}:${d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes()}`;
         } catch (e) {
             res = date;
         }

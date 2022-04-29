@@ -14,6 +14,7 @@ const {appid, appsecret} = wechatConfig;
  * @param res
  */
 export const authorize: Handler = async (req, res) => {
+    console.log("authorize");
     // 1. 获取code
     const code = req.query.code as string;
     // 2. 获取access_token
@@ -65,10 +66,10 @@ export const login: Handler = async (req, res) => {
 }
 
 /**
- * 从微信服务器获取access_token
+ * 从微信服务器获取access_token/openid
  * @param code
  */
-const getAccessTokenFromWechat = async (code: string) => {
+export const getAccessTokenFromWechat = async (code: string) => {
     // 1. 请求获取access_token
     const response = await axios.request({
         method: "get",
@@ -84,6 +85,6 @@ const getAccessTokenFromWechat = async (code: string) => {
     if (status != 200) {
         return null;
     }
-
+    console.log(data);
     return data;
 }

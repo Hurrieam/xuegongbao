@@ -48,16 +48,16 @@
                     <span class="weui-form-preview__value">${data.itemName}</span>
                 </div>
                 <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">详情描述</label></br>
-                    <span class="weui-form-preview__value">${data.description ?? "未知"}</span>
+                    <label class="weui-form-preview__label">详情描述</label>
+                    <span class="weui-form-preview__value">${data.description ? data.description : "未知"}</span>
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">丢失地点</label>
-                    <span class="weui-form-preview__value">${data.location ?? "未知"}</span>
+                    <span class="weui-form-preview__value">${data.location ? data.location : "未知"}</span>
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">丢失时间</label>
-                    <span class="weui-form-preview__value">${data.lostTime ?? "未知"}</span>
+                    <span class="weui-form-preview__value">${data.lostTime ? data.lostTime : "未知"}</span>
                 </div>
                 <div class="weui-form-preview__item J_imageList">
                     <label class="weui-form-preview__label">图片</label></br>
@@ -65,11 +65,11 @@
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">姓名</label>
-                    <span class="weui-form-preview__value">${data.stuName ?? "保密"}</span>
+                    <span class="weui-form-preview__value">${data.stuName ? data.stuName : "保密"}</span>
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">联系方式</label>
-                    <span class="weui-form-preview__value">${data.contact ?? "未知"}</span>
+                    <span class="weui-form-preview__value">${data.contact ? data.contact : "未知"}</span>
                 </div>
                 <div class="weui-form-preview__item">
                     <label class="weui-form-preview__label">发布时间</label>
@@ -78,10 +78,9 @@
             </div>
         `;
         div.className = "weui-form-preview";
-        data.images = '["https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/3931/202203281253458.ico","https://xingqiu-tuchuang-1256524210.cos.ap-shanghai.myqcloud.com/3931/202203281253458.ico"]';
+        const ul = div.querySelector(".J_imageList ul") as HTMLElement;
         if (data.images && data.images.length > 0) {
             const images: string[] = JSON.parse(data.images);
-            const ul = div.querySelector(".J_imageList ul") as HTMLElement;
             images.forEach(image => {
                 const li = doc.createElement("li");
                 li.className = "weui-uploader__file";
@@ -91,6 +90,8 @@
                 li.style.backgroundPosition = "center";
                 ul.appendChild(li);
             });
+        } else {
+            div.querySelector(".J_imageList")?.remove();
         }
         oWrapper.appendChild(div);
     }

@@ -1,4 +1,4 @@
-((doc, tools) => {
+(async (doc, tools, cloud) => {
     const oWrapper = doc.getElementsByClassName("J_wrapper")[0] as HTMLDivElement,
         oInputs = oWrapper.getElementsByTagName("input") as HTMLCollectionOf<HTMLInputElement>,
         oImageList = doc.getElementsByClassName("J_image_list")[0] as HTMLDivElement,
@@ -9,7 +9,7 @@
 
     const imageList: string[] = [];
 
-    const init = () => {
+    const init = async () => {
         tools.createHeader(oWrapper, "发布失物招领信息");
         oTextarea.addEventListener("input", onTextareaInput, false);
         oSubmit.addEventListener("click", onSubmit, false);
@@ -25,16 +25,15 @@
             tools.hideAlert();
             return;
         }
-        // 2. TODO: 上传图片  imgs: imageList
 
-        // 3. 上传表单信息
+        // 2. 上传表单信息
         try {
             const response = await fetch("/api/laf/add", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify({...formData, images: JSON.stringify(imageList)})
             });
             const {code} = await response.json();
             if (code != 10000) {
@@ -49,25 +48,33 @@
         }
     }
 
-    const onUploaderChange = (e: Event) => {
+    const onUploaderChange = async (e: Event) => {
         const files = (e.target as HTMLInputElement).files;
         if (!files || files.length == 0) {
             return;
         }
         const file = files[0];
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-            const imgSrc = reader.result as string
-            imageList.push(imgSrc);
-            const li = doc.createElement("li");
-            li.style.backgroundImage = `url(${imgSrc})`;
-            li.className = "weui-uploader__file";
-            oImageList.appendChild(li);
+        if(file.size > 1024 * 1024 * 5) {
+            tools.showAlert(oWrapper, "图片大小不能超过5MB", false);
+            tools.hideAlert();
+            return;
+        }
+        let imgSrc = await imageUploader(file);
+        if (!imgSrc) {
+            return;
+        }
+        // 添加图片到图片列表
+        imgSrc = "https://" + imgSrc;
+        imageList.push(imgSrc);
 
-            if (oImageList.children.length >= 3) {
-                oUploaderWrapper.remove();
-            }
+        // 创建图片元素
+        const li = doc.createElement("li");
+        li.style.backgroundImage = `url(${trimQuotes(imgSrc)})`;
+        li.className = "weui-uploader__file";
+        oImageList.appendChild(li);
+
+        if (oImageList.children.length >= 3) {
+            oUploaderWrapper.remove();
         }
     }
 
@@ -92,9 +99,35 @@
         return data;
     }
 
+    // 上传图片
+    const imageUploader = async (file: File) => {
+        const formData = new FormData();
+        formData.append("image", file);
+        try {
+            const response = await fetch("/api/upload", {
+                method: "POST",
+                body: formData
+            })
+            const {code, data} = await response.json();
+            if (code != 10000) {
+                tools.showAlert(oWrapper, "上传失败，请重试", false);
+                return;
+            }
+            return data;
+        } catch (e) {
+            tools.showAlert(oWrapper, "上传失败，请重试", false);
+        } finally {
+            tools.hideAlert();
+        }
+    }
+
     const onTextareaInput = (e: Event) => {
         tools.computeWordCount(e);
     }
 
-    init();
+    // 删除字符串两边的引号
+    const trimQuotes = (str: string) => {
+        return str.replace(/^"(.*)"$/, "$1");
+    }
+    await init();
 })(document, tools);

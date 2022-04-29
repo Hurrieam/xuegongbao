@@ -13,6 +13,8 @@ import {
 import {addLAF, delLAF, findLAFbyId, findLAFbyUser, findLAFs, updateLAFStatus} from "./handler/lostandfound";
 import {addPhoneNumber, delPhoneNumber, findPhoneBook} from "./handler/phonebook";
 import {ping} from "./handler/ping";
+import {upload} from "./handler/upload";
+import {uploader} from "./middleware/uploader";
 
 export const routes: Route[] = [
     {
@@ -94,10 +96,10 @@ export const routes: Route[] = [
         handler: findLAFs
     },
     {
-      method: "get",
-      path: '/laf/get',
-      middleware: [logger],
-      handler: findLAFbyId
+        method: "get",
+        path: '/laf/get',
+        middleware: [logger],
+        handler: findLAFbyId
     },
     {
         method: "get",
@@ -122,6 +124,12 @@ export const routes: Route[] = [
         path: '/phonebook/list',
         middleware: [logger],
         handler: findPhoneBook
+    },
+    {
+        method: "post",
+        path: '/upload',
+        middleware: [logger, uploader],
+        handler: upload
     },
     {
         method: "get",

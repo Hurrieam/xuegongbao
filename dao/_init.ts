@@ -1,6 +1,7 @@
+import COS from 'cos-nodejs-sdk-v5';
 import {Sequelize, DataTypes} from 'sequelize';
 import dbConfig from '../config/database';
-
+import cosConfig from '../config/cos';
 /**
  * 初始化数据库连接池
  */
@@ -15,6 +16,11 @@ const sequelize = new Sequelize(database, username, password, {
         acquire: 30000,
         idle: 10000
     }
+});
+
+export const cos = new COS({
+    SecretId: cosConfig.SECRET_ID,
+    SecretKey: cosConfig.SECRET_KEY
 });
 
 /**
