@@ -1,4 +1,4 @@
-;(async (doc, tools) => {
+(async (doc, tools) => {
     const oWrapper = doc.getElementsByClassName('J_wrapper')[0] as HTMLDivElement,
         oTextarea = doc.getElementsByTagName('textarea')[0] as HTMLTextAreaElement,
         oSubmit = doc.getElementsByClassName('button_wrapper')[0] as HTMLButtonElement;
@@ -13,8 +13,8 @@
     const onSubmit = async () => {
         const formData = getInputData();
         if (!formData.content) {
-            showAlert('请输入留言内容', 'error');
-            hideAlert();
+            tools.showAlert(oWrapper, '请输入留言内容', false);
+            tools.hideAlert();
             return;
         }
         try {
@@ -27,14 +27,14 @@
             });
             const {code, data} = await response.json();
             if (code != 10000) {
-                showAlert("提交失败，请重试", "error");
+                tools.showAlert(oWrapper, "提交失败，请重试", false);
                 return;
             }
-            showAlert("提交成功", "ok");
+            tools.showAlert(oWrapper, "提交成功", true);
         } catch (e) {
-            showAlert("提交失败，请重试", "error");
+            tools.showAlert(oWrapper, "提交失败，请重试", false);
         } finally {
-            hideAlert()
+            tools.hideAlert();
         }
     }
 
@@ -47,19 +47,9 @@
         }
     }
 
-    // 弹出提示
-    const showAlert = (message: string, type: string) => {
-        tools.showAlert(doc, oWrapper, message, type);
-    }
-
-    // 隐藏提示
-    const hideAlert = () => {
-        tools.hideAlert(doc);
-    }
-
     // Textarea输入事件
     const onTextareaInput = (e: Event) => {
-        tools.computeWordCount(doc, e);
+        tools.computeWordCount(e);
     }
 
     await init();

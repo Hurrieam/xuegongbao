@@ -1,4 +1,4 @@
-;(async (doc, tools) => {
+(async (doc, tools) => {
     const oWrapper = doc.getElementsByClassName('J_wrapper')[0] as HTMLDivElement;
 
     const init = async () => {
@@ -10,10 +10,10 @@
         try {
             const response = await fetch('/api/ping');
             if (response.statusText != 'OK') {
-                tools.showAlert(doc, oWrapper, '服务器连接失败，请检查网络连接！', "error");
+                tools.showAlert(oWrapper, '服务器连接失败，请检查网络连接！', false);
             }
         } catch (e) {
-            tools.showAlert(doc, oWrapper, '服务器连接失败，请检查网络连接！', "error");
+            tools.showAlert(oWrapper, '服务器连接失败，请检查网络连接！', false);
         }
     }
 

@@ -1,7 +1,6 @@
-((doc, tools) => {
+(async (doc, tools) => {
     const oWrapper = doc.getElementsByClassName('J_wrapper')[0] as HTMLDivElement,
-        oList = doc.getElementsByClassName('list_wrapper')[0] as HTMLDivElement,
-        oLoading = doc.getElementsByClassName('loading_wrapper')[0] as HTMLDivElement;
+        oList = doc.getElementsByClassName('list_wrapper')[0] as HTMLDivElement;
 
     const init = async () => {
         tools.createHeader(oWrapper, "寻物信息");
@@ -14,19 +13,20 @@
     }
 
     const fetchData = async () => {
+        tools.showInitLoading(oWrapper);
         try {
             const response = await fetch("/api/laf/list?start=0&limit=10");
             const {code, data} = await response.json();
             if (code != 10000) {
-                tools.showAlert(doc, oWrapper, "获取数据失败，请稍后再试!", "error");
+                tools.showAlert(oWrapper, "获取数据失败，请稍后再试!", false);
                 return;
             }
             return data.items;
         } catch (e) {
-            tools.showAlert(doc, oWrapper, "获取数据失败，请稍后再试!", "error");
+            tools.showAlert(oWrapper, "获取数据失败，请稍后再试!", false);
         } finally {
-            oLoading.style.display = "none";
-            tools.hideAlert(doc);
+            tools.hideInitLoading();
+            tools.hideAlert();
         }
     }
 
@@ -34,12 +34,7 @@
     const renderList = (data: ILostAndFound[]) => {
         // 2. 渲染表格
         if (data.length === 0) {
-            const nullStrElement = doc.createElement("div");
-            nullStrElement.innerHTML = `
-                <div class="weui-loadmore weui-loadmore_line">
-                    <span class="weui-loadmore__tips">暂无数据</span>
-                </div>
-            `;
+            tools.showNoData(oWrapper);
         } else {
             data.forEach(item => {
                 const itemElement = doc.createElement("div");
@@ -65,5 +60,5 @@
         }
     }
 
-    init();
+    await init();
 })(document, tools);

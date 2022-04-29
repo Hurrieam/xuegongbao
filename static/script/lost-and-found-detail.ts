@@ -1,11 +1,10 @@
 (async (win, doc, tools) => {
     const oWrapper = doc.getElementsByClassName('wrapper')[0] as HTMLDivElement,
-        oLoading = oWrapper.getElementsByClassName('loading_wrapper')[0] as HTMLDivElement,
         oDelButton = oWrapper.getElementsByClassName('button_wrapper')[0] as HTMLButtonElement;
 
     const init = async () => {
         tools.createHeader(oWrapper, "寻物详情");
-        const params = tools.getPathParam(win);
+        const params = tools.getPathParam();
         console.log(params);
 
         // @ts-ignore
@@ -14,29 +13,29 @@
             return;
         }
         // @ts-ignore
-        if(params["type"] == "history") {
+        if (params["type"] == "history") {
             oDelButton.style.visibility = "visible";
         }
         render(data);
     }
 
     const fetchData = async (id: number) => {
+        tools.showInitLoading(oWrapper);
         try {
             // @ts-ignore
             const response = await fetch(`/api/laf/get?id=${id}`);
             const {code, data} = await response.json();
             if (code !== 10000) {
-                tools.showAlert(doc, oWrapper, "获取信息失败", "err");
-                tools.hideAlert(doc);
+                tools.showAlert(oWrapper, "获取信息失败", false);
                 return;
             }
             return data;
         } catch (e) {
-            tools.showAlert(doc, oWrapper, "获取信息失败", "err");
+            tools.showAlert(oWrapper, "获取信息失败", false);
             return [];
         } finally {
-            oLoading.style.display = "none";
-            tools.hideAlert(doc);
+            tools.hideInitLoading();
+            tools.hideAlert();
         }
     }
 

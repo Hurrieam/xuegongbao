@@ -1,11 +1,10 @@
-;(async (win, doc,tools) => {
+(async (win, doc,tools) => {
     const oWrapper = doc.getElementsByClassName('J_wrapper')[0] as HTMLDivElement,
-        oLoading = doc.getElementsByClassName('J_loading')[0] as HTMLDivElement,
         oItem = oWrapper.getElementsByClassName("J_item")[0] as HTMLDivElement;
 
     const init = async () => {
         tools.createHeader(oWrapper,"留言详情");
-        const params = tools.getPathParam(win);
+        const params = tools.getPathParam();
         // @ts-ignore
         const id = params["id"];
         const data = await fetchData(id);
@@ -14,6 +13,7 @@
 
     // 根据id获取留言详情
     const fetchData = async (id: number | string) => {
+        tools.showInitLoading(oWrapper);
         try{
             oWrapper.style.display = "none";
             const url = `/api/comment/detail?id=${id}`;
@@ -27,7 +27,7 @@
         }catch (e) {
             return [];
         }finally {
-            oLoading.style.display = "none";
+            tools.hideInitLoading();
             oWrapper.style.display = "block";
         }
     }

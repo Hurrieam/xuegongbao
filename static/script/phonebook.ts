@@ -1,6 +1,5 @@
-;(async (doc, tools) => {
+(async (doc, tools) => {
     const oWrapper = doc.getElementsByClassName('J_wrapper')[0] as HTMLDivElement,
-        oLoading = doc.getElementsByClassName('J_loading')[0] as HTMLDivElement,
         oList = oWrapper.getElementsByClassName("J_list")[0] as HTMLDivElement,
         oSearch = oWrapper.getElementsByTagName("input")[0] as HTMLInputElement,
         oNotFound = oWrapper.getElementsByClassName("J_notfound")[0] as HTMLDivElement;
@@ -20,20 +19,21 @@
 
     // 从服务器获取数据
     const fetchData = async () => {
-        oList.style.display = "none";
+        tools.showInitLoading(oWrapper);
         try {
             const result = await fetch("/api/phonebook/list?start=0&limit=100");
             const {code, data} = await result.json();
             if (code !== 10000) {
-                alert("获取数据失败");
+                tools.showAlert(oWrapper, "获取数据失败，请稍后再试",false);
                 return;
             }
             return data.items;
         } catch (e) {
+            tools.showAlert(oWrapper, "获取数据失败，请稍后再试",false);
             return [];
         } finally {
-            oLoading.style.display = "none";
-            oList.style.display = "block";
+            tools.hideInitLoading();
+            tools.hideAlert();
         }
     }
 
@@ -46,18 +46,12 @@
 
     // 渲染列表
     const renderTable = (data: IPhoneItem[]) => {
+        console.log(data)
         // 1. 清空列表
         oList.innerHTML = "";
-        oNotFound.innerHTML = "";
         // 2. 渲染列表
         if (data.length === 0) {
-            const nullStrElement = doc.createElement("div");
-            nullStrElement.innerHTML = `
-                <div class="weui-loadmore weui-loadmore_line">
-                    <span class="weui-loadmore__tips">暂无数据</span>
-                </div>
-            `;
-            oNotFound.appendChild(nullStrElement);
+            tools.showNoData(oWrapper);
         } else {
             data.forEach(item => {
                 const div = doc.createElement("div");

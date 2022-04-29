@@ -1,12 +1,12 @@
-const tools = (() => {
+const tools = ((win, doc) => {
     // 判断字符串是否为空
     const isBlank = (str: string) => {
-        return (!str || /^\s*$/.test(str));
+        return str === null || str === undefined || str.replace(/\s+/g, '').length === 0;
     };
 
     // 通用Nav Header
     const createHeader = (parentElement: HTMLElement, title: string) => {
-        const header = document.createElement('header');
+        const header = doc.createElement('header');
         header.innerHTML = `
             <a href="javascript:history.go(-1);" class="header-back">
                 <svg t="1651131243636" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7939" width="16" height="16"><path d="M671.968 912c-12.288 0-24.576-4.672-33.952-14.048L286.048 545.984c-18.752-18.72-18.752-49.12 0-67.872l351.968-352c18.752-18.752 49.12-18.752 67.872 0 18.752 18.72 18.752 49.12 0 67.872l-318.016 318.048 318.016 318.016c18.752 18.752 18.752 49.12 0 67.872C696.544 907.328 684.256 912 671.968 912z" p-id="7940" fill="#515151"></path></svg>
@@ -23,17 +23,9 @@ const tools = (() => {
     };
 
     // 弹窗
-    const showAlert = (doc: HTMLDocument, parentElement: HTMLElement, message: string, type: string) => {
+    const showAlert = (parentElement: HTMLElement, message: string, success: boolean) => {
         doc.getElementById("J_alert")?.remove();
-        let className = "";
-        switch (type) {
-            case "ok":
-                className = "weui-icon-success-no-circle";
-                break;
-            case "error":
-                className = "weui-icon-warn";
-                break;
-        }
+        let className: string = success ? 'weui-icon-success-no-circle' : 'weui-icon-warn';
         const div = doc.createElement("div");
         div.innerHTML = `
             <div class="weui-mask_transparent"></div>
@@ -47,7 +39,7 @@ const tools = (() => {
     }
 
     // 隐藏弹窗
-    const hideAlert = (doc: HTMLDocument) => {
+    const hideAlert = () => {
         setTimeout(() => {
             const alert = doc.getElementById("J_alert") as HTMLElement;
             if (alert) {
@@ -57,14 +49,14 @@ const tools = (() => {
     }
 
     // 实时计算Textarea的字数 (显示结果的div需要标注J_word_limit类)
-    const computeWordCount = (doc: HTMLDocument, e: Event) => {
+    const computeWordCount = (e: Event) => {
         const oTarget = e.target as HTMLTextAreaElement,
             oWordLimit = doc.getElementsByClassName('J_word_limit')[0] as HTMLElement;
         oWordLimit.innerText = `${oTarget.value.length}`;
     }
 
     // 获取url参数
-    const getPathParam = (win: any) => {
+    const getPathParam = () => {
         const search = win.location.search;
         const params = {};
         if (search) {
@@ -88,8 +80,35 @@ const tools = (() => {
         return res;
     };
 
-    const getOpenid = ()=>{
-       return localStorage.getItem("openid");
+    const getOpenid = () => {
+        return localStorage.getItem("openid");
+    }
+
+    const showInitLoading = (parentElement: HTMLElement) => {
+        const div = doc.createElement("div");
+        div.innerHTML = `
+            <span>加载中...</span>
+            <i class="weui-loading"></i>
+       `;
+        div.id = "J_loading";
+        div.className = "loading_wrapper";
+        parentElement.appendChild(div);
+    }
+
+    const hideInitLoading = () => {
+        const loading = doc.getElementById("J_loading") as HTMLElement;
+        if (loading) {
+            loading.style.display = "none";
+        }
+    }
+
+    const showNoData = (parentElement: HTMLElement) => {
+        const div = doc.createElement("div");
+        div.innerHTML = `
+             <span class="weui-loadmore__tips">暂无数据</span>
+       `;
+        div.className = "weui-loadmore weui-loadmore_line";
+        parentElement.appendChild(div);
     }
 
     return {
@@ -100,6 +119,9 @@ const tools = (() => {
         computeWordCount,
         getPathParam,
         formatDate,
-        getOpenid
+        getOpenid,
+        showInitLoading,
+        hideInitLoading,
+        showNoData
     }
-})();
+})(window, document);

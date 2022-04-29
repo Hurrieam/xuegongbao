@@ -21,8 +21,8 @@
         const formData: ILostAndFound = getFormData()
         const {isBlank} = tools;
         if (isBlank(formData.itemName) || isBlank(formData.description) || isBlank(formData.contact)) {
-            showAlert("请填写完整信息", "error");
-            hideAlert();
+            tools.showAlert(oWrapper, "请填写完整信息", false);
+            tools.hideAlert();
             return;
         }
         // 2. TODO: 上传图片  imgs: imageList
@@ -38,14 +38,14 @@
             });
             const {code} = await response.json();
             if (code != 10000) {
-                showAlert("提交失败，请重试", "error");
+                tools.showAlert(oWrapper, "提交失败，请重试", false);
                 return;
             }
-            showAlert("提交成功", "ok");
+            tools.showAlert(oWrapper, "提交成功", true);
         } catch (e) {
-            showAlert("提交失败，请重试", "error");
+            tools.showAlert(oWrapper, "提交失败，请重试", false);
         } finally {
-            hideAlert()
+            tools.hideAlert()
         }
     }
 
@@ -58,7 +58,7 @@
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => {
-            const imgSrc =reader.result as string
+            const imgSrc = reader.result as string
             imageList.push(imgSrc);
             const li = doc.createElement("li");
             li.style.backgroundImage = `url(${imgSrc})`;
@@ -92,19 +92,8 @@
         return data;
     }
 
-
-    // 弹出提示
-    const showAlert = (message: string, type: string) => {
-        tools.showAlert(doc, oWrapper, message, type);
-    }
-
-    // 隐藏提示
-    const hideAlert = () => {
-        tools.hideAlert(doc);
-    }
-
     const onTextareaInput = (e: Event) => {
-        tools.computeWordCount(doc, e);
+        tools.computeWordCount(e);
     }
 
     init();

@@ -1,7 +1,6 @@
 (async (win, doc, tools) => {
     const oWrapper = doc.getElementsByClassName("J_wrapper")[0] as HTMLDivElement,
-        oList = doc.getElementsByClassName("weui-panel__bd")[0] as HTMLDivElement,
-        oLoading = doc.getElementsByClassName("loading_wrapper")[0] as HTMLDivElement;
+        oList = doc.getElementsByClassName("weui-panel__bd")[0] as HTMLDivElement;
 
     const init = async () => {
         tools.createHeader(oWrapper, "我丢失的物品");
@@ -13,20 +12,21 @@
     }
 
     const fetchData = async () => {
+        tools.showInitLoading(oWrapper);
         try {
             const openid = "111";  // TODO: 获取openid
             const response = await fetch(`/api/laf/by-user?openid=${openid}&start=0&limit=10`);
             const {code, data} = await response.json();
             if (code != 10000) {
-                tools.showAlert(doc, oWrapper, "获取数据失败，请稍后再试!", "error");
+                tools.showAlert(oWrapper, "获取数据失败，请稍后再试!", false);
                 return;
             }
             return data.items;
         } catch (e) {
-            tools.showAlert(doc, oWrapper, "获取数据失败，请稍后再试!", "error");
+            tools.showAlert(oWrapper, "获取数据失败，请稍后再试!", false);
         } finally {
-            oLoading.style.display = "none";
-            tools.hideAlert(doc);
+            tools.hideInitLoading();
+            tools.hideAlert();
         }
     }
 

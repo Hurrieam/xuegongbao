@@ -1,12 +1,11 @@
-;(async (doc,tools) => {
+(async (doc, tools) => {
     const oWrapper = doc.getElementsByClassName('J_wrapper')[0] as HTMLDivElement,
-        oList = doc.getElementsByClassName('list_wrapper')[0] as HTMLDivElement,
-        oLoading = doc.getElementsByClassName('loading_wrapper')[0] as HTMLDivElement;
+        oList = doc.getElementsByClassName('list_wrapper')[0] as HTMLDivElement;
 
     let data: IComment[] = [];
 
     const init = async () => {
-        tools.createHeader(oWrapper,"留言列表")
+        tools.createHeader(oWrapper, "留言列表")
         // 1. 获取所有数据
         data = await fetchData();
         // 2. 根据数据条数渲染列表
@@ -15,34 +14,28 @@
 
     // 从服务器获取数据
     const fetchData = async () => {
-        oList.style.display = 'none';
+        tools.showInitLoading(oWrapper);
         try {
             const result = await fetch("/api/comment/list?start=0&limit=100");
             // const result = await fetch("/api/comment/by-user?openid=??");
             const {code, data} = await result.json();
             if (code !== 10000) {
-                alert("获取数据失败");
+                tools.showAlert(oWrapper, "获取数据失败，请稍后再试", false);
                 return;
             }
             return data.items;
         } catch (e) {
-            return [];
+            tools.showAlert(oWrapper, "获取数据失败，请稍后再试", false);
         } finally {
-            oLoading.style.display = 'none';
+            tools.hideInitLoading();
             oList.style.display = 'block';
         }
     }
 
     // 渲染表格列表
     const renderList = (data: IComment[]) => {
-        // 2. 渲染表格
         if (data.length === 0) {
-            const nullStrElement = doc.createElement("div");
-            nullStrElement.innerHTML = `
-                <div class="weui-loadmore weui-loadmore_line">
-                    <span class="weui-loadmore__tips">暂无数据</span>
-                </div>
-            `;
+            tools.showNoData(oWrapper);
         } else {
             data.forEach(item => {
                 const itemElement = doc.createElement("div");
@@ -69,4 +62,4 @@
     }
 
     await init();
-})(document,tools);
+})(document, tools);
