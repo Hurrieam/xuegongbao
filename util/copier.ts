@@ -53,4 +53,9 @@ const copyFiles = (sourcePath: string, targetPath: string) => {
     const sourcePackageJSONPath = path.resolve(__dirname, '../../package.json');
     const targetPackageJSONPath = path.resolve(__dirname, '../package.json');
     fs.copyFileSync(sourcePackageJSONPath, targetPackageJSONPath)
+
+    // 5. 将.env文件复制到build目录下
+    const sourceEnvPath = path.resolve(__dirname, '../../.env');
+    const targetEnvPath = path.resolve(__dirname, '../.env');
+    fs.copyFileSync(sourceEnvPath, targetEnvPath)
 })();

@@ -88,7 +88,7 @@
         // 获取图片地址
 
         const data: ILostAndFound = {
-            openid: "123",
+            openid: tools.getOpenid(),
             itemName,
             location,
             description,

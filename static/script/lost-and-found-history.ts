@@ -14,7 +14,7 @@
     const fetchData = async () => {
         tools.showInitLoading(oWrapper);
         try {
-            const openid = "111";  // TODO: 获取openid
+            const openid = tools.getOpenid();
             const response = await fetch(`/api/laf/by-user?openid=${openid}&start=0&limit=10`);
             const {code, data} = await response.json();
             if (code != 10000) {
@@ -31,6 +31,10 @@
     }
 
     const render = (data: ILostAndFound[]) => {
+        if (!data || data.length == 0) {
+            tools.showNoData(oWrapper);
+            return;
+        }
         data.forEach(item => {
             const div = doc.createElement("div");
             div.innerHTML = `

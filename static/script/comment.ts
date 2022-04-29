@@ -16,8 +16,8 @@
     const fetchData = async () => {
         tools.showInitLoading(oWrapper);
         try {
-            const result = await fetch("/api/comment/list?start=0&limit=100");
-            // const result = await fetch("/api/comment/by-user?openid=??");
+            const openid = tools.getOpenid();
+            const result = await fetch(`/api/comment/by-user?openid=${openid}&start=0&limit=100`);
             const {code, data} = await result.json();
             if (code !== 10000) {
                 tools.showAlert(oWrapper, "获取数据失败，请稍后再试", false);

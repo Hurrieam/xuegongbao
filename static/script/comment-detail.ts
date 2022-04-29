@@ -20,7 +20,6 @@
             const response = await fetch(url);
             const {code, data} = await response.json();
             if (code != 10000) {
-                console.log("error")
                 return [];
             }
             return data.items;

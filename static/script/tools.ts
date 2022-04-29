@@ -81,8 +81,13 @@ const tools = ((win, doc) => {
         return res;
     };
 
-    const getOpenid = () => {
-        return localStorage.getItem("openid");
+    const getOpenid = (): string => {
+        const openid = localStorage.getItem("openid");
+        if (!isBlank(openid) && openid != 'undefined' && openid != 'null') {
+            return openid as string;
+        }
+        win.location.href = "index.html";
+        return '';
     }
 
     const showInitLoading = (parentElement: HTMLElement) => {

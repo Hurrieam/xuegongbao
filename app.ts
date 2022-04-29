@@ -3,10 +3,13 @@ import path from 'path';
 import {routes} from "./routes";
 import cors from "./middleware/cors";
 import bodyParser from "./middleware/body-parser";
+import {_session as session} from "./middleware/auth";
+import {API_PREFIX} from "./constant/common";
 
 const app = express();
 const PORT = 3000;
-const API_PREFIX = '/api';
+
+app.use(session);
 
 // 静态页面
 app.use("/static", express.static(path.resolve(__dirname, "static")));

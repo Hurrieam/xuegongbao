@@ -1,17 +1,15 @@
 import {Handler, IAdmin} from "../types";
 import axios from "axios";
-import wechatConfig from "../config/wechat";
 import {isValidString} from "../util/checker";
 import {StatusCode, StatusMessage} from "../constant/status";
 import R from "../model/r";
 import {Admin} from "../dao/_init";
 import {encrypt} from "../util/encryptor";
+import config from "../util/env-parser";
 
-const {appid, appsecret} = wechatConfig;
+const {APPID, APPSECRET} = config;
 /**
- * 微信授权, 获得微信用户的唯一凭证: openid
- * @param req
- * @param res
+ * @description 微信授权, 获得微信用户的唯一凭证: openid
  */
 export const authorize: Handler = async (req, res) => {
     console.log("authorize");
@@ -29,17 +27,14 @@ export const authorize: Handler = async (req, res) => {
 }
 
 /**
- * 管理员登陆
- * @param req
- * @param res
+ * @description 管理员登陆
  */
 export const login: Handler = async (req, res) => {
     const {username, password} = req.body;
     if (!isValidString(username) || !isValidString(password)) {
-        res.send(
+        return res.send(
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
-        return;
     }
     const result: IAdmin | any = await Admin.findOne({
         where: {
@@ -49,16 +44,17 @@ export const login: Handler = async (req, res) => {
     });
 
     if (!result) {
-        res.send(
+        return res.send(
             R.error(StatusCode.PASSWORD_ERROR, StatusMessage.PASSWORD_ERROR)
         );
-        return;
     } else if (result.status == false) {
-        res.send(
+        return res.send(
             R.error(StatusCode.ACCOUNT_DISABLED, StatusMessage.ACCOUNT_DISABLED)
         );
-        return;
     }
+    // 登陆成功后, 将用户信息存入session
+    // @ts-ignore
+    req.session.admin = result;
 
     res.send(
         R.ok(null, StatusMessage.OK)
@@ -66,7 +62,7 @@ export const login: Handler = async (req, res) => {
 }
 
 /**
- * 从微信服务器获取access_token/openid
+ * @description 从微信服务器获取access_token/openid
  * @param code
  */
 export const getAccessTokenFromWechat = async (code: string) => {
@@ -76,8 +72,8 @@ export const getAccessTokenFromWechat = async (code: string) => {
         url: "https://api.weixin.qq.com/sns/oauth2/access_token",
         params: {
             grant_type: "authorization_code",
-            appid: appid,
-            secret: appsecret,
+            appid: APPID,
+            secret: APPSECRET,
             code: code
         }
     })
@@ -85,6 +81,5 @@ export const getAccessTokenFromWechat = async (code: string) => {
     if (status != 200) {
         return null;
     }
-    console.log(data);
     return data;
 }

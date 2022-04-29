@@ -1,8 +1,7 @@
 (async (doc, tools) => {
     const oWrapper = doc.getElementsByClassName('J_wrapper')[0] as HTMLDivElement,
         oList = oWrapper.getElementsByClassName("J_list")[0] as HTMLDivElement,
-        oSearch = oWrapper.getElementsByTagName("input")[0] as HTMLInputElement,
-        oNotFound = oWrapper.getElementsByClassName("J_notfound")[0] as HTMLDivElement;
+        oSearch = oWrapper.getElementsByTagName("input")[0] as HTMLInputElement;
 
     let data: IPhoneItem[] = [];
 

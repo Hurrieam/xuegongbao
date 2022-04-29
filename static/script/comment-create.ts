@@ -12,9 +12,7 @@
     // 提交数据
     const onSubmit = async () => {
         const formData = getInputData();
-        if (!formData.content) {
-            tools.showAlert(oWrapper, '请输入留言内容', false);
-            tools.hideAlert();
+        if (!formData) {
             return;
         }
         try {
@@ -39,10 +37,15 @@
     }
 
     // 获取留言数据
-    const getInputData = (): IComment => {
+    const getInputData = (): IComment | null => {
         const content = oTextarea.value.trim();
+        if(!content) {
+            tools.showAlert(oWrapper, '请输入留言内容', false);
+            tools.hideAlert();
+            return null;
+        }
         return {
-            openid: "1111",
+            openid: tools.getOpenid(),
             content: content
         }
     }

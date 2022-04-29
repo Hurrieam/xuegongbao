@@ -1,13 +1,12 @@
 import {Route} from './types';
-import logger from "./middleware/logger";
 import {authentic} from "./handler/authentic";
 import {authorize, login} from "./handler/authorize";
 import {
     addComment,
     delComment,
-    findComments,
+    findAllComments,
     findCommentsById,
-    findCommentsByOpenid,
+    findCommentsByUser,
     updateCommentStatus
 } from "./handler/comment";
 import {addLAF, delLAF, findLAFbyId, findLAFbyUser, findLAFs, updateLAFStatus} from "./handler/lostandfound";
@@ -15,126 +14,127 @@ import {addPhoneNumber, delPhoneNumber, findPhoneBook} from "./handler/phonebook
 import {ping} from "./handler/ping";
 import {upload} from "./handler/upload";
 import {uploader} from "./middleware/uploader";
+import {auth} from "./middleware/auth";
 
 export const routes: Route[] = [
     {
         method: "get",
         path: '/authentic',
-        middleware: [logger],
+        middleware: [],
         handler: authentic,
     },
     {
         method: "get",
         path: '/authorize',
-        middleware: [logger],
+        middleware: [],
         handler: authorize,
     },
     {
         method: "post",
         path: '/login',
-        middleware: [logger],
+        middleware: [],
         handler: login,
     },
     {
         method: "post",
         path: '/comment/add',
-        middleware: [logger],
+        middleware: [],
         handler: addComment
     },
     {
         method: "post",
         path: '/comment/delete',
-        middleware: [logger],
+        middleware: [auth],
         handler: delComment
     },
     {
         method: "post",
         path: '/comment/status',
-        middleware: [logger],
+        middleware: [auth],
         handler: updateCommentStatus
     },
     {
         method: "get",
         path: '/comment/by-user',
-        middleware: [logger],
-        handler: findCommentsByOpenid
+        middleware: [],
+        handler: findCommentsByUser
     },
     {
         method: "get",
         path: '/comment/detail',
-        middleware: [logger],
+        middleware: [],
         handler: findCommentsById
     },
     {
         method: "get",
         path: '/comment/list',
-        middleware: [logger],
-        handler: findComments
+        middleware: [auth],
+        handler: findAllComments
     },
     {
         method: "post",
         path: '/laf/add',
-        middleware: [logger],
+        middleware: [],
         handler: addLAF
     },
     {
         method: "post",
         path: '/laf/delete',
-        middleware: [logger],
+        middleware: [auth],
         handler: delLAF
     },
     {
         method: "post",
         path: '/laf/status',
-        middleware: [logger],
+        middleware: [],
         handler: updateLAFStatus
     },
     {
         method: "get",
         path: '/laf/list',
-        middleware: [logger],
+        middleware: [],
         handler: findLAFs
     },
     {
         method: "get",
         path: '/laf/get',
-        middleware: [logger],
+        middleware: [],
         handler: findLAFbyId
     },
     {
         method: "get",
         path: '/laf/by-user',
-        middleware: [logger],
+        middleware: [],
         handler: findLAFbyUser
     },
     {
         method: "post",
         path: '/phonebook/add',
-        middleware: [logger],
+        middleware: [auth],
         handler: addPhoneNumber
     },
     {
         method: "post",
         path: '/phonebook/delete',
-        middleware: [logger],
+        middleware: [auth],
         handler: delPhoneNumber
     },
     {
         method: "get",
         path: '/phonebook/list',
-        middleware: [logger],
+        middleware: [],
         handler: findPhoneBook
     },
     {
         method: "post",
         path: '/upload',
-        middleware: [logger, uploader],
+        middleware: [uploader],
         handler: upload
     },
     {
         method: "get",
         path: '/ping',
-        middleware: [logger],
+        middleware: [],
         handler: ping
     }
 ];

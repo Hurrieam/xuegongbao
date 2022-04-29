@@ -1,14 +1,14 @@
 import COS from 'cos-nodejs-sdk-v5';
-import {Sequelize, DataTypes} from 'sequelize';
-import dbConfig from '../config/database';
-import cosConfig from '../config/cos';
+import {DataTypes, Sequelize} from 'sequelize';
+import config from "../util/env-parser";
+
+const {DATABASE, USERNAME, PASSWORD, HOST, PORT, SECRET_ID, SECRET_KEY} = config;
 /**
  * 初始化数据库连接池
  */
-const {database, username, password, host, port} = dbConfig;
-const sequelize = new Sequelize(database, username, password, {
-    host,
-    port,
+const sequelize = new Sequelize(DATABASE, USERNAME, PASSWORD, {
+    host: HOST,
+    port: Number(PORT),
     dialect: "mysql",
     pool: {
         max: 5,
@@ -19,8 +19,8 @@ const sequelize = new Sequelize(database, username, password, {
 });
 
 export const cos = new COS({
-    SecretId: cosConfig.SECRET_ID,
-    SecretKey: cosConfig.SECRET_KEY
+    SecretId: SECRET_ID,
+    SecretKey: SECRET_KEY
 });
 
 /**
