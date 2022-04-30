@@ -69,9 +69,15 @@ export const findLAFs: Handler = async (req, res) => {
         );
     }
     const lafs = await CommonDAO.getSome(model.LOST_AND_FOUND, toValidDigit(start), toValidDigit(limit));
+    const total = await LostAndFound.count({
+        where: {
+            isDeleted: 0
+        }
+    });
     const data = {
-        total: lafs.length,
-        items: lafs
+        items: lafs,
+        count: lafs.length,
+        total: total
     }
     const r = lafs ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
     res.send(r);
@@ -104,7 +110,7 @@ export const findLAFbyUser: Handler = async (req, res) => {
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const laf = await LostAndFound.findAll({
+    const lafs = await LostAndFound.findAll({
         where: {
             openid: openid
         },
@@ -114,10 +120,16 @@ export const findLAFbyUser: Handler = async (req, res) => {
             ['id', 'DESC']
         ]
     });
+    const total = await LostAndFound.count({
+        where: {
+            isDeleted: 0
+        }
+    });
     const data = {
-        total: laf.length,
-        items: laf
+        items: lafs,
+        count: lafs.length,
+        total: total
     }
-    const r = laf ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
+    const r = lafs ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
     res.send(r);
 }

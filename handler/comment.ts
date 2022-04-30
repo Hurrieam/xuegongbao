@@ -90,7 +90,7 @@ export const findCommentsByUser: Handler = async (req, res) => {
         ]
     });
     const data = {
-        total: comments.length,
+        count: comments.length,
         items: comments
     }
     const r = comments ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
@@ -123,7 +123,7 @@ export const findCommentsById: Handler = async (req, res) => {
         ]
     });
     const data = {
-        total: comment.length,
+        count: comment.length,
         items: comment
     }
     const r = comment ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
@@ -158,9 +158,22 @@ export const findAllComments: Handler = async (req, res) => {
             ['id', 'DESC']
         ]
     })
+    const total = await Comment.count({
+        where: {
+            [Op.and]: [
+                {
+                    isDeleted: 0,
+                    openid: {
+                        [Op.ne]: ADMIN_OPENID
+                    }
+                }
+            ]
+        }
+    });
     const data = {
-        total: comments.length,
-        items: comments
+        items: comments,
+        count: comments.length,
+        total: total
     }
     const r = comments ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
     res.send(r);
