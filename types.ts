@@ -85,3 +85,13 @@ export interface IRepairItem extends IModel {
     stuName: string;
     contact: string;
 }
+
+export interface IReservation extends IModel {
+    openid: string;
+    type: string;
+    stuName: string;
+    sdept: string;
+    content: string;
+    time: string;
+    contact: string;
+}

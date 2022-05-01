@@ -129,8 +129,8 @@ export const LostAndFound = sequelize.define("LostAndFound", {
     freezeTableName: true
 });
 
-// 数据库表: 咨询服务
-export const Consultation = sequelize.define("Consultation", {
+// 数据库表: 咨询预约
+export const Reservation = sequelize.define("Reservation", {
     openid: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -141,25 +141,25 @@ export const Consultation = sequelize.define("Consultation", {
         allowNull: false,
         comment: "咨询类型: 心理咨询 | 职业规划咨询"
     },
-    time: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        comment: "咨询时间"
-    },
     stuName: {
         type: DataTypes.STRING,
         allowNull: false,
         comment: "学生姓名"
     },
-    class: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        comment: "班级"
-    },
     sdept: {
         type: DataTypes.STRING,
         allowNull: false,
         comment: "学院名称"
+    },
+    content:{
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: "大致内容"
+    },
+    time: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: "预约时间"
     },
     contact: {
         type: DataTypes.STRING,
@@ -170,7 +170,7 @@ export const Consultation = sequelize.define("Consultation", {
         type: DataTypes.BOOLEAN,
         allowNull: true,
         defaultValue: false,
-        comment: "状态: true-完成, false-未完成"
+        comment: "状态: true-已处理, false-未处理"
     },
     isDeleted: {
         type: DataTypes.BOOLEAN,
@@ -295,63 +295,9 @@ export const RepairItem = sequelize.define("Repair", {
     freezeTableName: true
 });
 
-
 /**
  * 初始化数据库模型
  */
 // (async () => {
 //     await sequelize.sync({force: false});
-//     // Admin.create({
-//     //     username: "admin",
-//     //     password: encrypt("admin")
-//     // });
-//     Comment.create({
-//         openid: "123",
-//         content: "不要以为你长的狼样，我就能把你看成是灰太狼"
-//     });
-//     Comment.create({
-//         openid: "123",
-//         content: "每个人都会死，但并非每个人都真正活过。每个人都在追求高质量的生活，但并非每个人都活出了自我。"
-//     });
-//     Comment.create({
-//         openid: "123",
-//         content: "我们都是灰太狼，但我们都不是灰太狼。"
-//     });
-//     LostAndFound.create({
-//         openid: "123",
-//         itemName: "钱包",
-//         description: "钱包是我的，我没有了，你有吗？",
-//         dorm: "1栋",
-//         room: "1-101",
-//         stuName: "张三",
-//         contact: "12345678901",
-//         isDeleted: false
-//     });
-//     LostAndFound.create({
-//         openid: "123",
-//         itemName: "钱包",
-//         description: "钱包是我的，我没有了，你有吗？",
-//         dorm: "1栋",
-//         room: "1-101",
-//         stuName: "张三",
-//         contact: "12345678901",
-//         isDeleted: false
-//     });
-//     LostAndFound.create({
-//         openid: "123",
-//         itemName: "钱包",
-//         description: "钱包是我的，我没有了，你有吗？",
-//         dorm: "1栋",
-//         room: "1-101",
-//         stuName: "张三",
-//         contact: "12345678901"
-//     });
-//     PhoneBook.create({
-//         deptName: "张三",
-//         phone: "12345678901"
-//     });
-//     PhoneBook.create({
-//         deptName: "张三",
-//         phone: "12345678901"
-//     });
 // })();

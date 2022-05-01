@@ -15,11 +15,12 @@ declare interface ICommentDetail {
 }
 
 declare interface IDormRepair {
+    openid: string;
     itemName: string;
     description: string;
     dorm: string;
     room: string;
-    name: string;
+    stuName: string;
     contact: string;
 }
 
@@ -40,4 +41,14 @@ declare interface ILostAndFound {
     stuName?: string;
     contact: string;
     createdAt?: string;
+}
+
+declare interface IConsultation{
+    openid: string;
+    type: string;
+    stuName: string;
+    sdept: string;
+    content: string;
+    time: string;
+    contact: string;
 }

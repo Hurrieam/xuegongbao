@@ -15,6 +15,19 @@ import {ping} from "./handler/ping";
 import {upload} from "./handler/upload";
 import {uploader} from "./middleware/uploader";
 import {auth} from "./middleware/auth";
+import {
+    addDormRepairItem,
+    deleteRepairItemById,
+    findAllRepairItems,
+    findRepairItemById,
+    updateRepairItemStatusById
+} from "./handler/dorm-repair";
+import {
+    addReservationItem,
+    deleteReservationById,
+    findAllReservations,
+    findReservationById, updateReservationById
+} from "./handler/reservation";
 
 export const routes: Route[] = [
     {
@@ -124,6 +137,66 @@ export const routes: Route[] = [
         path: '/phonebook/list',
         middleware: [],
         handler: findPhoneBook
+    },
+    {
+        method: "post",
+        path: '/dorm-repair/add',
+        middleware: [],
+        handler: addDormRepairItem
+    },
+    {
+        method: "get",
+        path: '/dorm-repair/list',
+        middleware: [auth],
+        handler: findAllRepairItems
+    },
+    {
+        method: "get",
+        path: '/dorm-repair/get',
+        middleware: [],
+        handler: findRepairItemById
+    },
+    {
+        method: "post",
+        path: '/dorm-repair/delete',
+        middleware: [auth],
+        handler: deleteRepairItemById
+    },
+    {
+        method: "post",
+        path: '/dorm-repair/status',
+        middleware: [auth],
+        handler: updateRepairItemStatusById
+    },
+    {
+        method: "post",
+        path: '/reservation/add',
+        middleware: [],
+        handler: addReservationItem
+    },
+    {
+        method: "get",
+        path: '/reservation/list',
+        middleware: [auth],
+        handler: findAllReservations
+    },
+    {
+        method: "get",
+        path: '/reservation/get',
+        middleware: [],
+        handler: findReservationById
+    },
+    {
+        method: "post",
+        path: '/reservation/delete',
+        middleware: [auth],
+        handler: deleteReservationById
+    },
+    {
+        method: "post",
+        path: '/reservation/status',
+        middleware: [auth],
+        handler: updateReservationById
     },
     {
         method: "post",

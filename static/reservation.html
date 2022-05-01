@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>学公宝服务中心</title>
+    <link rel="stylesheet" href="style/base.css">
+    <link rel="stylesheet" href="style/reservation.css">
+    <script src="js/tools.js"></script>
+    <script src="js/reservation.js" defer></script>
+</head>
+<body data-weui-theme="light">
+<div class="wrapper J_wrapper">
+    <div class="tip">
+        <p>1. 心理咨询又称心理辅导，由专业人员即心理咨询师运用心理学以及相关知识，遵循心理学原则，借助语言、文字等媒介，给咨询对象以帮助、启发、暗示和教育的过程，解决其在学习、工作、生活、疾病和康复等方面出现的心理问题，促使咨询对象的自我调整，从而能够更好地适应环境，保持身心健康。  </p>
+        <p>2. 职业规划是对职业生涯乃至人生进行持续的系统的计划的过程，又叫职业生涯设计，是指个人与组织相结合，在对一个人职业生涯的主客观条件进行测定、分析、总结的基础上，对自己的兴趣、爱好、能力、特点进行综合分析与权衡，结合时代特点，根据自己的职业倾向，确定其最佳的职业奋斗目标，并为实现这一目标做出行之有效的安排。</p>
+    </div>
+    <div class="weui-form__control-area">
+        <div class="weui-cells__group weui-cells__group_form">
+            <div class="weui-cells">
+                <label class="weui-cell">
+                    <div class="weui-cell__hd"><span class="weui-label">咨询类型</span></div>
+                    <div class="weui-cell__bd">
+                        <div class="weui-cells weui-cells_radio">
+                            <label class="weui-cell radio_type" for="x11">
+                                <span>心理咨询</span>
+                                <div class="weui-cell__ft">
+                                    <input type="radio" class="weui-check J_radio" name="type" id="x11" checked="checked" value="心理咨询"/>
+                                    <span class="weui-icon-checked"></span>
+                                </div>
+                            </label>
+                            <label class="weui-cell radio_type" for="x22">
+                                <span>职业规划咨询</span>
+                                <div class="weui-cell__ft">
+                                    <input type="radio" name="type" class="weui-check J_radio" id="x22" value="职业规划咨询"/>
+                                    <span class="weui-icon-checked"></span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </label>
+                <label class="weui-cell weui-cell_active">
+                    <div class="weui-cell__hd"><span class="weui-label">姓名</span></div>
+                    <div class="weui-cell__bd">
+                        <input name="name" class="weui-input" placeholder="填写你的真实姓名"/>
+                    </div>
+                </label>
+                <label class="weui-cell weui-cell_active">
+                    <div class="weui-cell__hd"><span class="weui-label">院系</span></div>
+                    <div class="weui-cell__bd">
+                        <input name="sdept" class="weui-input" placeholder="填写院系名称" required/>
+                    </div>
+                </label>
+                <label class="weui-cell weui-cell_active">
+                    <div class="weui-cell__hd"><span class="weui-label">咨询内容</span></div>
+                    <div class="weui-cell__bd">
+                        <input name="content" class="weui-input" placeholder="填写大致的咨询内容" required/>
+                    </div>
+                </label>
+                <label class="weui-cell weui-cell_active">
+                    <div class="weui-cell__hd"><span class="weui-label">咨询时间</span></div>
+                    <div class="weui-cell__bd">
+                        <input name="time" class="weui-input" placeholder="填写预约咨询的大致时间" required/>
+                    </div>
+                </label>
+                <label class="weui-cell weui-cell_active">
+                    <div class="weui-cell__hd"><span class="weui-label">联系方式</span></div>
+                    <div class="weui-cell__bd">
+                        <input name="contact" class="weui-input" placeholder="填写你的联系方式" required/>
+                    </div>
+                </label>
+            </div>
+        </div>
+        <div class="tip">
+            <h4>备注</h4>
+            <p>预约后，具体咨询时间将由工作人员电话联系</p>
+        </div>
+    </div>
+    <div class="weui-form__opr-area">
+        <button role="button" aria-disabled="true" class="weui-btn weui-btn_primary J_submit">确定</button>
+    </div>
+</div>
+</body>
+</html>
