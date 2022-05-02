@@ -4,10 +4,10 @@
 
     const init = async () => {
         tools.createHeader(oWrapper, "我丢失的物品");
+
         const data = await fetchData();
-        if (!data) {
-            return;
-        }
+        if (!data) return;
+
         render(data);
     }
 
@@ -30,7 +30,7 @@
         }
     }
 
-    const render = (data: ILostAndFound[]) => {
+    const render = (data: API.LostAndFound[]) => {
         if (!data || data.length == 0) {
             tools.showNoData(oWrapper);
             return;

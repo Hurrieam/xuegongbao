@@ -94,6 +94,18 @@ const CommonDAO = {
                 id: id
             }
         });
+    },
+
+    /**
+     * 获取某张表的记录条数
+     * @param model
+     */
+    getCount: async (model: ModelCtor<any>): Promise<number> => {
+        return await model.count({
+            where: {
+                isDeleted: 0
+            }
+        });
     }
 }
 

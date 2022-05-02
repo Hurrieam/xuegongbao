@@ -6,6 +6,10 @@
 
     const init = async () => {
         tools.createHeader(oWrapper, '宿舍报修');
+        bindEvent();
+    }
+
+    const bindEvent = ()=>{
         oTextarea.addEventListener("input", onTextareaInput, false);
         oSubmit.addEventListener("click", onSubmit, false);
     }
@@ -50,7 +54,7 @@
             tools.hideAlert();
             return;
         }
-        const data: IDormRepair = {
+        const data: API.RepairItem = {
             openid: tools.getOpenid(),
             itemName,
             description,

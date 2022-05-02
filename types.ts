@@ -1,16 +1,7 @@
 import {Request, Response} from 'express';
 import {Optional} from 'sequelize';
 
-type Method =
-    | 'get'
-    | 'head'
-    | 'post'
-    | 'put'
-    | 'delete'
-    | 'connect'
-    | 'options'
-    | 'trace'
-    | 'patch';
+type Method = "get" | "post" | "put" | "delete" | "patch";
 
 export type Handler = (req: Request, res: Response) => any;
 export type Middleware = (req: Request, res: Response, next: () => void) => any;
@@ -55,25 +46,10 @@ export interface ILostAndFound extends IModel {
     contact: string;
 }
 
-export interface IConsultation extends IModel {
-    openid: string;
-    type: string;
-    time: string;
-    stuName: string;
-    class: string;
-    sdept: string;
-    contact: string;
-}
-
 export interface IComment extends IModel {
     openid: string;
     content: string;
     parentId?: number;
-}
-
-export interface IFeedback extends IModel {
-    openid: string;
-    content: string;
 }
 
 export interface IRepairItem extends IModel {

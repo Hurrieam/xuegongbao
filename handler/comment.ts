@@ -12,7 +12,8 @@ import R from "../model/r";
  * @tag user & admin
  * @description 添加一条留言 参数：{openid, content, parentId?}
  */
-export const addComment: Handler = async (req, res) => {
+
+export const addCommentItem: Handler = async (req, res) => {
     const comment: IComment = req.body;
     if (!comment || !isValidString(comment.openid) || !isValidString(comment.content)) {
         res.send(
@@ -29,7 +30,7 @@ export const addComment: Handler = async (req, res) => {
  * @tag admin
  * @description 根据id删除一条留言 参数：{id}
  */
-export const delComment: Handler = async (req, res) => {
+export const deleteCommentItemById: Handler = async (req, res) => {
     const {id} = req.body;
     if (!isDigit(id)) {
         return res.send(
@@ -44,7 +45,7 @@ export const delComment: Handler = async (req, res) => {
  * @tag admin
  * @description 更新留言状态 未回复 -> 已回复 参数：{id}
  */
-export const updateCommentStatus: Handler = async (req, res) => {
+export const updateCommentStatusById: Handler = async (req, res) => {
     const {id} = req.body;
     if (!isDigit(id)) {
         res.send(

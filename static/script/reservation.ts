@@ -51,7 +51,7 @@
             tools.hideAlert();
             return;
         }
-        const data: IConsultation = {
+        const data: API.Reservation = {
             openid: tools.getOpenid(),
             type,
             stuName,

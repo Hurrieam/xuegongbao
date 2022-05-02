@@ -6,9 +6,8 @@
         tools.createHeader(oWrapper, "寻物信息");
 
         const data = await fetchData();
-        if (!data) {
-            return;
-        }
+        if (!data) return;
+
         renderList(data);
     }
 
@@ -31,7 +30,7 @@
     }
 
     // 渲染表格列表
-    const renderList = (data: ILostAndFound[]) => {
+    const renderList = (data: API.LostAndFound[]) => {
         // 2. 渲染表格
         if (data.length === 0) {
             tools.showNoData(oWrapper);
@@ -46,7 +45,7 @@
                              <strong aria-hidden="true" class="weui-media-box__title" id="js_p4m1_title">${item.itemName}</strong>
                             <p class="weui-media-box__desc" aria-hidden="true" id="js_p4m1_desc">${item.description}</p>
                             <div class="weui-media-box__info" aria-hidden="true">
-                                <span class="weui-media-box__info__meta" aria-hidden="true" id="js_p4m1_time">${new Date(<string>item.createdAt).toLocaleString()}</span>
+                                <span class="weui-media-box__info__meta" aria-hidden="true" id="js_p4m1_time">${tools.formatDate(item.createdAt!)}</span>
                             </div>
                         </div>
                     </div>

@@ -69,11 +69,7 @@ export const findLAFs: Handler = async (req, res) => {
         );
     }
     const lafs = await CommonDAO.getSome(model.LOST_AND_FOUND, toValidDigit(start), toValidDigit(limit));
-    const total = await LostAndFound.count({
-        where: {
-            isDeleted: 0
-        }
-    });
+    const total = await CommonDAO.getCount(model.LOST_AND_FOUND);
     const data = {
         items: lafs,
         count: lafs.length,
@@ -120,11 +116,7 @@ export const findLAFbyUser: Handler = async (req, res) => {
             ['id', 'DESC']
         ]
     });
-    const total = await LostAndFound.count({
-        where: {
-            isDeleted: 0
-        }
-    });
+    const total = await CommonDAO.getCount(model.LOST_AND_FOUND);
     const data = {
         items: lafs,
         count: lafs.length,

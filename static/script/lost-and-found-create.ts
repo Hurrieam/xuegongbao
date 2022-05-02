@@ -18,13 +18,8 @@
 
     const onSubmit = async () => {
         // 1. 获取表单数据
-        const formData: ILostAndFound = getFormData()
-        const {isBlank} = tools;
-        if (isBlank(formData.itemName) || isBlank(formData.description) || isBlank(formData.contact)) {
-            tools.showAlert(oWrapper, "请填写完整信息", false);
-            tools.hideAlert();
-            return;
-        }
+        const formData: API.LostAndFound = getFormData()! as API.LostAndFound;
+        if (!formData) return;
 
         // 2. 上传表单信息
         try {
@@ -54,7 +49,7 @@
             return;
         }
         const file = files[0];
-        if(file.size > 1024 * 1024 * 5) {
+        if (file.size > 1024 * 1024 * 5) {
             tools.showAlert(oWrapper, "图片大小不能超过5MB", false);
             tools.hideAlert();
             return;
@@ -85,9 +80,15 @@
             description = oTextarea.value,
             stuName = (oInputs.namedItem("stuName") as HTMLInputElement).value,
             contact = (oInputs.namedItem("contact") as HTMLInputElement).value;
-        // 获取图片地址
 
-        const data: ILostAndFound = {
+        const {isBlank} = tools;
+        if (isBlank(itemName) || isBlank(description) || isBlank(contact)) {
+            tools.showAlert(oWrapper, "请填写完整信息", false);
+            tools.hideAlert();
+            return;
+        }
+
+        const data: API.LostAndFound = {
             openid: tools.getOpenid(),
             itemName,
             location,

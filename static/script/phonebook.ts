@@ -3,7 +3,7 @@
         oList = oWrapper.getElementsByClassName("J_list")[0] as HTMLDivElement,
         oSearch = oWrapper.getElementsByTagName("input")[0] as HTMLInputElement;
 
-    let data: IPhoneItem[] = [];
+    let data: API.PhoneBook[] = [];
 
     const init = async () => {
         // 1. 创建Header
@@ -44,7 +44,7 @@
     }
 
     // 渲染列表
-    const renderTable = (data: IPhoneItem[]) => {
+    const renderTable = (data: API.PhoneBook[]) => {
         console.log(data)
         // 1. 清空列表
         oList.innerHTML = "";

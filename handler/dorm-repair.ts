@@ -41,11 +41,7 @@ export const findAllRepairItems: Handler = async (req, res) => {
         );
     }
     const items = await CommonDAO.getSome(model.REPAIR_ITEM, toValidDigit(start), toValidDigit(limit));
-    const total = await RepairItem.count({
-        where: {
-            isDeleted: 0
-        }
-    });
+    const total = await CommonDAO.getCount(model.REPAIR_ITEM);
     const data = {
         items: items,
         count: items.length,
@@ -76,7 +72,7 @@ export const findRepairItemById: Handler = async (req, res) => {
  * @description 根据id删除报修订单 参数: {id}
  */
 export const deleteRepairItemById: Handler = async (req, res) => {
-    const {id} = req.query;
+    const {id} = req.body;
     if (!isDigit(id)) {
         return res.send(
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
@@ -92,7 +88,7 @@ export const deleteRepairItemById: Handler = async (req, res) => {
  * @description 根据id更新报修订单状态 参数: {id}
  */
 export const updateRepairItemStatusById: Handler = async (req, res) => {
-    const {id} = req.query;
+    const {id} = req.body;
     if (!isDigit(id)) {
         return res.send(
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)

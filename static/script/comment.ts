@@ -2,7 +2,7 @@
     const oWrapper = doc.getElementsByClassName('J_wrapper')[0] as HTMLDivElement,
         oList = doc.getElementsByClassName('list_wrapper')[0] as HTMLDivElement;
 
-    let data: IComment[] = [];
+    let data: API.Comment[] = [];
 
     const init = async () => {
         tools.createHeader(oWrapper, "留言列表")
@@ -33,7 +33,7 @@
     }
 
     // 渲染表格列表
-    const renderList = (data: IComment[]) => {
+    const renderList = (data: API.Comment[]) => {
         if (data.length === 0) {
             tools.showNoData(oWrapper);
         } else {

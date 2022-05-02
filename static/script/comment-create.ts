@@ -5,6 +5,10 @@
 
     const init = async () => {
         tools.createHeader(oWrapper, '我要留言');
+        bindEvent();
+    }
+
+    const bindEvent = () => {
         oTextarea.addEventListener('input', onTextareaInput, false);
         oSubmit.addEventListener("click", onSubmit, false);
     }
@@ -23,7 +27,7 @@
                 },
                 body: JSON.stringify(formData)
             });
-            const {code, data} = await response.json();
+            const {code} = await response.json();
             if (code != 10000) {
                 tools.showAlert(oWrapper, "提交失败，请重试", false);
                 return;
@@ -37,7 +41,7 @@
     }
 
     // 获取留言数据
-    const getInputData = (): IComment | null => {
+    const getInputData = (): API.Comment | null => {
         const content = oTextarea.value.trim();
         if(!content) {
             tools.showAlert(oWrapper, '请输入留言内容', false);

@@ -6,8 +6,7 @@
         tools.createHeader(oWrapper,"留言详情");
         const params = tools.getPathParam();
         // @ts-ignore
-        const id = params["id"];
-        const data = await fetchData(id);
+        const data = await fetchData(params["id"]);
         renderList(data);
     }
 
@@ -32,12 +31,12 @@
     }
 
     // 渲染列表
-    const renderList = (data: ICommentDetail[]) => {
+    const renderList = (data: API.Comment[]) => {
         const html = data.map((item, index) => `
                  <div class="weui-cell weui-cell_access">
                     <span class="weui-cell__bd">
                         <span>${index != 0 ? `<span style="color: #333333; font-size: 14px">回复: </span>` : ""}${item.content}</span>
-                        <span>${new Date(item.createdAt).toLocaleString()}</span>
+                        <span>${tools.formatDate(item.createdAt)}</span>
                     </span>
                  </div>
             `

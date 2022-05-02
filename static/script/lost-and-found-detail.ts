@@ -9,9 +9,8 @@
 
         // @ts-ignore
         const data: ILostAndFound = await fetchData(params['id']);
-        if (!data) {
-            return;
-        }
+        if (!data) return;
+
         // @ts-ignore
         if (params["type"] == "history") {
             oDelButton.style.visibility = "visible";
@@ -32,14 +31,13 @@
             return data;
         } catch (e) {
             tools.showAlert(oWrapper, "获取信息失败", false);
-            return [];
         } finally {
             tools.hideInitLoading();
             tools.hideAlert();
         }
     }
 
-    const render = (data: ILostAndFound) => {
+    const render = (data: API.LostAndFound) => {
         const div = doc.createElement("div");
         div.innerHTML = `
             <div role="option" aria-labelledby="p1 js_a11y_comma p2 js_a11y_comma p3" class="weui-form-preview__bd">

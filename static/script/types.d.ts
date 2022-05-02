@@ -1,54 +1,56 @@
-declare interface IComment {
-    id?: number;
-    openid?: string;
-    content: string;
-    parentId?: string;
-    createdAt?: string;
-    hasReply?: boolean;
-}
+declare namespace API {
+    type Comment = {
+        id?: number;
+        openid?: string;
+        parentId?: string;
+        content: string;
+        createdAt?: string;
+        hasReply?: boolean;
+    }
 
-declare interface ICommentDetail {
-    id: number;
-    content: string;
-    createdAt: string;
-    hasReply: boolean;
-}
+    type LostAndFound = {
+        id?: number;
+        openid: string;
+        itemName: string;
+        location?: string;
+        lostTime?: string;
+        description?: string;
+        images?: string;
+        stuName?: string;
+        contact: string;
+        status?: boolean;
+        createdAt?: string;
+    }
 
-declare interface IDormRepair {
-    openid: string;
-    itemName: string;
-    description: string;
-    dorm: string;
-    room: string;
-    stuName: string;
-    contact: string;
-}
+    type PhoneBook = {
+        id?: number;
+        deptName: string;
+        phone: string;
+    }
 
-declare interface IPhoneItem {
-    id: number;
-    deptName: string;
-    phone: string;
-}
+    type RepairItem = {
+        id?: number;
+        openid: string;
+        itemName: string;
+        description?: string;
+        dorm: string;
+        room: string;
+        stuName?: string;
+        contact: string;
+        time?: string;
+        createdAt?: string;
+        status?: boolean;
+    }
 
-declare interface ILostAndFound {
-    id?: number;
-    openid?: string;
-    itemName: string;
-    location?: string;
-    lostTime?: string;
-    description: string;
-    images?: string;
-    stuName?: string;
-    contact: string;
-    createdAt?: string;
-}
-
-declare interface IConsultation{
-    openid: string;
-    type: string;
-    stuName: string;
-    sdept: string;
-    content: string;
-    time: string;
-    contact: string;
+    type Reservation = {
+        id?: number;
+        openid?: string;
+        type: string;
+        stuName: string;
+        sdept: string;
+        content: string;
+        time: string;
+        contact: string;
+        status?: boolean;
+    }
 }

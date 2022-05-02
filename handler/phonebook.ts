@@ -9,7 +9,7 @@ import R from "../model/r";
  * @tag admin
  * @description 新增联系人 参数: (deptName, phone)
  */
-export const addPhoneNumber: Handler = async (req, res) => {
+export const addPhoneItem: Handler = async (req, res) => {
     const phoneItem: IPhoneBook = req.body;
     if (!isValidString(phoneItem.deptName) || !isValidString(phoneItem.phone)) {
         return res.send(
@@ -25,7 +25,7 @@ export const addPhoneNumber: Handler = async (req, res) => {
  * @tag admin
  * @description 根据id删除联系人 参数: id
  */
-export const delPhoneNumber: Handler = async (req, res) => {
+export const deletePhoneItemById: Handler = async (req, res) => {
     const {id} = req.body;
     if (!isDigit(id) || id <= 0) {
         return res.send(
@@ -40,7 +40,7 @@ export const delPhoneNumber: Handler = async (req, res) => {
  * @tag user & admin
  * @description 分页查找联系人 参数: {start, limit}
  */
-export const findPhoneBook: Handler = async (req, res) => {
+export const findAllPhoneItems: Handler = async (req, res) => {
     const {start, limit} = req.query;
     if (!isDigit(start) || !isDigit(limit)) {
         return res.send(
@@ -48,9 +48,11 @@ export const findPhoneBook: Handler = async (req, res) => {
         );
     }
     const phonebook = await CommonDAO.getSome(model.PHONE_BOOK, toValidDigit(start), toValidDigit(limit));
+    const total = await CommonDAO.getCount(model.PHONE_BOOK);
     const data = {
-        total: phonebook.length,
-        items: phonebook
+        items: phonebook,
+        count: phonebook.length,
+        total: total
     }
     const r = phonebook ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
     res.send(r);

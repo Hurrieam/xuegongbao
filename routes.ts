@@ -1,20 +1,20 @@
 import {Route} from './types';
 import {authentic} from "./handler/authentic";
 import {authorize, login} from "./handler/authorize";
-import {
-    addComment,
-    delComment,
-    findAllComments,
-    findCommentsById,
-    findCommentsByUser,
-    updateCommentStatus
-} from "./handler/comment";
-import {addLAF, delLAF, findLAFbyId, findLAFbyUser, findLAFs, updateLAFStatus} from "./handler/lostandfound";
-import {addPhoneNumber, delPhoneNumber, findPhoneBook} from "./handler/phonebook";
 import {ping} from "./handler/ping";
 import {upload} from "./handler/upload";
 import {uploader} from "./middleware/uploader";
 import {auth} from "./middleware/auth";
+import {addPhoneItem, deletePhoneItemById, findAllPhoneItems} from "./handler/phonebook";
+import {addLAF, delLAF, findLAFbyId, findLAFbyUser, findLAFs, updateLAFStatus} from "./handler/lostandfound";
+import {
+    addCommentItem,
+    deleteCommentItemById,
+    findAllComments,
+    findCommentsById,
+    findCommentsByUser,
+    updateCommentStatusById,
+} from "./handler/comment";
 import {
     addDormRepairItem,
     deleteRepairItemById,
@@ -26,7 +26,8 @@ import {
     addReservationItem,
     deleteReservationById,
     findAllReservations,
-    findReservationById, updateReservationById
+    findReservationById,
+    updateReservationById
 } from "./handler/reservation";
 
 export const routes: Route[] = [
@@ -52,19 +53,19 @@ export const routes: Route[] = [
         method: "post",
         path: '/comment/add',
         middleware: [],
-        handler: addComment
+        handler: addCommentItem
     },
     {
         method: "post",
         path: '/comment/delete',
         middleware: [auth],
-        handler: delComment
+        handler: deleteCommentItemById
     },
     {
         method: "post",
         path: '/comment/status',
         middleware: [auth],
-        handler: updateCommentStatus
+        handler: updateCommentStatusById
     },
     {
         method: "get",
@@ -124,19 +125,19 @@ export const routes: Route[] = [
         method: "post",
         path: '/phonebook/add',
         middleware: [auth],
-        handler: addPhoneNumber
+        handler: addPhoneItem
     },
     {
         method: "post",
         path: '/phonebook/delete',
         middleware: [auth],
-        handler: delPhoneNumber
+        handler: deletePhoneItemById
     },
     {
         method: "get",
         path: '/phonebook/list',
         middleware: [],
-        handler: findPhoneBook
+        handler: findAllPhoneItems
     },
     {
         method: "post",

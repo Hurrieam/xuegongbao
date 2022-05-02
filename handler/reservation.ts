@@ -41,11 +41,7 @@ export const findAllReservations: Handler = async (req, res) => {
         );
     }
     const items = await CommonDAO.getSome(model.RESERVATION, toValidDigit(start), toValidDigit(limit));
-    const total = await Reservation.count({
-        where: {
-            isDeleted: 0
-        }
-    });
+    const total = await CommonDAO.getCount(model.RESERVATION);
     const data = {
         items: items,
         count: items.length,
@@ -77,7 +73,7 @@ export const findReservationById: Handler = async (req, res) => {
  * @description 根据id删除预约项 参数: {id}
  */
 export const deleteReservationById: Handler = async (req, res) => {
-    const {id} = req.query;
+    const {id} = req.body;
     if (!isValidString(id)) {
         return res.send(
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
@@ -93,7 +89,7 @@ export const deleteReservationById: Handler = async (req, res) => {
  * @description 根据有id更新预约状态 参数: {id}
  */
 export const updateReservationById: Handler = async (req, res) => {
-    const {id} = req.query;
+    const {id} = req.body;
     if (!isValidString(id)) {
         return res.send(
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
