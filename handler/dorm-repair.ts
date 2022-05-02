@@ -4,7 +4,6 @@ import R from "../model/r";
 import {StatusCode, StatusMessage} from "../constant/status";
 import CommonDAO from "../dao/common";
 import model from "../dao/model";
-import {RepairItem} from "../dao/_init";
 
 /**
  * @tag user
@@ -24,7 +23,7 @@ export const addDormRepairItem: Handler = async (req, res) => {
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const item = await CommonDAO.addOne(model.REPAIR_ITEM, params);
+    const item = await CommonDAO.addOne(model.REPAIR, params);
     const r = item ? R.ok(null, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
     res.send(r);
 };
@@ -40,8 +39,8 @@ export const findAllRepairItems: Handler = async (req, res) => {
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const items = await CommonDAO.getSome(model.REPAIR_ITEM, toValidDigit(start), toValidDigit(limit));
-    const total = await CommonDAO.getCount(model.REPAIR_ITEM);
+    const items = await CommonDAO.getSome(model.REPAIR, toValidDigit(start), toValidDigit(limit));
+    const total = await CommonDAO.getCount(model.REPAIR);
     const data = {
         items: items,
         count: items.length,
@@ -62,7 +61,7 @@ export const findRepairItemById: Handler = async (req, res) => {
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const item = await CommonDAO.getOne(model.REPAIR_ITEM, toValidDigit(id));
+    const item = await CommonDAO.getOne(model.REPAIR, toValidDigit(id));
     const r = item ? R.ok(item, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
     res.send(r);
 };
@@ -78,7 +77,7 @@ export const deleteRepairItemById: Handler = async (req, res) => {
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const item = await CommonDAO.delOne(model.REPAIR_ITEM, toValidDigit(id));
+    const item = await CommonDAO.delOne(model.REPAIR, toValidDigit(id));
     const r = item ? R.ok(null, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
     res.send(r);
 };
@@ -94,7 +93,7 @@ export const updateRepairItemStatusById: Handler = async (req, res) => {
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const item = await CommonDAO.updateStatus(model.REPAIR_ITEM, toValidDigit(id), true);
+    const item = await CommonDAO.updateStatus(model.REPAIR, toValidDigit(id), true);
     const r = item ? R.ok(null, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
     res.send(r);
 };

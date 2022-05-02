@@ -29,6 +29,7 @@ import {
     findReservationById,
     updateReservationById
 } from "./handler/reservation";
+import {getDayUsage, getMonthUsage} from "./handler/extend";
 
 export const routes: Route[] = [
     {
@@ -198,6 +199,18 @@ export const routes: Route[] = [
         path: '/reservation/status',
         middleware: [auth],
         handler: updateReservationById
+    },
+    {
+        method: "get",
+        path: '/day-usage',
+        middleware: [],
+        handler: getDayUsage
+    },
+    {
+        method: "get",
+        path: '/month-usage',
+        middleware: [],
+        handler: getMonthUsage
     },
     {
         method: "post",

@@ -3,7 +3,7 @@
 
     const init = async () => {
         await ping(); // 测试网络连通状况
-        // auth();
+        auth();
     }
 
     const ping = async () => {
@@ -18,7 +18,8 @@
     }
 
     const auth = () => {
-        const redirect_uri = 'https%3A%2F%2F7c48-240e-454-1b9-4fc9-e5d4-f472-bd95-38c3.ap.ngrok.io%2Fapi%2Fauthorize';
+        // const redirect_uri = 'https%3A%2F%2F3328-240e-454-3d-8012-6095-46d9-e713-7a51.ap.ngrok.io%2Fapi%2Fauthorize';
+        const redirect_uri = 'https%3A%2F%2Fxgb.onezol.com%2Fapi%2Fauthorize';
         const appid = 'wxadfeee485d2a5b81';
         // 1. 首先从url中获取key
         // 2. 若url中不存在key，则判断本地缓存中是否有openid

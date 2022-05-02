@@ -1,11 +1,12 @@
-import {Comment, Feedback, LostAndFound, PhoneBook, RepairItem, Reservation} from "./_init";
+import {Comment, Feedback, LostAndFound, PhoneBook, Repair, Reservation, User} from "./_init";
 
 const model = {
+    USER: User,
     PHONE_BOOK: PhoneBook,
     LOST_AND_FOUND: LostAndFound,
     COMMENT: Comment,
     FEEDBACK: Feedback,
-    REPAIR_ITEM: RepairItem,
+    REPAIR: Repair,
     RESERVATION: Reservation
 };
 

@@ -3,17 +3,18 @@ import axios from "axios";
 import {isValidString} from "../util/checker";
 import {StatusCode, StatusMessage} from "../constant/status";
 import R from "../model/r";
-import {Admin} from "../dao/_init";
+import {Admin, User} from "../dao/_init";
 import {encrypt} from "../util/encryptor";
 import config from "../util/env-parser";
 import {generateToken} from "../util/jwt";
+import CommonDAO from "../dao/common";
+import model from "../dao/model";
 
 const {APPID, APPSECRET} = config;
 /**
  * @description 微信授权, 获得微信用户的唯一凭证: openid
  */
 export const authorize: Handler = async (req, res) => {
-    console.log("authorize");
     // 1. 获取code
     const code = req.query.code as string;
     // 2. 获取access_token
@@ -23,6 +24,7 @@ export const authorize: Handler = async (req, res) => {
         return;
     }
     const {openid} = result;
+    await User.findOrCreate({where: {openid}, defaults: {openid}});
     // 3. 返回openid
     res.redirect(`/static/index.html?openid=${openid}`);
 }

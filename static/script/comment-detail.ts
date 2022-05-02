@@ -36,7 +36,7 @@
                  <div class="weui-cell weui-cell_access">
                     <span class="weui-cell__bd">
                         <span>${index != 0 ? `<span style="color: #333333; font-size: 14px">回复: </span>` : ""}${item.content}</span>
-                        <span>${tools.formatDate(item.createdAt)}</span>
+                        <span>${tools.formatDate(item.createdAt as string)}</span>
                     </span>
                  </div>
             `

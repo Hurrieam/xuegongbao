@@ -26,7 +26,25 @@ export const cos = new COS({
 /**
  * 初始化数据库表结构
  */
+// 数据库表: 用户表
+export const User = sequelize.define('User', {
+    openid:{
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        comment: "微信用户唯一标识"
+    },
+    active: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: true,
+        comment: "当日是否活跃 true: 活跃 false: 不活跃"
+    }
+}, {
+    freezeTableName: true
+});
 
+// 数据库表: 管理员表
 export const Admin = sequelize.define("Admin", {
     username: {
         type: DataTypes.STRING(30),
@@ -151,7 +169,7 @@ export const Reservation = sequelize.define("Reservation", {
         allowNull: false,
         comment: "学院名称"
     },
-    content:{
+    content: {
         type: DataTypes.STRING,
         allowNull: false,
         comment: "大致内容"
@@ -243,7 +261,7 @@ export const Feedback = sequelize.define("Feedback", {
 });
 
 // 数据库表: 宿舍报修
-export const RepairItem = sequelize.define("Repair", {
+export const Repair = sequelize.define("Repair", {
     openid: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -295,6 +313,31 @@ export const RepairItem = sequelize.define("Repair", {
     freezeTableName: true
 });
 
+// 数据库表: 每日系统使用量
+export const DailyUsage = sequelize.define("DailyUsage", {
+    users: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: "当日活跃用户数"
+    },
+    comments: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: "当日评论数"
+    },
+    repairs: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: "当日报修数"
+    },
+    reservations: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: "当日预约数"
+    }
+}, {
+    freezeTableName: true
+});
 /**
  * 初始化数据库模型
  */
