@@ -1,5 +1,5 @@
+import request from "request";
 import {Handler, IAdmin} from "../types";
-import axios from "axios";
 import {isValidString} from "../util/checker";
 import {StatusCode, StatusMessage} from "../constant/status";
 import R from "../model/r";
@@ -7,23 +7,21 @@ import {Admin, User} from "../dao/_init";
 import {encrypt} from "../util/encryptor";
 import config from "../util/env-parser";
 import {generateToken} from "../util/jwt";
-import CommonDAO from "../dao/common";
-import model from "../dao/model";
 
 const {APPID, APPSECRET} = config;
+
 /**
  * @description 微信授权, 获得微信用户的唯一凭证: openid
  */
 export const authorize: Handler = async (req, res) => {
     // 1. 获取code
     const code = req.query.code as string;
-    // 2. 获取access_token
-    const result = await getAccessTokenFromWechat(code);
-    if (!result) {
+    // 2. 获取openid
+    const openid = await getAccessTokenFromWechat(code);
+    if (!openid) {
         res.redirect(`/static/error.html?message=${encodeURIComponent("微信授权失败")}`);
         return;
     }
-    const {openid} = result;
     await User.findOrCreate({where: {openid}, defaults: {openid}});
     // 3. 返回openid
     res.redirect(`/static/index.html?openid=${openid}`);
@@ -64,24 +62,40 @@ export const login: Handler = async (req, res) => {
 }
 
 /**
- * @description 从微信服务器获取access_token/openid
+ * @description 从微信服务器获取openid
  * @param code
  */
 export const getAccessTokenFromWechat = async (code: string) => {
     // 1. 请求获取access_token
-    const response = await axios.request({
-        method: "get",
-        url: "https://api.weixin.qq.com/sns/oauth2/access_token",
-        params: {
-            grant_type: "authorization_code",
-            appid: APPID,
-            secret: APPSECRET,
-            code: code
-        }
+    const promise = new Promise((resolve, reject) => {
+        const _request = request.defaults({
+            strictSSL: false,
+            rejectUnauthorized: false
+        });
+        _request({
+            method: "get",
+            url: "https://api.weixin.qq.com/sns/oauth2/access_token",
+            qs: {
+                grant_type: "authorization_code",
+                appid: APPID,
+                secret: APPSECRET,
+                code: code
+            }
+        }, (err, response, body) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(JSON.parse(body));
+            }
+        })
     })
-    const {status, data} = response;
-    if (status != 200) {
+
+    let result;
+    try {
+        result = await promise;
+    } catch (e) {
         return null;
     }
-    return data;
+    // @ts-ignore
+    return result.openid;
 }

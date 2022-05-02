@@ -18,7 +18,7 @@ type DataType = {
  * @description 监视当日系统使用量
  */
 export const getDayUsage: Handler = async (req, res) => {
-    const data: DataType = await getTodayUsageFromDB();
+    const data: DataType = await getDayUsageFromDB();
     res.send(
         R.ok(data, StatusMessage.OK)
     );
@@ -39,7 +39,7 @@ export const getMonthUsage: Handler = async (req, res) => {
  * @description 定时任务: 每天晚上0点执行(记录当日数据)
  */
 schedule.scheduleJob("0 0 0 * * ?", async () => {
-    const data: DataType = await getTodayUsageFromDB();
+    const data: DataType = await getDayUsageFromDB();
     await addLogRecord(data);
     await resetUserStatus();
 });
@@ -47,7 +47,7 @@ schedule.scheduleJob("0 0 0 * * ?", async () => {
 /**
  * @description 获取当日数据
  */
-const getTodayUsageFromDB = async (): Promise<DataType> => {
+const getDayUsageFromDB = async (): Promise<DataType> => {
     // 1. 当日系统使用人数
     const dayUsers = await User.count({
         where: {
