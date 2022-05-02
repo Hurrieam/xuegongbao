@@ -6,6 +6,7 @@ import R from "../model/r";
 import {Admin} from "../dao/_init";
 import {encrypt} from "../util/encryptor";
 import config from "../util/env-parser";
+import {generateToken} from "../util/jwt";
 
 const {APPID, APPSECRET} = config;
 /**
@@ -54,10 +55,9 @@ export const login: Handler = async (req, res) => {
     }
     // 登陆成功后, 将用户信息存入session
     // @ts-ignore
-    req.session.admin = result;
-
+    const token = await generateToken(username);
     res.send(
-        R.ok(null, StatusMessage.OK)
+        R.ok({token}, StatusMessage.OK)
     );
 }
 
