@@ -6,7 +6,6 @@ import {upload} from "./handler/upload";
 import {uploader} from "./middleware/uploader";
 import {auth} from "./middleware/auth";
 import {addPhoneItem, deletePhoneItemById, findAllPhoneItems} from "./handler/phonebook";
-import {addLAF, delLAF, findLAFbyId, findLAFbyUser, findLAFs, updateLAFStatus} from "./handler/lostandfound";
 import {
     addCommentItem,
     deleteCommentItemById,
@@ -30,6 +29,14 @@ import {
     updateReservationById
 } from "./handler/reservation";
 import {addOneUsageRecordByOpenid, getDayUsage, getMonthUsage} from "./handler/extend";
+import {
+    addLAFItem,
+    delLAFById,
+    findLAFbyId,
+    findLAFList,
+    findLAFsByUser,
+    updateLAFStatusById
+} from "./handler/lostandfound";
 
 export const routes: Route[] = [
     {
@@ -90,25 +97,25 @@ export const routes: Route[] = [
         method: "post",
         path: '/laf/add',
         middleware: [],
-        handler: addLAF
+        handler: addLAFItem
     },
     {
         method: "post",
         path: '/laf/delete',
-        middleware: [auth],
-        handler: delLAF
+        middleware: [],
+        handler: delLAFById
     },
     {
         method: "post",
         path: '/laf/status',
         middleware: [],
-        handler: updateLAFStatus
+        handler: updateLAFStatusById
     },
     {
         method: "get",
         path: '/laf/list',
         middleware: [],
-        handler: findLAFs
+        handler: findLAFList
     },
     {
         method: "get",
@@ -120,7 +127,7 @@ export const routes: Route[] = [
         method: "get",
         path: '/laf/by-user',
         middleware: [],
-        handler: findLAFbyUser
+        handler: findLAFsByUser
     },
     {
         method: "post",

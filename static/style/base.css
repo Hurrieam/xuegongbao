@@ -3,6 +3,7 @@
 body {
     background-color: #efefef;
 }
+
 .nav-header {
     display: flex;
     justify-content: space-between;
@@ -13,7 +14,8 @@ body {
     color: #333;
     box-shadow: 0 1px 1px rgba(0, 0, 0, .08%);
 }
-.nav-header>.header-back{
+
+.nav-header > .header-back {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,9 +23,11 @@ body {
     padding-top: 1px;
     color: #2c2c2c;
 }
-.nav-header svg{
+
+.nav-header svg {
     padding-bottom: 1px;
 }
+
 .weui-icon-warn {
     color: hsla(0, 0%, 100%, .9);
 }
@@ -31,21 +35,23 @@ body {
 .btn-color {
     background-color: rgb(59, 108, 228);
 }
+
 .btn-color:not(.weui-btn_disabled):active {
-    background-color: rgb(104,146,242);
+    background-color: rgb(104, 146, 242);
 }
 
 .loading_wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100vw;
-    height: 70vh;
-    padding: 10px;
+    height: 50vh;
+    background-color: #fff;
+    border-radius: 5px;
+    margin: 10px;
     text-align: center;
     color: #333;
 }
 
-.weui-loadmore_line .weui-loadmore__tips{
+.weui-loadmore_line .weui-loadmore__tips {
     background-color: transparent;
 }

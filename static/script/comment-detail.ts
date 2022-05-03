@@ -1,9 +1,9 @@
-(async (win, doc,tools) => {
-    const oWrapper = doc.getElementsByClassName('J_wrapper')[0] as HTMLDivElement,
-        oItem = oWrapper.getElementsByClassName("J_item")[0] as HTMLDivElement;
+(async (win, doc, tools) => {
+    const oWrapper = doc.getElementById('J_wrapper') as HTMLDivElement,
+        oItem = doc.getElementById("J_item") as HTMLDivElement;
 
     const init = async () => {
-        tools.createHeader(oWrapper,"留言详情");
+        tools.createHeader(oWrapper, "留言详情");
         const params = tools.getPathParam();
         // @ts-ignore
         const data = await fetchData(params["id"]);
@@ -13,20 +13,18 @@
     // 根据id获取留言详情
     const fetchData = async (id: number | string) => {
         tools.showInitLoading(oWrapper);
-        try{
-            oWrapper.style.display = "none";
-            const url = `/api/comment/detail?id=${id}`;
-            const response = await fetch(url);
+        try {
+            const response = await fetch(`/api/comment/detail?id=${id}`);
             const {code, data} = await response.json();
             if (code != 10000) {
                 return [];
             }
             return data.items;
-        }catch (e) {
+        } catch (e) {
             return [];
-        }finally {
+        } finally {
             tools.hideInitLoading();
-            oWrapper.style.display = "block";
+            oItem.style.display = "block";
         }
     }
 
@@ -35,8 +33,8 @@
         const html = data.map((item, index) => `
                  <div class="weui-cell weui-cell_access">
                     <span class="weui-cell__bd">
-                        <span>${index != 0 ? `<span style="color: #333333; font-size: 14px">回复: </span>` : ""}${item.content}</span>
-                        <span>${tools.formatDate(item.createdAt as string)}</span>
+                        <span>${index != 0 ? `<span style="color: #F53F3F; font-size: 14px; font-weight: 600">回复: </span>` : ""}${item.content}</span>
+                        <span>${tools.formatDate(item.createdAt!)}</span>
                     </span>
                  </div>
             `

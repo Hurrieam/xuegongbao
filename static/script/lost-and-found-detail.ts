@@ -1,21 +1,36 @@
 (async (win, doc, tools) => {
-    const oWrapper = doc.getElementsByClassName('wrapper')[0] as HTMLDivElement,
-        oDelButton = oWrapper.getElementsByClassName('button_wrapper')[0] as HTMLButtonElement;
+    const oWrapper = doc.getElementById('J_wrapper') as HTMLDivElement,
+        oBtnWrapper = doc.getElementById('J_btn_wrapper') as HTMLDivElement,
+        oStatusBtn = doc.getElementById('J_button_status') as HTMLButtonElement,
+        oDeleteBtn = doc.getElementById('J_button_delete') as HTMLButtonElement,
+        oTemplate = doc.getElementById('J_template') as HTMLTemplateElement;
+
+    let state = {id: null, type: ""};
 
     const init = async () => {
         tools.createHeader(oWrapper, "寻物详情");
-        const params = tools.getPathParam();
-        console.log(params);
 
+        const params = tools.getPathParam();
         // @ts-ignore
-        const data: ILostAndFound = await fetchData(params['id']);
+        state = {id: params.id, type: params.type};
+        const data: API.LostAndFound = await fetchData(state.id!);
         if (!data) return;
 
-        // @ts-ignore
-        if (params["type"] == "history") {
-            oDelButton.style.visibility = "visible";
+        if (state.type == "history") {
+            oBtnWrapper.style.visibility = "visible";
+            console.log(data);
+            if (data.status) {
+                disableBtn(oStatusBtn);
+            }
+            bindEvent();
         }
+
         render(data);
+    }
+
+    const bindEvent = () => {
+        oStatusBtn.addEventListener("click", updateStatus, false);
+        oDeleteBtn.addEventListener("click", deleteItem, false);
     }
 
     const fetchData = async (id: number) => {
@@ -35,6 +50,60 @@
             tools.hideInitLoading();
             tools.hideAlert();
         }
+    }
+
+    const updateStatus = async (e: Event) => {
+        handleTemplate(oTemplate, "更新状态", "如果您找到了你的物品,请确认。", "update", async () => {
+            try {
+                const response = await fetch("/api/laf/status", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        id: state.id
+                    })
+                });
+                const {code} = await response.json();
+                if (code !== 10000) {
+                    tools.showAlert(oWrapper, "删除失败", false);
+                    return;
+                }
+                tools.showAlert(oWrapper, "状态更新成功", true);
+                disableBtn(oStatusBtn);
+            } catch (e) {
+                tools.showAlert(oWrapper, "状态更新失败", false);
+            } finally {
+                tools.hideAlert();
+            }
+        });
+    }
+
+    const deleteItem = (e: Event) => {
+        handleTemplate(oTemplate, "删除信息", "确定删除该条信息吗？", "delete", async () => {
+            try {
+                const response = await fetch("/api/laf/delete", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        id: state.id
+                    })
+                });
+                const {code} = await response.json();
+                if (code !== 10000) {
+                    tools.showAlert(oWrapper, "删除失败", false);
+                    return;
+                }
+                tools.showAlert(oWrapper, "删除成功", true);
+                win.location.replace(doc.referrer);
+            } catch (e) {
+                tools.showAlert(oWrapper, "删除失败", false);
+            } finally {
+                tools.hideAlert();
+            }
+        });
     }
 
     const render = (data: API.LostAndFound) => {
@@ -92,6 +161,28 @@
             div.querySelector(".J_imageList")?.remove();
         }
         oWrapper.appendChild(div);
+    }
+
+    // 处理模板
+    const handleTemplate = (template: HTMLTemplateElement, title: string, content: string, operation: string, handler: () => void) => {
+        const docFragment = template.content.cloneNode(true) as DocumentFragment;
+        const dialog = docFragment.querySelector(".J_dialog") as HTMLElement;
+        docFragment.querySelector("#J_dialog_title")!.innerHTML = title;
+        docFragment.querySelector("#J_dialog_content")!.innerHTML = content;
+        docFragment.querySelector("#J_btn_cancel")!.addEventListener("click", () => {
+            dialog.remove();
+        });
+        docFragment.querySelector("#J_btn_confirm")!.addEventListener("click", () => {
+            dialog.remove();
+            handler();
+        });
+        oWrapper.appendChild(docFragment);
+    }
+
+    const disableBtn = (button: HTMLButtonElement) => {
+        button.disabled = true;
+        button.innerText = "我已找到(禁用)";
+        button.style.opacity = "0.5";
     }
 
     await init();

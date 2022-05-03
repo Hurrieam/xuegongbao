@@ -7,6 +7,10 @@ import logger from "./middleware/logger";
 
 const app = express();
 const PORT = 3000;
+
+// 设置时区为东八区
+process.env.TZ = 'Asia/Shanghai';
+
 app.all("*", function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Authorization, Accept, X-Requested-With");

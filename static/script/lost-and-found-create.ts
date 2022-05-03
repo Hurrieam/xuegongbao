@@ -1,11 +1,11 @@
-(async (doc, tools, cloud) => {
-    const oWrapper = doc.getElementsByClassName("J_wrapper")[0] as HTMLDivElement,
+(async (win, doc, tools) => {
+    const oWrapper = doc.getElementById("J_wrapper") as HTMLDivElement,
         oInputs = oWrapper.getElementsByTagName("input") as HTMLCollectionOf<HTMLInputElement>,
-        oImageList = doc.getElementsByClassName("J_image_list")[0] as HTMLDivElement,
-        oUploaderWrapper = doc.getElementsByClassName("J_uploader_wrapper")[0] as HTMLDivElement,
+        oImageList = doc.getElementById("J_image_list") as HTMLDivElement,
+        oUploaderWrapper = doc.getElementById("J_uploader_wrapper") as HTMLDivElement,
         oUploader = oUploaderWrapper.getElementsByTagName("input")[0] as HTMLInputElement,
-        oTextarea = oWrapper.getElementsByClassName("J_textarea")[0] as HTMLTextAreaElement,
-        oSubmit = oWrapper.getElementsByClassName("J_submit")[0] as HTMLButtonElement;
+        oTextarea = doc.getElementById("J_textarea") as HTMLTextAreaElement,
+        oSubmit = doc.getElementById("J_submit") as HTMLButtonElement;
 
     const imageList: string[] = [];
 
@@ -36,6 +36,9 @@
                 return;
             }
             tools.showAlert(oWrapper, "提交成功", true);
+            setTimeout(() => {
+                win.location.replace(doc.referrer);
+            }, 3000);
         } catch (e) {
             tools.showAlert(oWrapper, "提交失败，请重试", false);
         } finally {
@@ -131,4 +134,4 @@
         return str.replace(/^"(.*)"$/, "$1");
     }
     await init();
-})(document, tools);
+})(window, document, tools);

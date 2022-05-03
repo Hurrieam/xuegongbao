@@ -1,6 +1,15 @@
 .weui-media-box{
     background: #FFFFFF;
-    /*margin: 10px;*/
-    /*border-radius: 5px;*/
-    /*box-shadow: 0 0 5px #ccc;*/
+}
+.weui-media-box:hover{
+    background: #F5F5F5;
+}
+.weui-panel__bd{
+    display: none;
+}
+
+.tag{
+    position: absolute;
+    right: 14px;
+    bottom: 5px;
 }

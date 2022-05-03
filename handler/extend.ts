@@ -51,9 +51,9 @@ export const addOneUsageRecordByOpenid: Handler = (req, res) => {
 }
 
 /**
- * @description 定时任务: 每天晚上0点执行(记录当日数据)
+ * @description 定时任务: 每天晚上23点58分执行(记录当日数据)
  */
-schedule.scheduleJob("0 0 0 * * ?", async () => {
+schedule.scheduleJob("0 58 23 * * ?", async () => {
     const data: DataType = await getDayUsageFromDB();
     await addLogRecord(data);
     await resetUserStatus();

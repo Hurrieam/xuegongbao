@@ -1,7 +1,7 @@
-(async (doc, tools) => {
-    const oWrapper = doc.getElementsByClassName('J_wrapper')[0] as HTMLDivElement,
+(async (win, doc, tools) => {
+    const oWrapper = doc.getElementById('J_wrapper') as HTMLDivElement,
         oTextarea = doc.getElementsByTagName('textarea')[0] as HTMLTextAreaElement,
-        oSubmit = doc.getElementsByClassName('button_wrapper')[0] as HTMLButtonElement;
+        oSubmit = doc.getElementById('J_submit') as HTMLButtonElement;
 
     const init = async () => {
         tools.createHeader(oWrapper, '我要留言');
@@ -33,6 +33,9 @@
                 return;
             }
             tools.showAlert(oWrapper, "提交成功", true);
+            setTimeout(() => {
+                win.location.replace(doc.referrer);
+            }, 3000);
         } catch (e) {
             tools.showAlert(oWrapper, "提交失败，请重试", false);
         } finally {
@@ -43,7 +46,7 @@
     // 获取留言数据
     const getInputData = (): API.Comment | null => {
         const content = oTextarea.value.trim();
-        if(!content) {
+        if (!content) {
             tools.showAlert(oWrapper, '请输入留言内容', false);
             tools.hideAlert();
             return null;
@@ -60,4 +63,4 @@
     }
 
     await init();
-})(document, tools);
+})(window, document, tools);

@@ -2,9 +2,11 @@ body {
     background-color: #FFFFFF;
     overflow-x: hidden;
 }
-.weui-form__control-area{
+
+.weui-form__control-area {
     margin-top: 0;
 }
+
 .weui-cells__group_form .weui-cells::before,
 .weui-cells__group_form .weui-cells::after,
 .weui-cells__group_form .weui-cell:before,
@@ -32,10 +34,11 @@ body {
 }
 
 .weui-cells > .weui-cell:nth-child(5)::before,
-.weui-cells > .weui-cell:nth-child(7)::before{
+.weui-cells > .weui-cell:nth-child(7)::before {
     display: none !important;
 }
-.weui-uploader__input{
+
+.weui-uploader__input {
     display: block;
     border: 1px seagreen solid;
 }

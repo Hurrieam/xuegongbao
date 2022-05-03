@@ -1,7 +1,7 @@
 (async (win, doc, tools) => {
-    const oWrapper = doc.getElementsByClassName('J_wrapper')[0] as HTMLDivElement,
-        oTextarea = doc.getElementsByClassName('J_textarea')[0] as HTMLTextAreaElement,
-        oSubmit = doc.getElementsByClassName('J_submit')[0] as HTMLButtonElement,
+    const oWrapper = doc.getElementById('J_wrapper') as HTMLDivElement,
+        oTextarea = doc.getElementById('J_textarea') as HTMLTextAreaElement,
+        oSubmit = doc.getElementById('J_submit') as HTMLButtonElement,
         oInputs = doc.getElementsByTagName("input") as HTMLCollectionOf<HTMLInputElement>;
 
     const init = async () => {
@@ -9,7 +9,7 @@
         bindEvent();
     }
 
-    const bindEvent = ()=>{
+    const bindEvent = () => {
         oTextarea.addEventListener("input", onTextareaInput, false);
         oSubmit.addEventListener("click", onSubmit, false);
     }
@@ -26,13 +26,15 @@
                 },
                 body: JSON.stringify(formData)
             });
-            const {code, data} = await response.json();
+            const {code} = await response.json();
             if (code != 10000) {
                 tools.showAlert(oWrapper, "提交失败，请重试", false);
                 return;
             }
             tools.showAlert(oWrapper, "提交成功", true);
-            win.location.href = "index.html";
+            setTimeout(() => {
+                win.history.back();
+            }, 3000);
         } catch (e) {
             tools.showAlert(oWrapper, "提交失败，请重试", false);
         } finally {
@@ -49,7 +51,7 @@
             stuName = (oInputs.namedItem("name") as HTMLInputElement).value,
             contact = (oInputs.namedItem("contact") as HTMLInputElement).value;
         const {isBlank} = tools;
-        if (isBlank(itemName) || isBlank(description) || isBlank(dorm) || isBlank(room) || isBlank(contact)) {
+        if (isBlank(itemName) || isBlank(description) || isBlank(dorm) || isBlank(room) || isBlank(stuName) || isBlank(contact)) {
             tools.showAlert(oWrapper, "请填写完整信息", false);
             tools.hideAlert();
             return;

@@ -1,3 +1,4 @@
+import {Op} from "sequelize";
 import {Handler, ILostAndFound} from "../types";
 import R from "../model/r";
 import CommonDAO from "../dao/common";
@@ -10,7 +11,7 @@ import {LostAndFound} from "../dao/_init";
  * @tag user
  * @description 添加一条失物招领信息 参数: {openid, itemName, location?, lostTime?, description, images?, stuName?, contact}
  */
-export const addLAF: Handler = async (req, res) => {
+export const addLAFItem: Handler = async (req, res) => {
     const laf: ILostAndFound = req.body;
     if (!isValidString(laf.openid)
         || !isValidString(laf.itemName)
@@ -29,7 +30,7 @@ export const addLAF: Handler = async (req, res) => {
  * @tag admin
  * @description 根据id删除一条失物招领信息 参数: {id}
  */
-export const delLAF: Handler = async (req, res) => {
+export const delLAFById: Handler = async (req, res) => {
     const {id} = req.body;
     if (!isDigit(id)) {
         return res.send(
@@ -45,7 +46,7 @@ export const delLAF: Handler = async (req, res) => {
  * @tag user
  * @description 根据id更新失物招领的状态 未找到 —> 已找到 参数: {id}
  */
-export const updateLAFStatus: Handler = async (req, res) => {
+export const updateLAFStatusById: Handler = async (req, res) => {
     const {id} = req.body;
     if (!isDigit(id)) {
         return res.send(
@@ -61,14 +62,24 @@ export const updateLAFStatus: Handler = async (req, res) => {
  * @tag user & admin
  * @description 分页查找失物招领信息列表 参数: {start, limit}
  */
-export const findLAFs: Handler = async (req, res) => {
+export const findLAFList: Handler = async (req, res) => {
     const {start, limit} = req.query;
     if (!isDigit(start) || !isDigit(limit)) {
         return res.send(
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const lafs = await CommonDAO.getSome(model.LOST_AND_FOUND, toValidDigit(start), toValidDigit(limit));
+    const lafs = await LostAndFound.findAll({
+        where: {
+            [Op.and]: [
+                {isDeleted: 0},
+                {status: 0}
+            ]
+        },
+        offset: toValidDigit(start),
+        limit: toValidDigit(limit),
+        order: [['id', 'DESC']]
+    });
     const total = await CommonDAO.getCount(model.LOST_AND_FOUND);
     const data = {
         items: lafs,
@@ -99,7 +110,7 @@ export const findLAFbyId: Handler = async (req, res) => {
  * @tag user
  * @description 根据openid查找分页查找失物招领信息列表 参数: {openid, start, limit}
  */
-export const findLAFbyUser: Handler = async (req, res) => {
+export const findLAFsByUser: Handler = async (req, res) => {
     const {openid, start, limit} = req.query;
     if (!isValidString(openid) || !isDigit(start) || !isDigit(limit)) {
         return res.send(
@@ -108,7 +119,14 @@ export const findLAFbyUser: Handler = async (req, res) => {
     }
     const lafs = await LostAndFound.findAll({
         where: {
-            openid: openid
+            [Op.and]: [
+                {
+                    openid: openid
+                },
+                {
+                    isDeleted: 0
+                }
+            ]
         },
         limit: toValidDigit(limit),
         offset: toValidDigit(start),

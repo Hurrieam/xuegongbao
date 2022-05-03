@@ -3,7 +3,7 @@
 
     const init = async () => {
         await ping(); // 测试网络连通状况
-        auth();
+        await auth();
     }
 
     const ping = async () => {

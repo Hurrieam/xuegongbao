@@ -1,14 +1,14 @@
 (async (doc, tools) => {
-    const oWrapper = doc.getElementsByClassName('J_wrapper')[0] as HTMLDivElement,
-        oList = doc.getElementsByClassName('list_wrapper')[0] as HTMLDivElement;
+    const oWrapper = doc.getElementById('J_wrapper') as HTMLDivElement,
+        oList = doc.getElementById('J_list') as HTMLDivElement;
 
     let data: API.Comment[] = [];
 
     const init = async () => {
-        tools.createHeader(oWrapper, "留言列表")
+        tools.createHeader(oWrapper, "我的留言")
         // 1. 获取所有数据
         data = await fetchData();
-        // 2. 根据数据条数渲染列表
+        // 2. 渲染列表
         renderList(data);
     }
 
@@ -44,10 +44,10 @@
                         <div role="link" aria-labelledby="js_p4m1_title js_a11y_comma js_p4m1_desc"
                              aria-describedby="js_p4m1_source js_a11y_comma js_p4m1_time js_a11y_comma js_p4m1_extra"
                              class="weui-media-box weui-media-box_text">
-                            <p class="weui-media-box__desc" aria-hidden="true" id="js_p4m1_desc">${item.content}</p>
+                            <p class="weui-media-box__desc" aria-hidden="true">${item.content}</p>
                             <div class="weui-media-box__info" aria-hidden="true">
-                                <span class="weui-media-box__info__meta" aria-hidden="true" id="js_p4m1_time">${new Date(<string>item.createdAt).toLocaleString()}</span>
-                                ${item.hasReply ? `<span id="js_a11y_nb" class="weui-badge">已回复</span>` : ''}
+                                <span class="weui-media-box__info__meta" aria-hidden="true">${tools.formatDate(item.createdAt!)}</span>
+                                ${item.hasReply ? `<span class="badge">已回复</span>` : ''}
                             </div>
                         </div>
                     </div>

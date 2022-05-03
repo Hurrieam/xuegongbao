@@ -4,18 +4,14 @@
 }
 
 .weui-media-box__desc {
-    color: #666;
-}
-
-.js_p4m1_desc {
-    box-shadow: 2px 2px 2px #ccc;
+    color: #666666;
 }
 
 .weui-panel__bd {
     margin: 10px 10px 5px 10px;
     background-color: #FFFFFF;
     border-radius: 5px;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
 }
 
 .weui-media-box__info {
@@ -35,6 +31,12 @@
     box-shadow: 0 1px 4px #ccc;
 }
 
-.button_wrapper > a {
+.button_wrapper > a[role="button"] {
     width: 94%;
+}
+
+.badge{
+    padding: 3px;
+    color: #F53F3F;
+    font-size: 13px;
 }

@@ -1,8 +1,8 @@
 ((win, doc, tools) => {
-    const oWrapper = doc.getElementsByClassName("J_wrapper")[0] as HTMLDivElement,
+    const oWrapper = doc.getElementById("J_wrapper") as HTMLDivElement,
         oRadios = oWrapper.getElementsByClassName("J_radio") as HTMLCollectionOf<HTMLInputElement>,
         oInputs = oWrapper.getElementsByTagName("input") as HTMLCollectionOf<HTMLInputElement>,
-        oSubmit = oWrapper.getElementsByClassName("J_submit")[0] as HTMLButtonElement;
+        oSubmit = doc.getElementById("J_submit") as HTMLButtonElement;
 
     const init = () => {
         tools.createHeader(oWrapper, "预约咨询");
@@ -30,13 +30,16 @@
                 return;
             }
             tools.showAlert(oWrapper, "提交成功", true);
-            win.location.href = "index.html";
+            setTimeout(() => {
+                win.history.back();
+            }, 3000);
         } catch (e) {
             tools.showAlert(oWrapper, "提交失败，请重试", false);
         } finally {
             tools.hideAlert();
         }
     }
+
     // 获取表单数据
     const getInputData = () => {
         const type = getRadioValue(oRadios),
