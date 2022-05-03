@@ -36,6 +36,21 @@ export const getMonthUsage: Handler = async (req, res) => {
 }
 
 /**
+ *  @description 添加用户登录日志
+ */
+export const addOneUsageRecordByOpenid: Handler = (req, res) => {
+    const {openid} = req.body;
+    User.update({
+        active: 1
+    }, {
+        where: {
+            openid: openid
+        }
+    });
+    res.status(200).end();
+}
+
+/**
  * @description 定时任务: 每天晚上0点执行(记录当日数据)
  */
 schedule.scheduleJob("0 0 0 * * ?", async () => {
