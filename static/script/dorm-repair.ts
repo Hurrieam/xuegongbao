@@ -32,9 +32,7 @@
                 return;
             }
             tools.showAlert(oWrapper, "提交成功", true);
-            setTimeout(() => {
-                win.history.back();
-            }, 3000);
+            tools.disableButton(oSubmit);
         } catch (e) {
             tools.showAlert(oWrapper, "提交失败，请重试", false);
         } finally {

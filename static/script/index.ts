@@ -1,5 +1,5 @@
 (async (doc, tools) => {
-    const oWrapper = doc.getElementsByClassName('J_wrapper')[0] as HTMLDivElement;
+    const oWrapper = doc.getElementById('J_wrapper') as HTMLDivElement;
 
     const init = async () => {
         await ping(); // 测试网络连通状况

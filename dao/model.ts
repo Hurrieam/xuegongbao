@@ -1,4 +1,4 @@
-import {Comment, Feedback, LostAndFound, PhoneBook, Repair, Reservation, User} from "./_init";
+import {CanteenEval, Comment, Feedback, LostAndFound, PhoneBook, Repair, Reservation, User} from "./_init";
 
 const model = {
     USER: User,
@@ -7,7 +7,8 @@ const model = {
     COMMENT: Comment,
     FEEDBACK: Feedback,
     REPAIR: Repair,
-    RESERVATION: Reservation
+    RESERVATION: Reservation,
+    CANTEEN_EVAL: CanteenEval
 };
 
 export default model;

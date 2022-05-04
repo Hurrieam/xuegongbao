@@ -117,6 +117,12 @@ const tools = ((win, doc) => {
         parentElement.appendChild(div);
     }
 
+    const disableButton = (button: HTMLButtonElement, text?: string) => {
+        button.disabled = true;
+        button.innerText = text ? text : button.innerText;
+        button.style.opacity = "0.5";
+    }
+
     return {
         isBlank,
         createHeader,
@@ -128,6 +134,7 @@ const tools = ((win, doc) => {
         getOpenid,
         showInitLoading,
         hideInitLoading,
-        showNoData
+        showNoData,
+        disableButton
     }
 })(window, document);

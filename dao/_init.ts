@@ -28,7 +28,7 @@ export const cos = new COS({
  */
 // 数据库表: 用户表
 export const User = sequelize.define('User', {
-    openid:{
+    openid: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
@@ -313,6 +313,21 @@ export const Repair = sequelize.define("Repair", {
     freezeTableName: true
 });
 
+export const CanteenEval = sequelize.define("CanteenEval", {
+    openid: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: "用户唯一标识"
+    },
+    content: {
+        type: DataTypes.STRING(2048),
+        allowNull: false,
+        comment: "评价内容"
+    }
+}, {
+    freezeTableName: true
+});
+
 // 数据库表: 每日系统使用量
 export const DailyUsage = sequelize.define("DailyUsage", {
     users: {
@@ -338,6 +353,7 @@ export const DailyUsage = sequelize.define("DailyUsage", {
 }, {
     freezeTableName: true
 });
+
 /**
  * 初始化数据库模型
  */

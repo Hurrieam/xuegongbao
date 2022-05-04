@@ -39,6 +39,7 @@ import {
     updateLAFStatusById
 } from "./handler/lostandfound";
 import {errorHandler} from "./middleware/error-handler";
+import {addCanteenEval, deleteCanteenEvalById, getCanteenEvalById, getCanteenEvalList} from "./handler/eval";
 
 
 export const routes: Route[] = [
@@ -209,6 +210,30 @@ export const routes: Route[] = [
         path: '/reservation/status',
         middleware: [auth, bodyParser],
         handler: updateReservationById
+    },
+    {
+        method: "post",
+        path: '/eval/add',
+        middleware: [bodyParser],
+        handler: addCanteenEval
+    },
+    {
+        method: "get",
+        path: '/eval/list',
+        middleware: [auth],
+        handler: getCanteenEvalList
+    },
+    {
+        method: "get",
+        path: '/eval/get',
+        middleware: [auth],
+        handler: getCanteenEvalById
+    },
+    {
+        method: "post",
+        path: '/eval/delete',
+        middleware: [auth],
+        handler: deleteCanteenEvalById
     },
     {
         method: "get",

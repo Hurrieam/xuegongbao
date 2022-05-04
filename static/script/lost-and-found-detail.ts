@@ -18,9 +18,8 @@
 
         if (state.type == "history") {
             oBtnWrapper.style.visibility = "visible";
-            console.log(data);
             if (data.status) {
-                disableBtn(oStatusBtn);
+                tools.disableButton(oStatusBtn, "我已找到(禁用)");
             }
             bindEvent();
         }
@@ -70,7 +69,7 @@
                     return;
                 }
                 tools.showAlert(oWrapper, "状态更新成功", true);
-                disableBtn(oStatusBtn);
+                tools.disableButton(oStatusBtn, "我已找到(禁用)");
             } catch (e) {
                 tools.showAlert(oWrapper, "状态更新失败", false);
             } finally {
@@ -97,7 +96,9 @@
                     return;
                 }
                 tools.showAlert(oWrapper, "删除成功", true);
-                win.location.replace(doc.referrer);
+                setTimeout(() => {
+                    win.location.replace(doc.referrer);
+                }, 1500);
             } catch (e) {
                 tools.showAlert(oWrapper, "删除失败", false);
             } finally {
@@ -177,12 +178,6 @@
             handler();
         });
         oWrapper.appendChild(docFragment);
-    }
-
-    const disableBtn = (button: HTMLButtonElement) => {
-        button.disabled = true;
-        button.innerText = "我已找到(禁用)";
-        button.style.opacity = "0.5";
     }
 
     await init();
