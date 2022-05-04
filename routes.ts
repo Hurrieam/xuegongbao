@@ -5,6 +5,7 @@ import {ping} from "./handler/ping";
 import {upload} from "./handler/upload";
 import {uploader} from "./middleware/uploader";
 import {auth} from "./middleware/auth";
+import bodyParser from "./middleware/body-parser";
 import {addPhoneItem, deletePhoneItemById, findAllPhoneItems} from "./handler/phonebook";
 import {
     addCommentItem,
@@ -37,6 +38,8 @@ import {
     findLAFsByUser,
     updateLAFStatusById
 } from "./handler/lostandfound";
+import {errorHandler} from "./middleware/error-handler";
+
 
 export const routes: Route[] = [
     {
@@ -54,25 +57,25 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/login',
-        middleware: [],
+        middleware: [bodyParser],
         handler: login,
     },
     {
         method: "post",
         path: '/comment/add',
-        middleware: [],
+        middleware: [bodyParser],
         handler: addCommentItem
     },
     {
         method: "post",
         path: '/comment/delete',
-        middleware: [auth],
+        middleware: [auth, bodyParser],
         handler: deleteCommentItemById
     },
     {
         method: "post",
         path: '/comment/status',
-        middleware: [auth],
+        middleware: [auth, bodyParser],
         handler: updateCommentStatusById
     },
     {
@@ -96,19 +99,19 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/laf/add',
-        middleware: [],
+        middleware: [bodyParser],
         handler: addLAFItem
     },
     {
         method: "post",
         path: '/laf/delete',
-        middleware: [],
+        middleware: [bodyParser],
         handler: delLAFById
     },
     {
         method: "post",
         path: '/laf/status',
-        middleware: [],
+        middleware: [bodyParser],
         handler: updateLAFStatusById
     },
     {
@@ -132,13 +135,13 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/phonebook/add',
-        middleware: [auth],
+        middleware: [auth, bodyParser],
         handler: addPhoneItem
     },
     {
         method: "post",
         path: '/phonebook/delete',
-        middleware: [auth],
+        middleware: [auth, bodyParser],
         handler: deletePhoneItemById
     },
     {
@@ -150,7 +153,7 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/dorm-repair/add',
-        middleware: [],
+        middleware: [bodyParser],
         handler: addDormRepairItem
     },
     {
@@ -168,19 +171,19 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/dorm-repair/delete',
-        middleware: [auth],
+        middleware: [auth, bodyParser],
         handler: deleteRepairItemById
     },
     {
         method: "post",
         path: '/dorm-repair/status',
-        middleware: [auth],
+        middleware: [auth, bodyParser],
         handler: updateRepairItemStatusById
     },
     {
         method: "post",
         path: '/reservation/add',
-        middleware: [],
+        middleware: [bodyParser],
         handler: addReservationItem
     },
     {
@@ -198,42 +201,43 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/reservation/delete',
-        middleware: [auth],
+        middleware: [auth, bodyParser],
         handler: deleteReservationById
     },
     {
         method: "post",
         path: '/reservation/status',
-        middleware: [auth],
+        middleware: [auth, bodyParser],
         handler: updateReservationById
     },
     {
         method: "get",
         path: '/day-usage',
-        middleware: [],
+        middleware: [auth],
         handler: getDayUsage
     },
     {
         method: "get",
         path: '/month-usage',
-        middleware: [],
+        middleware: [auth],
         handler: getMonthUsage
     },
     {
         method: "post",
         path: '/visit',
-        middleware: [],
+        middleware: [bodyParser],
         handler: addOneUsageRecordByOpenid
     },
     {
         method: "post",
         path: '/upload',
-        middleware: [uploader],
+        middleware: [uploader, bodyParser],
         handler: upload
     },
     {
         method: "get",
         path: '/ping',
+        // @ts-ignore
         middleware: [],
         handler: ping
     }

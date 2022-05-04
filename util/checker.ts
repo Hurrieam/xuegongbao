@@ -6,7 +6,7 @@ export const isDigit = (digit: any): boolean => {
 // 转换成有效数字
 export const toValidDigit = (digit: any): number => {
   if (isDigit(digit)) {
-    return Number(digit);
+    return Number(digit) > 0 ? Number(digit) : 0;
   }
   return 0;
 };
