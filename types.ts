@@ -71,3 +71,11 @@ export interface IReservation extends IModel {
     time: string;
     contact: string;
 }
+
+export interface IEvaluation extends IModel {
+    openid: string;
+    canteenName: string;
+    content: string;
+    mainProblem: string;
+    totalScore: number;
+}

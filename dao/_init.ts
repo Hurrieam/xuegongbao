@@ -10,6 +10,7 @@ const sequelize = new Sequelize(DATABASE, USERNAME, PASSWORD, {
     host: HOST,
     port: Number(PORT),
     dialect: "mysql",
+    timezone: "+08:00",
     pool: {
         max: 5,
         min: 1,
@@ -313,19 +314,91 @@ export const Repair = sequelize.define("Repair", {
     freezeTableName: true
 });
 
+// 数据库表: 食堂评价
 export const CanteenEval = sequelize.define("CanteenEval", {
     openid: {
         type: DataTypes.STRING,
         allowNull: false,
         comment: "用户唯一标识"
     },
+    canteenName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: "食堂名称"
+    },
     content: {
         type: DataTypes.STRING(2048),
         allowNull: false,
         comment: "评价内容"
+    },
+    mainProblem: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: "主要问题"
+    },
+    totalScore: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: "评价总分"
+    },
+    isDeleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: false,
+        comment: "状态: true-已删除, false-正常"
     }
 }, {
     freezeTableName: true
+});
+
+// 数据库表: 食堂评价总结
+export const EvalSummary = sequelize.define("EvalSummary", {
+    canteenName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: "食堂名称"
+    },
+    totalScore: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: "评价总分(所有人的总分)"
+    },
+    totalCount: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        comment: "评价人数"
+    },
+    avgScore: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+        defaultValue: 0,
+        comment: "平均分"
+    },
+    rate: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+        defaultValue: 0,
+        comment: "分数变化率"
+    },
+}, {
+    freezeTableName: true,
+    hooks: {
+        afterUpdate: (instance, options) => {
+            // 更新后计算平均分
+            const totalScore = instance.getDataValue("totalScore");
+            const totalCount = instance.getDataValue("totalCount");
+            const beforeAvgScore = instance.getDataValue("avgScore");
+            const nowAvgScore = totalScore / totalCount;
+            EvalSummary.update({
+                avgScore: nowAvgScore,
+                rate: (nowAvgScore - beforeAvgScore) / beforeAvgScore
+            }, {
+                where: {
+                    canteenName: instance.getDataValue("canteenName")
+                }
+            });
+        },
+    }
 });
 
 // 数据库表: 每日系统使用量
@@ -357,6 +430,24 @@ export const DailyUsage = sequelize.define("DailyUsage", {
 /**
  * 初始化数据库模型
  */
-// (async () => {
-//     await sequelize.sync({force: false});
-// })();
+const init = async () => {
+    await sequelize.sync({force: false});
+    EvalSummary.findOrCreate({
+        where: {canteenName: "CS"},
+        defaults: {canteenName: "CS", totalScore: 100, totalCount: 1, avgScore: 100}
+    });
+    EvalSummary.findOrCreate({
+        where: {canteenName: "ZK"},
+        defaults: {canteenName: "ZK", totalScore: 100, totalCount: 1, avgScore: 100}
+    });
+    EvalSummary.findOrCreate({
+        where: {canteenName: "MZ"},
+        defaults: {canteenName: "MZ", totalScore: 100, totalCount: 1, avgScore: 100}
+    });
+    EvalSummary.findOrCreate({
+        where: {canteenName: "CY"},
+        defaults: {canteenName: "CY", totalScore: 100, totalCount: 1, avgScore: 100}
+    });
+}
+
+// init();

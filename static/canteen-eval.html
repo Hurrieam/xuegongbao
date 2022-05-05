@@ -15,6 +15,12 @@
 <div class="wrapper" id="J_wrapper">
     <div class="content">
         <div class="tip"></div>
+        <div class="selection" id="J_selection">
+            <label><input type="radio" name="canteen" value="CS" checked/>城市餐厅</label>
+            <label><input type="radio" name="canteen" value="MZ"/>民族餐厅</label>
+            <label><input type="radio" name="canteen" value="ZK"/>中快餐厅</label>
+            <label><input type="radio" name="canteen" value="CY"/>城苑餐厅</label>
+        </div>
         <div class="list" id="J_list"></div>
         <div class="button_wrapper">
             <button class="weui-btn btn-color" id="J_submit">提交</button>
@@ -23,12 +29,14 @@
     <template id="J_template">
         <div class="list-item J_item">
             <h4></h4>
-            <label><input type="radio" value="0"/>0分</label>
-            <label><input type="radio" value="2"/>2分</label>
-            <label><input type="radio" value="4"/>4分</label>
-            <label><input type="radio" value="6"/>6分</label>
-            <label><input type="radio" value="8"/>8分</label>
-            <label><input type="radio" value="10"/>10分</label>
+            <div class="rating">
+                <label><input type="radio" value="0"/>0分</label>
+                <label><input type="radio" value="2"/>2分</label>
+                <label><input type="radio" value="4"/>4分</label>
+                <label><input type="radio" value="6"/>6分</label>
+                <label><input type="radio" value="8"/>8分</label>
+                <label><input type="radio" value="10"/>10分</label>
+            </div>
             <label class="explain_label">
                 <span>补充说明:</span> <br/>
                 <input type="text" class="weui-input" placeholder="请填写你的建议或意见">

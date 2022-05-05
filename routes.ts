@@ -38,8 +38,13 @@ import {
     findLAFsByUser,
     updateLAFStatusById
 } from "./handler/lostandfound";
-import {errorHandler} from "./middleware/error-handler";
-import {addCanteenEval, deleteCanteenEvalById, getCanteenEvalById, getCanteenEvalList} from "./handler/eval";
+import {
+    addCanteenEval,
+    deleteCanteenEvalById,
+    getCanteenEvalById,
+    getCanteenEvalList,
+    getEvalSummary
+} from "./handler/eval";
 
 
 export const routes: Route[] = [
@@ -232,8 +237,14 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/eval/delete',
-        middleware: [auth],
+        middleware: [auth, bodyParser],
         handler: deleteCanteenEvalById
+    },
+    {
+        method: "get",
+        path: '/eval/summary',
+        middleware: [auth],
+        handler: getEvalSummary
     },
     {
         method: "get",
@@ -262,7 +273,6 @@ export const routes: Route[] = [
     {
         method: "get",
         path: '/ping',
-        // @ts-ignore
         middleware: [],
         handler: ping
     }
