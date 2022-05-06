@@ -4,7 +4,7 @@ import {Optional} from 'sequelize';
 type Method = "get" | "post" | "put" | "delete" | "patch";
 
 export type Handler = (req: Request, res: Response, next?: NextFunction) => any;
-export type Middleware = (req: Request, res: Response, next: () => void) => any;
+export type Middleware = (req: Request, res: Response, next: NextFunction) => any;
 
 export type Route = {
     method: Method;

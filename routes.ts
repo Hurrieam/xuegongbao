@@ -45,6 +45,7 @@ import {
     getCanteenEvalList,
     getEvalSummary
 } from "./handler/eval";
+import {xss} from "./middleware/xss";
 
 
 export const routes: Route[] = [
@@ -63,25 +64,25 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/login',
-        middleware: [bodyParser],
+        middleware: [xss, bodyParser],
         handler: login,
     },
     {
         method: "post",
         path: '/comment/add',
-        middleware: [bodyParser],
+        middleware: [xss, bodyParser],
         handler: addCommentItem
     },
     {
         method: "post",
         path: '/comment/delete',
-        middleware: [auth, bodyParser],
+        middleware: [auth,xss,  bodyParser],
         handler: deleteCommentItemById
     },
     {
         method: "post",
         path: '/comment/status',
-        middleware: [auth, bodyParser],
+        middleware: [auth,xss,  bodyParser],
         handler: updateCommentStatusById
     },
     {
@@ -105,19 +106,19 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/laf/add',
-        middleware: [bodyParser],
+        middleware: [xss, bodyParser],
         handler: addLAFItem
     },
     {
         method: "post",
         path: '/laf/delete',
-        middleware: [bodyParser],
+        middleware: [xss, bodyParser],
         handler: delLAFById
     },
     {
         method: "post",
         path: '/laf/status',
-        middleware: [bodyParser],
+        middleware: [xss, bodyParser],
         handler: updateLAFStatusById
     },
     {
@@ -141,13 +142,13 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/phonebook/add',
-        middleware: [auth, bodyParser],
+        middleware: [auth,xss,  bodyParser],
         handler: addPhoneItem
     },
     {
         method: "post",
         path: '/phonebook/delete',
-        middleware: [auth, bodyParser],
+        middleware: [auth,xss,  bodyParser],
         handler: deletePhoneItemById
     },
     {
@@ -159,7 +160,7 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/dorm-repair/add',
-        middleware: [bodyParser],
+        middleware: [xss, bodyParser],
         handler: addDormRepairItem
     },
     {
@@ -177,19 +178,19 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/dorm-repair/delete',
-        middleware: [auth, bodyParser],
+        middleware: [auth,xss,  bodyParser],
         handler: deleteRepairItemById
     },
     {
         method: "post",
         path: '/dorm-repair/status',
-        middleware: [auth, bodyParser],
+        middleware: [auth,xss,  bodyParser],
         handler: updateRepairItemStatusById
     },
     {
         method: "post",
         path: '/reservation/add',
-        middleware: [bodyParser],
+        middleware: [xss, bodyParser],
         handler: addReservationItem
     },
     {
@@ -207,19 +208,19 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/reservation/delete',
-        middleware: [auth, bodyParser],
+        middleware: [auth,xss,  bodyParser],
         handler: deleteReservationById
     },
     {
         method: "post",
         path: '/reservation/status',
-        middleware: [auth, bodyParser],
+        middleware: [auth,xss,  bodyParser],
         handler: updateReservationById
     },
     {
         method: "post",
         path: '/eval/add',
-        middleware: [bodyParser],
+        middleware: [xss, bodyParser],
         handler: addCanteenEval
     },
     {
@@ -237,7 +238,7 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/eval/delete',
-        middleware: [auth, bodyParser],
+        middleware: [auth,xss,  bodyParser],
         handler: deleteCanteenEvalById
     },
     {
@@ -261,13 +262,13 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/visit',
-        middleware: [bodyParser],
+        middleware: [xss, bodyParser],
         handler: addOneUsageRecordByOpenid
     },
     {
         method: "post",
         path: '/upload',
-        middleware: [uploader, bodyParser],
+        middleware: [uploader, xss, bodyParser],
         handler: upload
     },
     {
