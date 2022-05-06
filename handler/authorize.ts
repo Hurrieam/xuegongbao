@@ -53,7 +53,6 @@ export const login: Handler = async (req, res) => {
             R.error(StatusCode.ACCOUNT_DISABLED, StatusMessage.ACCOUNT_DISABLED)
         );
     }
-    // 登陆成功后, 将用户信息存入session
     // @ts-ignore
     const token = await generateToken(username);
     res.send(

@@ -1,15 +1,12 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 import path from 'path';
 import {routes} from "./routes";
 import {API_PREFIX} from "./constant/common";
 import logger from "./middleware/logger";
-import {errorHandler} from "./middleware/error-handler";
+import {errorHandler} from "./util/error-handler";
 
 const app = express();
 const PORT = 3000;
-
-// 设置时区为东八区
-process.env.TZ = 'Asia/Shanghai';
 
 app.all("*", (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -24,14 +21,13 @@ app.use("/static", express.static(path.resolve(__dirname, "static")));
 // 路由
 routes.forEach((route) => {
     const {method, path, middleware, handler} = route;
-    app[method](API_PREFIX + path, [...middleware, logger], handler);
+    app[method](API_PREFIX + path, [...middleware, logger],
+        (req: Request, res: Response) => handler(req, res)?.catch((err: Error) => errorHandler(err, req, res)));
 });
 
 app.all('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'static/error.html'));
 });
-
-app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`Express with Typescript! http://localhost:${PORT}`);

@@ -10,7 +10,6 @@ const sequelize = new Sequelize(DATABASE, USERNAME, PASSWORD, {
     host: HOST,
     port: Number(PORT),
     dialect: "mysql",
-    timezone: "+08:00",
     pool: {
         max: 5,
         min: 1,

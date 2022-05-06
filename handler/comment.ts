@@ -13,7 +13,7 @@ import R from "../model/r";
  * @description 添加一条留言 参数：{openid, content, parentId?}
  */
 
-export const addCommentItem: Handler = async (req, res) => {
+export const addCommentItem: Handler = async (req, res, next) => {
     const comment: IComment = req.body;
     if (!comment || !isValidString(comment.openid) || !isValidString(comment.content)) {
         res.send(

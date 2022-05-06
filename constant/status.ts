@@ -5,6 +5,7 @@ export enum StatusCode {
     ACCOUNT_DISABLED,
     UPLOAD_FILE_NOT_FOUND,
     UPLOAD_FILE_TYPE_ERROR,
+    DATABASE_ERROR,
     UNKNOWN_ERROR
 }
 
@@ -15,5 +16,6 @@ export enum StatusMessage {
     ACCOUNT_DISABLED = "账号已被禁用",
     UPLOAD_FILE_NOT_FOUND = "上传文件不存在",
     UPLOAD_FILE_TYPE_ERROR = "上传文件类型错误",
+    DATABASE_ERROR = "数据库错误",
     UNKNOWN_ERROR = "失败"
 }

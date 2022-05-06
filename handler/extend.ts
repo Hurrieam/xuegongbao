@@ -53,7 +53,12 @@ export const addOneUsageRecordByOpenid: Handler = (req, res) => {
 /**
  * @description 定时任务: 每天晚上23点58分执行(记录当日数据)
  */
-schedule.scheduleJob("0 58 23 * * ?", async () => {
+const rule = new schedule.RecurrenceRule();
+rule.tz = "Asia/Shanghai";
+rule.hour = 23;
+rule.minute = 58;
+rule.second = 0;
+schedule.scheduleJob(rule, async () => {
     const data: DataType = await getDayUsageFromDB();
     await addLogRecord(data);
     await resetUserStatus();
