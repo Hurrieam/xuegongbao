@@ -106,7 +106,7 @@ export const LostAndFound = sequelize.define("LostAndFound", {
         allowNull: true,
         comment: "丢失地点"
     },
-    lostTime: {
+    time: {
         type: DataTypes.STRING,
         allowNull: true,
         comment: "丢失时间"
@@ -130,6 +130,11 @@ export const LostAndFound = sequelize.define("LostAndFound", {
         type: DataTypes.STRING,
         allowNull: false,
         comment: "联系方式"
+    },
+    type: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: "类型: lost-丢失, found-招领"
     },
     status: {
         type: DataTypes.BOOLEAN,

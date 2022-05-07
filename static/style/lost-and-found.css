@@ -5,6 +5,8 @@
 
 .weui-media-box__desc {
     color: #666666;
+    margin-top: 10px;
+    line-height: 1.5;
 }
 
 .button_wrapper {
@@ -34,16 +36,30 @@
 .weui-media-box__title {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+}
+.weui-media-box__title_left{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
-.weui-media-box__title > svg {
-    padding-bottom: 3px;
-}
-
-.weui-media-box__title > span {
+.weui-media-box__title  span {
     margin-left: 3px;
 }
-
+.weui-media-box__tag{
+    font-size: 12px;
+    padding: 1px 3px;
+    border-radius: 10px;
+}
+.weui-media-box__tag_lose{
+    background-color: rgb(254,232,207);
+    color: rgb(231, 150, 61);
+}
+.weui-media-box__tag_found{
+    background-color: rgb(204, 212, 244);
+    color: rgb(7, 97, 143);
+}
 .weui-media-box__info {
     display: flex;
     justify-content: space-between;

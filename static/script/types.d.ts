@@ -13,12 +13,13 @@ declare namespace API {
         openid: string;
         itemName: string;
         location?: string;
-        lostTime?: string;
-        description?: string;
+        time?: string;
+        description: string;
         images?: string;
         stuName?: string;
         contact: string;
         status?: boolean;
+        type: string;
         createdAt?: string;
     }
 

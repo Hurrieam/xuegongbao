@@ -1,24 +1,33 @@
 (async (win, doc, tools) => {
     const oWrapper = doc.getElementById("J_wrapper") as HTMLDivElement,
-        oInputs = oWrapper.getElementsByTagName("input") as HTMLCollectionOf<HTMLInputElement>,
-        oImageList = doc.getElementById("J_image_list") as HTMLDivElement,
-        oUploaderWrapper = doc.getElementById("J_uploader_wrapper") as HTMLDivElement,
-        oUploader = oUploaderWrapper.getElementsByTagName("input")[0] as HTMLInputElement,
-        oTextarea = doc.getElementById("J_textarea") as HTMLTextAreaElement,
+        oTemplateInput = doc.getElementById("J_template_input") as HTMLTemplateElement,
+        oTemplateUpload = doc.getElementById("J_template_upload") as HTMLTemplateElement,
+        oTemplateTextarea = doc.getElementById("J_template_textarea") as HTMLTemplateElement,
+        oItemWrapper = doc.getElementById("J_item_wrapper") as HTMLDivElement,
         oSubmit = doc.getElementById("J_submit") as HTMLButtonElement;
 
     const imageList: string[] = [];
+    let oUploaderWrapper: HTMLDivElement;
+    let type: string;
 
     const init = async () => {
-        tools.createHeader(oWrapper, "发布失物招领信息");
-        oTextarea.addEventListener("input", onTextareaInput, false);
+        // @ts-ignore
+        type = tools.getPathParam()["type"];
+
+        tools.createHeader(oWrapper, type === "lost" ? "发布失物信息" : "发布招领信息");
+
+        bindEvent();
+
+        render(type);
+    }
+
+    const bindEvent = () => {
         oSubmit.addEventListener("click", onSubmit, false);
-        oUploader.addEventListener("change", onUploaderChange, false);
     }
 
     const onSubmit = async () => {
         // 1. 获取表单数据
-        const formData: API.LostAndFound = getFormData()! as API.LostAndFound;
+        const formData: API.LostAndFound = getFormData() as API.LostAndFound;
         if (!formData) return;
 
         // 2. 上传表单信息
@@ -45,6 +54,7 @@
     }
 
     const onUploaderChange = async (e: Event) => {
+        const oImageList = oWrapper.querySelector("#J_image_list") as HTMLDivElement;
         const files = (e.target as HTMLInputElement).files;
         if (!files || files.length == 0) {
             return;
@@ -75,9 +85,11 @@
     }
 
     const getFormData = () => {
+        const oInputs = oItemWrapper.getElementsByTagName("input") as HTMLCollectionOf<HTMLInputElement>;
+        const oTextarea = oWrapper.querySelector("textarea") as HTMLTextAreaElement;
         const itemName = (oInputs.namedItem("itemName") as HTMLInputElement).value,
             location = (oInputs.namedItem("location") as HTMLInputElement).value,
-            lostTime = (oInputs.namedItem("lostTime") as HTMLInputElement).value,
+            time = (oInputs.namedItem("time") as HTMLInputElement).value,
             description = oTextarea.value,
             stuName = (oInputs.namedItem("stuName") as HTMLInputElement).value,
             contact = (oInputs.namedItem("contact") as HTMLInputElement).value;
@@ -94,10 +106,12 @@
             itemName,
             location,
             description,
-            lostTime,
+            time,
             stuName,
-            contact
-        }
+            contact,
+            type
+        };
+
         return data;
     }
 
@@ -123,13 +137,63 @@
         }
     }
 
-    const onTextareaInput = (e: Event) => {
-        tools.computeWordCount(e);
+    const render = (type: string) => {
+        if (type == "lost") {
+            createInputElement("物品名称", "itemName", "请填写丢失的物品名称");
+            createInputElement("丢失地点", "location", "请填写物品的丢失地点");
+            createInputElement("丢失时间", "time", "请填写物品的丢失时间");
+            createTextareaElement();
+            createUploaderElement();
+            createInputElement("联系人", "stuName", "请填写你的姓名(选填)");
+            createInputElement("联系方式", "contact", "请填写你的联系方式(微信/QQ/手机号)");
+        } else if (type == "found") {
+            createInputElement("物品名称", "itemName", "请填写拾到的物品名称");
+            createInputElement("拾到地点", "location", "请填写物品的拾到地点(选填)");
+            createInputElement("拾到时间", "time", "请填写物品的拾到时间(选填)");
+            createTextareaElement();
+            createUploaderElement();
+            createInputElement("联系人", "stuName", "请填写你的姓名(选填)");
+            createInputElement("联系方式", "contact", "请填写你的联系方式(微信/QQ/手机号)");
+        } else {
+            win.history.back();
+        }
+
+        // 为文件上传按钮绑定事件
+        oUploaderWrapper = oWrapper.querySelector("#J_uploader_wrapper") as HTMLDivElement;
+        const oUploader = oUploaderWrapper.querySelector("input[type=file]") as HTMLInputElement;
+        oUploader.addEventListener("change", onUploaderChange, false);
+
+        // 为Textarea绑定事件
+        const oTextarea = oWrapper.querySelector("textarea") as HTMLTextAreaElement;
+        oTextarea.addEventListener("input", (e: Event) => {
+            tools.computeWordCount(e);
+        }, false);
+    }
+
+    // 创建input输入框
+    const createInputElement = (label: string, name: string, placeholder: string) => {
+        const node = oTemplateInput.content.cloneNode(true) as HTMLElement;
+        node.querySelector(".J_label")!.innerHTML = label;
+        node.querySelector("input")!.name = name;
+        node.querySelector("input")!.placeholder = placeholder;
+        node.querySelector("input")!.type = "text";
+        oItemWrapper.appendChild(node);
+    }
+
+    // 创建textarea输入框
+    const createTextareaElement = () => {
+        oItemWrapper.appendChild(oTemplateTextarea.content.cloneNode(true));
+    }
+
+    // 创建uploader
+    const createUploaderElement = () => {
+        oItemWrapper.appendChild(oTemplateUpload.content.cloneNode(true));
     }
 
     // 删除字符串两边的引号
     const trimQuotes = (str: string) => {
         return str.replace(/^"(.*)"$/, "$1");
     }
+
     await init();
 })(window, document, tools);

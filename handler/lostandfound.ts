@@ -16,7 +16,8 @@ export const addLAFItem: Handler = async (req, res) => {
     if (!isValidString(laf.openid)
         || !isValidString(laf.itemName)
         || !isValidString(laf.description)
-        || !isValidString(laf.contact)) {
+        || !isValidString(laf.contact)
+        || (laf.type != "lost" && laf.type != "found")) {
         return res.send(
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );

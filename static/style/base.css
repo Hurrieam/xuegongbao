@@ -24,6 +24,11 @@ body {
     color: #2c2c2c;
 }
 
+.nav-header > .header-extra {
+    width: 40px;
+    color: #2c2c2c;
+}
+
 .nav-header svg {
     padding-bottom: 1px;
 }
@@ -52,6 +57,17 @@ body {
     color: #333;
 }
 
-.weui-loadmore_line .weui-loadmore__tips {
-    background-color: transparent;
+.nodata_wrapper {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
+    height: 80vh;
+    background-color: #FFFFFF;
+    border-radius: 5px;
+}
+.nodata_wrapper img{
+    width: 100%;
+    height: 200px;
 }

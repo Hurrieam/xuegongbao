@@ -76,13 +76,13 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/comment/delete',
-        middleware: [auth,xss,  bodyParser],
+        middleware: [auth, xss, bodyParser],
         handler: deleteCommentItemById
     },
     {
         method: "post",
         path: '/comment/status',
-        middleware: [auth,xss,  bodyParser],
+        middleware: [auth, xss, bodyParser],
         handler: updateCommentStatusById
     },
     {
@@ -142,13 +142,13 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/phonebook/add',
-        middleware: [auth,xss,  bodyParser],
+        middleware: [auth, xss, bodyParser],
         handler: addPhoneItem
     },
     {
         method: "post",
         path: '/phonebook/delete',
-        middleware: [auth,xss,  bodyParser],
+        middleware: [auth, xss, bodyParser],
         handler: deletePhoneItemById
     },
     {
@@ -178,13 +178,13 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/dorm-repair/delete',
-        middleware: [auth,xss,  bodyParser],
+        middleware: [auth, xss, bodyParser],
         handler: deleteRepairItemById
     },
     {
         method: "post",
         path: '/dorm-repair/status',
-        middleware: [auth,xss,  bodyParser],
+        middleware: [auth, xss, bodyParser],
         handler: updateRepairItemStatusById
     },
     {
@@ -208,13 +208,13 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/reservation/delete',
-        middleware: [auth,xss,  bodyParser],
+        middleware: [auth, xss, bodyParser],
         handler: deleteReservationById
     },
     {
         method: "post",
         path: '/reservation/status',
-        middleware: [auth,xss,  bodyParser],
+        middleware: [auth, xss, bodyParser],
         handler: updateReservationById
     },
     {
@@ -238,7 +238,7 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/eval/delete',
-        middleware: [auth,xss,  bodyParser],
+        middleware: [auth, xss, bodyParser],
         handler: deleteCanteenEvalById
     },
     {
@@ -268,7 +268,7 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/upload',
-        middleware: [uploader, xss, bodyParser],
+        middleware: [uploader, bodyParser],
         handler: upload
     },
     {

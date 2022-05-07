@@ -18,7 +18,7 @@
     }
 
     const auth = async () => {
-        // const redirect_uri = 'https%3A%2F%2F3328-240e-454-3d-8012-6095-46d9-e713-7a51.ap.ngrok.io%2Fapi%2Fauthorize';
+        // const redirect_uri = 'https%3A%2F%2Fcdf9-240e-454-3d-8012-ecea-81f6-264a-5144.jp.ngrok.io%2Fapi%2Fauthorize';
         const redirect_uri = 'https%3A%2F%2Fxgb.onezol.com%2Fapi%2Fauthorize';
         const appid = 'wxadfeee485d2a5b81';
         // 1. 首先从url中获取key

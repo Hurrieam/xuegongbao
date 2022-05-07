@@ -81,7 +81,7 @@ const getDayUsageFromDB = async (): Promise<DataType> => {
             [Op.and]: [
                 {
                     createdAt: {
-                        [Op.gte]: new Date(new Date().setHours(0, 0, 0, 0))
+                        [Op.gte]: new Date(new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'}))
                     }
                 },
                 {
@@ -97,7 +97,7 @@ const getDayUsageFromDB = async (): Promise<DataType> => {
     const dayRepairs = await Repair.count({
         where: {
             createdAt: {
-                [Op.gte]: new Date(new Date().setHours(0, 0, 0, 0))
+                [Op.gte]: new Date(new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'}))
             }
         }
     });
@@ -106,7 +106,7 @@ const getDayUsageFromDB = async (): Promise<DataType> => {
     const dayReservations = await Reservation.count({
         where: {
             createdAt: {
-                [Op.gte]: new Date(new Date().setHours(0, 0, 0, 0))
+                [Op.gte]: new Date(new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'}))
             }
         }
     });

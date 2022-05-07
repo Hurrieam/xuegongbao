@@ -23,12 +23,12 @@
                 tools.showAlert(oWrapper, "获取数据失败，请稍后再试", false);
                 return;
             }
+            if (data.length > 0) oList.style.display = 'block';
             return data.items;
         } catch (e) {
             tools.showAlert(oWrapper, "获取数据失败，请稍后再试", false);
         } finally {
             tools.hideInitLoading();
-            oList.style.display = 'block';
         }
     }
 

@@ -120,12 +120,12 @@
                     <span class="weui-form-preview__value">${data.description ? data.description : "未知"}</span>
                 </div>
                 <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">丢失地点</label>
+                    <label class="weui-form-preview__label">${data.type == "lost" ? "丢失地点" : "拾物地点"}</label>
                     <span class="weui-form-preview__value">${data.location ? data.location : "未知"}</span>
                 </div>
                 <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">丢失时间</label>
-                    <span class="weui-form-preview__value">${data.lostTime ? data.lostTime : "未知"}</span>
+                    <label class="weui-form-preview__label">${data.type == "lost" ? "丢失时间" : "拾物时间"}</label>
+                    <span class="weui-form-preview__value">${data.time ? data.time : "未知"}</span>
                 </div>
                 <div class="weui-form-preview__item J_imageList">
                     <label class="weui-form-preview__label">图片</label></br>

@@ -40,11 +40,12 @@ export interface ILostAndFound extends IModel {
     openid: string;
     itemName: string;
     location?: string;
-    lostTime?: string;
+    time?: string;
     description: string;
     images?: string;
     stuName?: string;
     contact: string;
+    type: string;
 }
 
 export interface IComment extends IModel {

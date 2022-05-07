@@ -5,7 +5,7 @@ const tools = ((win, doc) => {
     };
 
     // 通用Nav Header
-    const createHeader = (parentElement: HTMLElement, title: string) => {
+    const createHeader = (parentElement: HTMLElement, title: string, extra?: { element: HTMLElement, href: string }) => {
         const header = doc.createElement('header');
         header.innerHTML = `
             <a href="javascript:history.go(-1);" class="header-back">
@@ -13,10 +13,9 @@ const tools = ((win, doc) => {
                 <span>返回</span>
             </a>
             <h3 class="header-title">${title}</h3>
-            <a href="javascript:history.go(-1);" style="visibility: hidden">
-                <svg t="1651131243636" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7939" width="16" height="16"><path d="M671.968 912c-12.288 0-24.576-4.672-33.952-14.048L286.048 545.984c-18.752-18.72-18.752-49.12 0-67.872l351.968-352c18.752-18.752 49.12-18.752 67.872 0 18.752 18.72 18.752 49.12 0 67.872l-318.016 318.048 318.016 318.016c18.752 18.752 18.752 49.12 0 67.872C696.544 907.328 684.256 912 671.968 912z" p-id="7940" fill="#515151"></path></svg>
-                <span>占位</span>
-            </a>
+            ${
+            extra ? `<a href="${extra.href}" class="header-extra">${extra.element.innerHTML}</a>` : '<span style="visibility: hidden">占位位</span>'
+        }
         `;
         header.classList.add('nav-header');
         parentElement.insertBefore(header, parentElement.firstChild);
@@ -111,9 +110,10 @@ const tools = ((win, doc) => {
     const showNoData = (parentElement: HTMLElement) => {
         const div = doc.createElement("div");
         div.innerHTML = `
-             <span class="weui-loadmore__tips">暂无数据</span>
+            <img src="asset/nodata.svg" alt="暂无数据">
+            <span>暂无数据</span>
        `;
-        div.className = "weui-loadmore weui-loadmore_line";
+        div.className = "nodata_wrapper";
         parentElement.appendChild(div);
     }
 
