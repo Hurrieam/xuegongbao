@@ -10,7 +10,7 @@
         const data = await fetchData();
         if (!data) return;
 
-        renderList(data);
+        render(data);
     }
 
     const fetchData = async () => {
@@ -22,7 +22,7 @@
                 tools.showAlert(oWrapper, "获取数据失败，请稍后再试!", false);
                 return;
             }
-            if (data.length > 0) oList.style.display = "block";
+            if (data.count > 0) oList.style.display = "block";
             return data.items;
         } catch (e) {
             tools.showAlert(oWrapper, "获取数据失败，请稍后再试!", false);
@@ -33,8 +33,8 @@
     }
 
     // 渲染表格列表
-    const renderList = (data: API.LostAndFound[]) => {
-        if (data.length === 0) {
+    const render = (data: API.LostAndFound[]) => {
+        if (!data || data.length === 0) {
             tools.showNoData(oWrapper);
         } else {
             data.forEach(item => {

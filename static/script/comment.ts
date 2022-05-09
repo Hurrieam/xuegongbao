@@ -9,7 +9,7 @@
         // 1. 获取所有数据
         data = await fetchData();
         // 2. 渲染列表
-        renderList(data);
+        render(data);
     }
 
     // 从服务器获取数据
@@ -23,7 +23,7 @@
                 tools.showAlert(oWrapper, "获取数据失败，请稍后再试", false);
                 return;
             }
-            if (data.length > 0) oList.style.display = 'block';
+            if (data.count > 0) oList.style.display = 'block';
             return data.items;
         } catch (e) {
             tools.showAlert(oWrapper, "获取数据失败，请稍后再试", false);
@@ -33,8 +33,8 @@
     }
 
     // 渲染表格列表
-    const renderList = (data: API.Comment[]) => {
-        if (data.length === 0) {
+    const render = (data: API.Comment[]) => {
+        if (!data || data.length === 0) {
             tools.showNoData(oWrapper);
         } else {
             data.forEach(item => {

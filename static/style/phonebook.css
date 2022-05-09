@@ -1,6 +1,9 @@
+body{
+    background-color: #efefef;
+}
 .weui-cells{
     border-radius: 5px;
-    margin: 10px;
+    margin: 8px;
 }
 .weui-cell{
     display: flex;

@@ -2,7 +2,7 @@ import schedule from "node-schedule"
 import {Op} from "sequelize";
 import {Handler} from "../types";
 import R from "../model/r";
-import {StatusMessage} from "../constant/status";
+import {StatusCode, StatusMessage} from "../constant/status";
 import {Comment, DailyUsage, Repair, Reservation, User} from "../dao/_init";
 import {ADMIN_OPENID} from "../constant/common";
 
@@ -36,10 +36,21 @@ export const getMonthUsage: Handler = async (req, res) => {
 }
 
 /**
- *  @description 添加用户登录日志
+ * @tag user
+ * @description 添加用户登录日志
  */
-export const addOneUsageRecordByOpenid: Handler = (req, res) => {
+export const addOneUsageRecordByOpenid: Handler = async (req, res) => {
     const {openid} = req.body;
+    const user = await User.findOne({
+        where: {
+            openid
+        }
+    })
+    if (!user) {
+        return res.send(
+            R.error(StatusCode.USER_NOT_EXIST, StatusMessage.USER_NOT_EXIST)
+        );
+    }
     User.update({
         active: 1
     }, {
@@ -47,7 +58,9 @@ export const addOneUsageRecordByOpenid: Handler = (req, res) => {
             openid: openid
         }
     });
-    res.status(200).end();
+    res.send(
+        R.ok(StatusCode.OK, StatusMessage.OK)
+    );
 }
 
 /**
@@ -81,7 +94,7 @@ const getDayUsageFromDB = async (): Promise<DataType> => {
             [Op.and]: [
                 {
                     createdAt: {
-                        [Op.gte]: new Date(new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'}))
+                        [Op.gte]: new Date(new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'})).setHours(0, 0, 0, 0)
                     }
                 },
                 {
@@ -97,7 +110,7 @@ const getDayUsageFromDB = async (): Promise<DataType> => {
     const dayRepairs = await Repair.count({
         where: {
             createdAt: {
-                [Op.gte]: new Date(new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'}))
+                [Op.gte]: new Date(new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'})).setHours(0, 0, 0, 0)
             }
         }
     });
@@ -106,7 +119,7 @@ const getDayUsageFromDB = async (): Promise<DataType> => {
     const dayReservations = await Reservation.count({
         where: {
             createdAt: {
-                [Op.gte]: new Date(new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'}))
+                [Op.gte]: new Date(new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'})).setHours(0, 0, 0, 0)
             }
         }
     });

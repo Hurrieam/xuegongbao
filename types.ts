@@ -81,3 +81,12 @@ export interface IEvaluation extends IModel {
     mainProblem: string;
     totalScore: number;
 }
+
+export interface IUser extends IModel {
+    openid: string;
+    nickname: string;
+    stuName: string;
+    stuClass: string;
+    stuId: string;
+    avatar: string;
+}

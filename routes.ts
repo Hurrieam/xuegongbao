@@ -46,6 +46,7 @@ import {
     getEvalSummary
 } from "./handler/eval";
 import {xss} from "./middleware/xss";
+import {getUserinfoByOpenid, updateUserinfoByOpenid} from "./handler/user";
 
 
 export const routes: Route[] = [
@@ -246,6 +247,18 @@ export const routes: Route[] = [
         path: '/eval/summary',
         middleware: [auth],
         handler: getEvalSummary
+    },
+    {
+        method: "get",
+        path: '/user/get',
+        middleware: [],
+        handler: getUserinfoByOpenid
+    },
+    {
+        method: "post",
+        path: '/user/update',
+        middleware: [xss, bodyParser],
+        handler: updateUserinfoByOpenid
     },
     {
         method: "get",

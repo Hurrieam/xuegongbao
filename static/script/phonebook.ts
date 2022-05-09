@@ -13,7 +13,7 @@
         // 3. 获取所有数据
         data = await fetchData();
         // 4. 根据数据条数渲染列表
-        renderTable(data);
+        render(data);
     }
 
     // 从服务器获取数据
@@ -40,11 +40,11 @@
     const onSearch = () => {
         const value = oSearch.value;
         const result = data.filter(item => item.deptName.indexOf(value) > -1);
-        renderTable(result);
+        render(result);
     }
 
     // 渲染列表
-    const renderTable = (data: API.PhoneBook[]) => {
+    const render = (data: API.PhoneBook[]) => {
         console.log(data)
         // 1. 清空列表
         oList.innerHTML = "";

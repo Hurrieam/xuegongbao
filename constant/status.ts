@@ -6,7 +6,8 @@ export enum StatusCode {
     UPLOAD_FILE_NOT_FOUND,
     UPLOAD_FILE_TYPE_ERROR,
     DATABASE_ERROR,
-    UNKNOWN_ERROR
+    UNKNOWN_ERROR,
+    USER_NOT_EXIST,
 }
 
 export enum StatusMessage {
@@ -17,5 +18,6 @@ export enum StatusMessage {
     UPLOAD_FILE_NOT_FOUND = "上传文件不存在",
     UPLOAD_FILE_TYPE_ERROR = "上传文件类型错误",
     DATABASE_ERROR = "数据库错误",
-    UNKNOWN_ERROR = "失败"
+    UNKNOWN_ERROR = "失败",
+    USER_NOT_EXIST = "用户不存在",
 }

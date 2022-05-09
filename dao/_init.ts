@@ -10,8 +10,13 @@ const sequelize = new Sequelize(DATABASE, USERNAME, PASSWORD, {
     host: HOST,
     port: Number(PORT),
     dialect: "mysql",
+    define: {
+        charset: "utf8mb4",
+        collate: "utf8mb4_unicode_ci",
+        timestamps: true
+    },
     pool: {
-        max: 5,
+        max: 10,
         min: 1,
         acquire: 30000,
         idle: 10000
@@ -33,6 +38,34 @@ export const User = sequelize.define('User', {
         allowNull: false,
         unique: true,
         comment: "微信用户唯一标识"
+    },
+    nickname: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: "微信用户昵称"
+    },
+    stuName: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: "***",
+        comment: "学生姓名"
+    },
+    stuClass: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: "***",
+        comment: "学生班级"
+    },
+    stuId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: "***",
+        comment: "学生学号"
+    },
+    avatar: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: "微信用户头像"
     },
     active: {
         type: DataTypes.BOOLEAN,

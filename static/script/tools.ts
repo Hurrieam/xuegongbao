@@ -123,6 +123,11 @@ const tools = ((win, doc) => {
         button.style.opacity = "0.5";
     }
 
+    const getUserinfo = () => {
+        const userinfo = localStorage.getItem("userinfo");
+        return userinfo ? JSON.parse(userinfo) : null;
+    }
+
     return {
         isBlank,
         createHeader,
@@ -135,6 +140,7 @@ const tools = ((win, doc) => {
         showInitLoading,
         hideInitLoading,
         showNoData,
-        disableButton
+        disableButton,
+        getUserinfo
     }
 })(window, document);
