@@ -1,4 +1,4 @@
-import {Model, ModelCtor} from "sequelize";
+import {ModelCtor} from "sequelize";
 import {IModel} from "../types";
 
 /**
@@ -11,17 +11,23 @@ const CommonDAO = {
      * @param model 模型(数据表)
      * @param start 开始位置
      * @param limit 每页数量
+     * @param orderByASC
      * @returns  数据列表
      */
-    getSome: async (model: ModelCtor<any>, start: number, limit: number): Promise<IModel[]> => {
-        return await model.findAll({
+    findSome: async (
+        model: ModelCtor<any>,
+        start: number,
+        limit: number,
+        orderByASC?: boolean
+    ): Promise<{ rows: IModel[], count: number }> => {
+        return await model.findAndCountAll({
             where: {
                 isDeleted: 0
             },
             offset: start,
             limit: limit,
             order: [
-                ['id', 'DESC']
+                ['id', orderByASC ? "ASC" : "DESC"]
             ]
         });
     },
@@ -30,10 +36,11 @@ const CommonDAO = {
      * 添加一条记录
      * @param model 模型(数据表)
      * @param item 新记录
+     * @param openid
      * @returns 此条记录
      */
-    addOne: async (model: ModelCtor<Model<any, any>>, item: IModel): Promise<IModel> => {
-        return await model.create(item);
+    addOne: async (model: ModelCtor<any>, item: IModel, openid?: string): Promise<IModel> => {
+        return await model.create({...item, openid});
     },
 
     /**
@@ -88,22 +95,10 @@ const CommonDAO = {
      * @param model
      * @param id 记录的id
      */
-    getOne: async (model: ModelCtor<any>, id: number): Promise<IModel> => {
+    findOne: async (model: ModelCtor<any>, id: number): Promise<IModel> => {
         return await model.findOne({
             where: {
                 id: id
-            }
-        });
-    },
-
-    /**
-     * 获取某张表的记录条数
-     * @param model
-     */
-    getCount: async (model: ModelCtor<any>): Promise<number> => {
-        return await model.count({
-            where: {
-                isDeleted: 0
             }
         });
     }

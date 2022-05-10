@@ -55,7 +55,7 @@ const tools = ((win, doc) => {
     }
 
     // 获取url参数
-    const getPathParam = () => {
+    const getPathParams = () => {
         const search = win.location.search;
         const params = {};
         if (search) {
@@ -68,6 +68,7 @@ const tools = ((win, doc) => {
         }
         return params;
     }
+
     // 格式化时间
     const formatDate = (date: string) => {
         let res: string;
@@ -81,12 +82,7 @@ const tools = ((win, doc) => {
     };
 
     const getOpenid = (): string => {
-        const openid = localStorage.getItem("openid");
-        if (!isBlank(openid) && openid != 'undefined' && openid != 'null') {
-            return openid as string;
-        }
-        win.location.href = "index.html";
-        return '';
+        return localStorage.getItem("openid") || "";
     }
 
     const showInitLoading = (parentElement: HTMLElement) => {
@@ -125,7 +121,45 @@ const tools = ((win, doc) => {
 
     const getUserinfo = () => {
         const userinfo = localStorage.getItem("userinfo");
-        return userinfo ? JSON.parse(userinfo) : null;
+        try {
+            return userinfo ? JSON.parse(userinfo) : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+
+    const get = async (url: string) => {
+        const res = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Openid': getOpenid()
+            }
+        });
+        return await res.json();
+    }
+
+    const post = async (url: string, data?: {}) => {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Openid': getOpenid()
+            },
+            body: JSON.stringify(data)
+        });
+        return await res.json();
+    }
+
+    const checkLogin = () => {
+        const openid = getOpenid();
+        const userinfo = getUserinfo();
+        if (!userinfo || !openid) {
+            localStorage.removeItem("openid");
+            localStorage.removeItem("userinfo");
+            win.location.href = "index.html";
+        }
     }
 
     return {
@@ -134,13 +168,15 @@ const tools = ((win, doc) => {
         showAlert,
         hideAlert,
         computeWordCount,
-        getPathParam,
+        getPathParams,
         formatDate,
-        getOpenid,
         showInitLoading,
         hideInitLoading,
         showNoData,
         disableButton,
-        getUserinfo
+        getUserinfo,
+        get,
+        post,
+        checkLogin
     }
 })(window, document);

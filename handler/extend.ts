@@ -5,6 +5,7 @@ import R from "../model/r";
 import {StatusCode, StatusMessage} from "../constant/status";
 import {Comment, DailyUsage, Repair, Reservation, User} from "../dao/_init";
 import {ADMIN_OPENID} from "../constant/common";
+import {getOpenidFromHeader} from "../util/openid";
 
 type DataType = {
     dayUsers: number;
@@ -40,7 +41,7 @@ export const getMonthUsage: Handler = async (req, res) => {
  * @description 添加用户登录日志
  */
 export const addOneUsageRecordByOpenid: Handler = async (req, res) => {
-    const {openid} = req.body;
+    const openid = getOpenidFromHeader(req);
     const user = await User.findOne({
         where: {
             openid

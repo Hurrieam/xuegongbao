@@ -8,9 +8,10 @@
     let state = {id: null, type: ""};
 
     const init = async () => {
+        tools.checkLogin();
         tools.createHeader(oWrapper, "寻物详情");
 
-        const params = tools.getPathParam();
+        const params = tools.getPathParams();
         // @ts-ignore
         state = {id: params.id, type: params.type};
         const data: API.LostAndFound = await fetchData(state.id!);
@@ -35,9 +36,7 @@
     const fetchData = async (id: number) => {
         tools.showInitLoading(oWrapper);
         try {
-            // @ts-ignore
-            const response = await fetch(`/api/laf/get?id=${id}`);
-            const {code, data} = await response.json();
+            const {code, data} = await tools.get(`/api/laf/get?id=${id}`);
             if (code !== 10000) {
                 tools.showAlert(oWrapper, "获取信息失败", false);
                 return;
@@ -54,16 +53,7 @@
     const updateStatus = async (e: Event) => {
         handleTemplate(oTemplate, "更新状态", "如果您找到了你的物品,请确认。", "update", async () => {
             try {
-                const response = await fetch("/api/laf/status", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        id: state.id
-                    })
-                });
-                const {code} = await response.json();
+                const {code} = await tools.post(`/api/laf/status?id=${state.id}`);
                 if (code !== 10000) {
                     tools.showAlert(oWrapper, "删除失败", false);
                     return;
@@ -81,16 +71,7 @@
     const deleteItem = (e: Event) => {
         handleTemplate(oTemplate, "删除信息", "确定删除该条信息吗？", "delete", async () => {
             try {
-                const response = await fetch("/api/laf/delete", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        id: state.id
-                    })
-                });
-                const {code} = await response.json();
+                const {code} = await tools.post(`/api/laf/delete?id=${state.id}`);
                 if (code !== 10000) {
                     tools.showAlert(oWrapper, "删除失败", false);
                     return;

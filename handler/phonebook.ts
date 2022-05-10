@@ -16,7 +16,7 @@ export const addPhoneItem: Handler = async (req, res) => {
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const item = await CommonDAO.addOne(model.PHONE_BOOK, phoneItem)
+    const item = await CommonDAO.addOne(model.PHONE_BOOK, phoneItem);
     const r = item ? R.ok(item, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
     res.send(r);
 }
@@ -47,13 +47,12 @@ export const findAllPhoneItems: Handler = async (req, res) => {
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const phonebook = await CommonDAO.getSome(model.PHONE_BOOK, toValidDigit(start), toValidDigit(limit));
-    const total = await CommonDAO.getCount(model.PHONE_BOOK);
+    const {rows, count: total} = await CommonDAO.findSome(model.PHONE_BOOK, toValidDigit(start), toValidDigit(limit));
     const data = {
-        items: phonebook,
-        count: phonebook.length,
+        items: rows,
+        count: rows.length,
         total: total
     }
-    const r = phonebook ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
+    const r = rows ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
     res.send(r);
 }

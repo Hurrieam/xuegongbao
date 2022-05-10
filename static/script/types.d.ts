@@ -1,7 +1,6 @@
 declare namespace API {
     type Comment = {
         id?: number;
-        openid?: string;
         parentId?: string;
         content: string;
         createdAt?: string;
@@ -10,7 +9,6 @@ declare namespace API {
 
     type LostAndFound = {
         id?: number;
-        openid: string;
         itemName: string;
         location?: string;
         time?: string;
@@ -31,7 +29,6 @@ declare namespace API {
 
     type RepairItem = {
         id?: number;
-        openid: string;
         itemName: string;
         description?: string;
         dorm: string;
@@ -45,7 +42,6 @@ declare namespace API {
 
     type Reservation = {
         id?: number;
-        openid?: string;
         type: string;
         stuName: string;
         sdept: string;

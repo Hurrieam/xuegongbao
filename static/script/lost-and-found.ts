@@ -3,9 +3,8 @@
         oList = doc.getElementById('J_list') as HTMLDivElement;
 
     const init = async () => {
-        const element = doc.createElement('div');
-        element.innerHTML = `<span>我的</span>`;
-        tools.createHeader(oWrapper, "失物招领", {element, href: "lost-and-found-history.html"});
+        tools.checkLogin();
+        initHeader();
 
         const data = await fetchData();
         if (!data) return;
@@ -13,11 +12,16 @@
         render(data);
     }
 
+    const initHeader = () => {
+        const element = doc.createElement('div');
+        element.innerHTML = `<span>我的</span>`;
+        tools.createHeader(oWrapper, "失物招领", {element, href: "lost-and-found-history.html"});
+    }
+
     const fetchData = async () => {
         tools.showInitLoading(oWrapper);
         try {
-            const response = await fetch("/api/laf/list?start=0&limit=100");
-            const {code, data} = await response.json();
+            const {code, data} = await tools.get("/api/laf/list?start=0&limit=100");
             if (code != 10000) {
                 tools.showAlert(oWrapper, "获取数据失败，请稍后再试!", false);
                 return;

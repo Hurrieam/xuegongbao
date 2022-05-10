@@ -3,6 +3,7 @@
         oList = doc.getElementById("J_list") as HTMLDivElement;
 
     const init = async () => {
+        tools.checkLogin();
         tools.createHeader(oWrapper, "我丢失的物品");
 
         const data = await fetchData();
@@ -14,9 +15,7 @@
     const fetchData = async () => {
         tools.showInitLoading(oWrapper);
         try {
-            const openid = tools.getOpenid();
-            const response = await fetch(`/api/laf/by-user?openid=${openid}&start=0&limit=10`);
-            const {code, data} = await response.json();
+            const {code, data} = await tools.get(`/api/laf/by-user?start=0&limit=10`);
             if (code != 10000) {
                 tools.showAlert(oWrapper, "获取数据失败，请稍后再试!", false);
                 return;

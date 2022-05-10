@@ -5,6 +5,7 @@
     let data: API.Comment[] = [];
 
     const init = async () => {
+        tools.checkLogin();
         tools.createHeader(oWrapper, "我的留言")
         // 1. 获取所有数据
         data = await fetchData();
@@ -16,9 +17,7 @@
     const fetchData = async () => {
         tools.showInitLoading(oWrapper);
         try {
-            const openid = tools.getOpenid();
-            const result = await fetch(`/api/comment/by-user?openid=${openid}&start=0&limit=100`);
-            const {code, data} = await result.json();
+            const {code, data} = await tools.get(`/api/comment/by-user?start=0&limit=100`);
             if (code !== 10000) {
                 tools.showAlert(oWrapper, "获取数据失败，请稍后再试", false);
                 return;

@@ -7,21 +7,21 @@ import CommonDAO from "../dao/common";
 import {Comment} from "../dao/_init";
 import model from "../dao/model";
 import R from "../model/r";
+import {getOpenidFromHeader} from "../util/openid";
 
 /**
  * @tag user & admin
  * @description 添加一条留言 参数：{openid, content, parentId?}
  */
-
 export const addCommentItem: Handler = async (req, res, next) => {
     const comment: IComment = req.body;
-    if (!comment || !isValidString(comment.openid) || !isValidString(comment.content)) {
+    if (!comment || !isValidString(comment.content)) {
         res.send(
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
         return;
     }
-    const item = await CommonDAO.addOne(model.COMMENT, comment)
+    const item = await CommonDAO.addOne(model.COMMENT, comment, getOpenidFromHeader(req));
     const r = item ? R.ok(null, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
     res.send(r);
 }
@@ -48,10 +48,9 @@ export const deleteCommentItemById: Handler = async (req, res) => {
 export const updateCommentStatusById: Handler = async (req, res) => {
     const {id} = req.body;
     if (!isDigit(id)) {
-        res.send(
+        return res.send(
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
-        return;
     }
     await Comment.update({
         hasReply: 1
@@ -68,12 +67,13 @@ export const updateCommentStatusById: Handler = async (req, res) => {
  * @description 根据用户查找留言列表,包含留言回复 参数：{openid, start, limit}
  */
 export const findCommentsByUser: Handler = async (req, res) => {
-    const {openid, start, limit} = req.query;
-    if (!isValidString(openid) || !isDigit(start) || !isDigit(limit)) {
+    const {start, limit} = req.query;
+    if (!isDigit(start) || !isDigit(limit)) {
         return res.send(
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
+    const openid = getOpenidFromHeader(req);
     const comments = await Comment.findAll({
         where: {
             [Op.and]: {
@@ -142,7 +142,7 @@ export const findAllComments: Handler = async (req, res) => {
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const comments = await Comment.findAll({
+    const {rows, count: total} = await Comment.findAndCountAll({
         where: {
             [Op.and]: [
                 {
@@ -159,23 +159,11 @@ export const findAllComments: Handler = async (req, res) => {
             ['id', 'DESC']
         ]
     })
-    const total = await Comment.count({
-        where: {
-            [Op.and]: [
-                {
-                    isDeleted: 0,
-                    openid: {
-                        [Op.ne]: ADMIN_OPENID
-                    }
-                }
-            ]
-        }
-    });
     const data = {
-        items: comments,
-        count: comments.length,
+        items: rows,
+        count: rows?.length,
         total: total
     }
-    const r = comments ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
+    const r = rows ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
     res.send(r);
 }

@@ -1,12 +1,5 @@
 ((win, doc, tools) => {
-    const oWrapper = doc.getElementById("J_wrapper") as HTMLDivElement,
-        oCanteen = doc.getElementById("J_selection") as HTMLDivElement,
-        oList = doc.getElementById("J_list") as HTMLDivElement,
-        oTemplate = doc.getElementById("J_template") as HTMLTemplateElement,
-        oSubmit = doc.getElementById("J_submit") as HTMLButtonElement;
-
     interface IEvaluation {
-        openid: string;
         canteenName: string;
         content: IEvalItem[];
         mainProblem: string;
@@ -18,6 +11,13 @@
         score: string;
         explain: string;
     }
+
+    const oWrapper = doc.getElementById("J_wrapper") as HTMLDivElement,
+        oCanteen = doc.getElementById("J_selection") as HTMLDivElement,
+        oList = doc.getElementById("J_list") as HTMLDivElement,
+        oTemplate = doc.getElementById("J_template") as HTMLTemplateElement,
+        oSubmit = doc.getElementById("J_submit") as HTMLButtonElement;
+
 
     const questions = [
         "食堂饭菜卫生情况",
@@ -33,6 +33,7 @@
     ]
 
     const init = () => {
+        tools.checkLogin();
         tools.createHeader(oWrapper, "食堂评价");
         bindEvent();
         render();
@@ -49,14 +50,7 @@
 
         // 2. 发送请求
         try {
-            const response = await fetch("/api/eval/add", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({...data, content: JSON.stringify(data.content)})
-            });
-            const {code} = await response.json();
+            const {code} = await tools.post("/api/eval/add", {...data, content: JSON.stringify(data.content)});
             if (code != 10000) {
                 tools.showAlert(oWrapper, "提交失败，请稍后重试", false);
                 return;
@@ -84,7 +78,7 @@
 
         // 遍历所有的评价项并取其值
         const divs = oList.querySelectorAll(".J_item");
-        let totalScore = 0, minScore = Number.MAX_VALUE, mainProblem = "", flag = false;
+        let totalScore = 0, minScore = Number.MAX_VALUE, mainProblem = "";
         divs.forEach((div) => {
             const question = div.querySelector("h4")!.innerHTML.substring(3);
             const score = getRadioValue(div.querySelectorAll("input[type=radio]") as unknown as HTMLCollectionOf<HTMLInputElement>);
@@ -110,7 +104,6 @@
             }
         })
         return {
-            openid: tools.getOpenid(),
             canteenName,
             content: evalItems,
             mainProblem,

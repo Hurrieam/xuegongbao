@@ -5,8 +5,15 @@
         oSubmit = doc.getElementById("J_submit") as HTMLButtonElement;
 
     const init = () => {
+        tools.checkLogin();
         tools.createHeader(oWrapper, "预约咨询");
+        initRender();
         bindEvent();
+    }
+
+    const initRender = () => {
+       const userinfo =  tools.getUserinfo();
+        oInputs.namedItem("name")!.value = userinfo["stuName"];
     }
 
     const bindEvent = () => {
@@ -17,14 +24,7 @@
         const formData = getInputData();
         if (!formData) return;
         try {
-            const response = await fetch("/api/reservation/add", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(formData)
-            });
-            const {code} = await response.json();
+            const {code} = await tools.post("/api/reservation/add", formData);
             if (code != 10000) {
                 tools.showAlert(oWrapper, "提交失败，请重试", false);
                 return;
@@ -53,7 +53,6 @@
             return;
         }
         const data: API.Reservation = {
-            openid: tools.getOpenid(),
             type,
             stuName,
             sdept,

@@ -10,7 +10,7 @@ const PORT = 3000;
 
 app.all("*", (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Authorization, Accept, X-Requested-With");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Authorization, Openid, Accept, X-Requested-With");
     res.header("Access-Control-Allow-Methods", "DELETE,PUT,POST,GET,OPTIONS");
     req.method.toLowerCase() == 'options' ? res.status(200).end() : next();
 });

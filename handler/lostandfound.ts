@@ -6,6 +6,7 @@ import model from "../dao/model";
 import {isDigit, isValidString, toValidDigit} from "../util/checker";
 import {StatusCode, StatusMessage} from "../constant/status";
 import {LostAndFound} from "../dao/_init";
+import {getOpenidFromHeader} from "../util/openid";
 
 /**
  * @tag user
@@ -13,8 +14,7 @@ import {LostAndFound} from "../dao/_init";
  */
 export const addLAFItem: Handler = async (req, res) => {
     const laf: ILostAndFound = req.body;
-    if (!isValidString(laf.openid)
-        || !isValidString(laf.itemName)
+    if (!isValidString(laf.itemName)
         || !isValidString(laf.description)
         || !isValidString(laf.contact)
         || (laf.type != "lost" && laf.type != "found")) {
@@ -22,7 +22,7 @@ export const addLAFItem: Handler = async (req, res) => {
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const item = await CommonDAO.addOne(model.LOST_AND_FOUND, laf)
+    const item = await CommonDAO.addOne(model.LOST_AND_FOUND, laf, getOpenidFromHeader(req));
     const r = item ? R.ok(null, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
     res.send(r);
 }
@@ -70,24 +70,23 @@ export const findLAFList: Handler = async (req, res) => {
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const lafs = await LostAndFound.findAll({
+    const {rows, count: total} = await LostAndFound.findAndCountAll({
         where: {
-            [Op.and]: [
-                {isDeleted: 0},
-                {status: 0}
-            ]
+            [Op.and]: {
+                isDeleted: 0,
+                status: 0
+            }
         },
         offset: toValidDigit(start),
         limit: toValidDigit(limit),
         order: [['id', 'DESC']]
     });
-    const total = await CommonDAO.getCount(model.LOST_AND_FOUND);
     const data = {
-        items: lafs,
-        count: lafs.length,
+        items: rows,
+        count: rows?.length,
         total: total
     }
-    const r = lafs ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
+    const r = rows ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
     res.send(r);
 }
 
@@ -102,7 +101,7 @@ export const findLAFbyId: Handler = async (req, res) => {
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const laf = await CommonDAO.getOne(model.LOST_AND_FOUND, toValidDigit(id));
+    const laf = await CommonDAO.findOne(model.LOST_AND_FOUND, toValidDigit(id));
     const r = laf ? R.ok(laf, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
     res.send(r);
 }
@@ -112,22 +111,18 @@ export const findLAFbyId: Handler = async (req, res) => {
  * @description 根据openid查找分页查找失物招领信息列表 参数: {openid, start, limit}
  */
 export const findLAFsByUser: Handler = async (req, res) => {
-    const {openid, start, limit} = req.query;
-    if (!isValidString(openid) || !isDigit(start) || !isDigit(limit)) {
+    const {start, limit} = req.query;
+    if (!isDigit(start) || !isDigit(limit)) {
         return res.send(
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const lafs = await LostAndFound.findAll({
+    const {rows, count: total} = await LostAndFound.findAndCountAll({
         where: {
-            [Op.and]: [
-                {
-                    openid: openid
-                },
-                {
-                    isDeleted: 0
-                }
-            ]
+            [Op.and]: {
+                openid: getOpenidFromHeader(req),
+                isDeleted: 0
+            }
         },
         limit: toValidDigit(limit),
         offset: toValidDigit(start),
@@ -135,12 +130,11 @@ export const findLAFsByUser: Handler = async (req, res) => {
             ['id', 'DESC']
         ]
     });
-    const total = await CommonDAO.getCount(model.LOST_AND_FOUND);
     const data = {
-        items: lafs,
-        count: lafs.length,
+        items: rows,
+        count: rows?.length,
         total: total
     }
-    const r = lafs ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
+    const r = rows ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
     res.send(r);
 }

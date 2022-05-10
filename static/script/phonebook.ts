@@ -6,6 +6,7 @@
     let data: API.PhoneBook[] = [];
 
     const init = async () => {
+        tools.checkLogin();
         // 1. 创建Header
         tools.createHeader(oWrapper,"电话簿");
         // 2. 绑定事件函数
@@ -20,8 +21,7 @@
     const fetchData = async () => {
         tools.showInitLoading(oWrapper);
         try {
-            const result = await fetch("/api/phonebook/list?start=0&limit=100");
-            const {code, data} = await result.json();
+            const {code, data} = await  tools.get("/api/phonebook/list?start=0&limit=100");
             if (code !== 10000) {
                 tools.showAlert(oWrapper, "获取数据失败，请稍后再试",false);
                 return;

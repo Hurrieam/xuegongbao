@@ -3,7 +3,7 @@ import {Handler, IAdmin} from "../types";
 import {isValidString} from "../util/checker";
 import {StatusCode, StatusMessage} from "../constant/status";
 import R from "../model/r";
-import {Admin, User} from "../dao/_init";
+import {Admin} from "../dao/_init";
 import {encrypt} from "../util/encryptor";
 import config from "../util/env-parser";
 import {generateToken} from "../util/jwt";
@@ -17,7 +17,6 @@ interface IAuthorize {
 }
 
 export interface IUserInfo {
-    openid: string;
     nickname: string;
     stuName: string;
     stuClass: string;
@@ -37,15 +36,15 @@ export const authorize: Handler = async (req, res) => {
     if (!result) {
         return res.redirect(`/static/index.html?message=${encodeURIComponent("微信授权失败")}`);
     }
-    const userInfo: IUserInfo | null = await getUserInfoFromWechat(result.access_token, result.openid);
+    const {access_token, openid} = result;
+    const userInfo: IUserInfo | null = await getUserInfoFromWechat(access_token, openid);
     if (!userInfo || userInfo.errcode) {
         return res.redirect(`/static/index.html?message=${encodeURIComponent("获取用户信息失败")}`);
     }
     // 3. 将用户信息存入数据库
-    const openid = result.openid.toUpperCase();
     saveNewToDatabase(userInfo, openid);
     // 4. 返回数据给前端
-    res.redirect(302, `/static/index.html?data=${openid}`);
+    res.redirect(302, `/static/index.html?openid=${openid}`);
 }
 
 /**
@@ -101,7 +100,11 @@ const getAccessTokenFromWechat = async (code: string) => {
         return null;
     }
     // @ts-ignore
-    return {access_token: result.access_token, openid: result.openid} as IAuthorize;
+    const {access_token, openid} = result;
+    return {
+        access_token,
+        openid
+    } as IAuthorize;
 }
 
 /**
@@ -125,7 +128,11 @@ export const getUserInfoFromWechat = async (access_token: string, openid: string
     }
 
     // @ts-ignore
-    return {nickname: result.nickname, avatar: result.headimgurl} as IUserInfo;
+    const {nickname, avatar} = result;
+    return {
+        nickname,
+        avatar
+    } as IUserInfo;
 }
 
 const doRequest = (url: string, data: any, method: string) => {

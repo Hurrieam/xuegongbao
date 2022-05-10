@@ -5,6 +5,7 @@
         oInputs = doc.getElementsByTagName("input") as HTMLCollectionOf<HTMLInputElement>;
 
     const init = async () => {
+        tools.checkLogin();
         tools.createHeader(oWrapper, '宿舍报修');
         bindEvent();
     }
@@ -19,14 +20,7 @@
         const formData = getInputData();
         if (!formData) return;
         try {
-            const response = await fetch("/api/dorm-repair/add", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(formData)
-            });
-            const {code} = await response.json();
+            const {code} = await tools.post("/api/dorm-repair/add", formData);
             if (code != 10000) {
                 tools.showAlert(oWrapper, "提交失败，请重试", false);
                 return;
@@ -55,7 +49,6 @@
             return;
         }
         const data: API.RepairItem = {
-            openid: tools.getOpenid(),
             itemName,
             description,
             dorm,

@@ -37,7 +37,6 @@ export interface IPhoneBook extends IModel {
 }
 
 export interface ILostAndFound extends IModel {
-    openid: string;
     itemName: string;
     location?: string;
     time?: string;
@@ -49,13 +48,11 @@ export interface ILostAndFound extends IModel {
 }
 
 export interface IComment extends IModel {
-    openid: string;
     content: string;
     parentId?: number;
 }
 
 export interface IRepairItem extends IModel {
-    openid: string;
     itemName: string;
     description: string;
     dorm: string;
@@ -65,7 +62,6 @@ export interface IRepairItem extends IModel {
 }
 
 export interface IReservation extends IModel {
-    openid: string;
     type: string;
     stuName: string;
     sdept: string;
@@ -75,7 +71,6 @@ export interface IReservation extends IModel {
 }
 
 export interface IEvaluation extends IModel {
-    openid: string;
     canteenName: string;
     content: string;
     mainProblem: string;
@@ -83,7 +78,6 @@ export interface IEvaluation extends IModel {
 }
 
 export interface IUser extends IModel {
-    openid: string;
     nickname: string;
     stuName: string;
     stuClass: string;

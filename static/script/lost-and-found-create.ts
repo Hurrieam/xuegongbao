@@ -11,14 +11,16 @@
     let type: string;
 
     const init = async () => {
-        // @ts-ignore
-        type = tools.getPathParam()["type"];
-
-        tools.createHeader(oWrapper, type === "lost" ? "发布失物信息" : "发布招领信息");
-
+        tools.checkLogin();
+        initHeader();
         bindEvent();
-
         render(type);
+    }
+
+    const initHeader = () => {
+        // @ts-ignore
+        type = tools.getPathParams()["type"];
+        tools.createHeader(oWrapper, type === "lost" ? "发布失物信息" : "发布招领信息");
     }
 
     const bindEvent = () => {
@@ -32,14 +34,7 @@
 
         // 2. 上传表单信息
         try {
-            const response = await fetch("/api/laf/add", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({...formData, images: JSON.stringify(imageList)})
-            });
-            const {code} = await response.json();
+            const {code} = await tools.post("/api/laf/add", {...formData, images: JSON.stringify(imageList)});
             if (code != 10000) {
                 tools.showAlert(oWrapper, "提交失败，请重试", false);
                 return;
@@ -102,7 +97,6 @@
         }
 
         const data: API.LostAndFound = {
-            openid: tools.getOpenid(),
             itemName,
             location,
             description,
@@ -122,6 +116,9 @@
         try {
             const response = await fetch("/api/upload", {
                 method: "POST",
+                headers: {
+                    "Openid": localStorage.getItem("openid") as string
+                },
                 body: formData
             })
             const {code, data} = await response.json();
@@ -138,13 +135,14 @@
     }
 
     const render = (type: string) => {
+        const userinfo = tools.getUserinfo();
         if (type == "lost") {
             createInputElement("物品名称", "itemName", "请填写丢失的物品名称");
             createInputElement("丢失地点", "location", "请填写物品的丢失地点");
             createInputElement("丢失时间", "time", "请填写物品的丢失时间");
             createTextareaElement();
             createUploaderElement();
-            createInputElement("联系人", "stuName", "请填写你的姓名(选填)");
+            createInputElement("联系人", "stuName", "请填写你的姓名(选填)", userinfo["stuName"]);
             createInputElement("联系方式", "contact", "请填写你的联系方式(微信/QQ/手机号)");
         } else if (type == "found") {
             createInputElement("物品名称", "itemName", "请填写拾到的物品名称");
@@ -152,7 +150,7 @@
             createInputElement("拾到时间", "time", "请填写物品的拾到时间(选填)");
             createTextareaElement();
             createUploaderElement();
-            createInputElement("联系人", "stuName", "请填写你的姓名(选填)");
+            createInputElement("联系人", "stuName", "请填写你的姓名(选填)", userinfo["stuName"]);
             createInputElement("联系方式", "contact", "请填写你的联系方式(微信/QQ/手机号)");
         } else {
             win.history.back();
@@ -171,11 +169,12 @@
     }
 
     // 创建input输入框
-    const createInputElement = (label: string, name: string, placeholder: string) => {
+    const createInputElement = (label: string, name: string, placeholder: string, defaultValue?: string) => {
         const node = oTemplateInput.content.cloneNode(true) as HTMLElement;
         node.querySelector(".J_label")!.innerHTML = label;
         node.querySelector("input")!.name = name;
         node.querySelector("input")!.placeholder = placeholder;
+        node.querySelector("input")!.defaultValue = defaultValue || "";
         node.querySelector("input")!.type = "text";
         oItemWrapper.appendChild(node);
     }

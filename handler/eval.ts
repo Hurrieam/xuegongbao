@@ -5,16 +5,16 @@ import {StatusCode, StatusMessage} from "../constant/status";
 import CommonDAO from "../dao/common";
 import model from "../dao/model";
 import {CanteenEval, EvalSummary} from "../dao/_init";
+import {getOpenidFromHeader} from "../util/openid";
 
 /**
  * @tag user
  * @description 添加一条评价
  */
 export const addCanteenEval: Handler = async (req, res) => {
-    const data: IEvaluation = req.body;
-    const {openid, canteenName, content, mainProblem, totalScore} = data;
-    if (!isValidString(openid)
-        || !isValidCanteen(canteenName)
+    const evaluation: IEvaluation = req.body;
+    const {canteenName, content, mainProblem, totalScore} = evaluation;
+    if (!isValidCanteen(canteenName)
         || !isValidString(content)
         || !isValidString(mainProblem)
         || !isDigit(totalScore)) {
@@ -22,7 +22,7 @@ export const addCanteenEval: Handler = async (req, res) => {
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const item = await CommonDAO.addOne(model.CANTEEN_EVAL, data);
+    const item = await CommonDAO.addOne(model.CANTEEN_EVAL, evaluation, getOpenidFromHeader(req));
     // 添加评价后，更新评价总数
     updateEvalSummaryOnAdd(canteenName, totalScore);
 
@@ -41,14 +41,13 @@ export const getCanteenEvalList: Handler = async (req, res) => {
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const items = await CommonDAO.getSome(model.CANTEEN_EVAL, toValidDigit(start), toValidDigit(limit));
-    const total = await CommonDAO.getCount(model.CANTEEN_EVAL);
+    const {rows, count: total} = await CommonDAO.findSome(model.CANTEEN_EVAL, toValidDigit(start), toValidDigit(limit));
     const data = {
-        items: items,
-        count: items?.length,
+        items: rows,
+        count: rows?.length,
         total: total
     };
-    const r = items ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
+    const r = rows ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
     res.send(r);
 }
 
@@ -63,7 +62,7 @@ export const getCanteenEvalById: Handler = async (req, res) => {
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const item = await CommonDAO.getOne(model.CANTEEN_EVAL, toValidDigit(id));
+    const item = await CommonDAO.findOne(model.CANTEEN_EVAL, toValidDigit(id));
     const r = item ? R.ok(item, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
     res.send(r);
 }

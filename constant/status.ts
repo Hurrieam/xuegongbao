@@ -8,6 +8,7 @@ export enum StatusCode {
     DATABASE_ERROR,
     UNKNOWN_ERROR,
     USER_NOT_EXIST,
+    UNAUTHORIZED
 }
 
 export enum StatusMessage {
@@ -20,4 +21,5 @@ export enum StatusMessage {
     DATABASE_ERROR = "数据库错误",
     UNKNOWN_ERROR = "失败",
     USER_NOT_EXIST = "用户不存在",
+    UNAUTHORIZED = "你没有权限访问该资源"
 }

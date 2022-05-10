@@ -4,7 +4,7 @@ import R from "../model/r";
 import {StatusCode, StatusMessage} from "../constant/status";
 import CommonDAO from "../dao/common";
 import model from "../dao/model";
-import {Reservation} from "../dao/_init";
+import {getOpenidFromHeader} from "../util/openid";
 
 /**
  * @tag user
@@ -12,9 +12,8 @@ import {Reservation} from "../dao/_init";
  */
 export const addReservationItem: Handler = async (req, res) => {
     const params: IReservation = req.body;
-    const {openid, type, stuName, sdept, content, time, contact} = params;
-    if (!isValidString(openid)
-        || !isValidString(type)
+    const {type, stuName, sdept, content, time, contact} = params;
+    if (!isValidString(type)
         || !isValidString(stuName)
         || !isValidString(sdept)
         || !isValidString(content)
@@ -24,7 +23,7 @@ export const addReservationItem: Handler = async (req, res) => {
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const item = await CommonDAO.addOne(model.RESERVATION, params);
+    const item = await CommonDAO.addOne(model.RESERVATION, params, getOpenidFromHeader(req));
     const r = item ? R.ok(null, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
     res.send(r);
 };
@@ -40,14 +39,13 @@ export const findAllReservations: Handler = async (req, res) => {
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const items = await CommonDAO.getSome(model.RESERVATION, toValidDigit(start), toValidDigit(limit));
-    const total = await CommonDAO.getCount(model.RESERVATION);
+    const {rows, count: total} = await CommonDAO.findSome(model.RESERVATION, toValidDigit(start), toValidDigit(limit));
     const data = {
-        items: items,
-        count: items.length,
+        items: rows,
+        count: rows?.length,
         total: total
     };
-    const r = items ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
+    const r = rows ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
     res.send(r);
 };
 
@@ -62,7 +60,7 @@ export const findReservationById: Handler = async (req, res) => {
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const item = await CommonDAO.getOne(model.RESERVATION, toValidDigit(id));
+    const item = await CommonDAO.findOne(model.RESERVATION, toValidDigit(id));
     const r = item ? R.ok(item, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
     res.send(r);
 };

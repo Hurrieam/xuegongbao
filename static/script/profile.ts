@@ -13,6 +13,7 @@
         oSubmit = doc.getElementById("J_submit") as HTMLButtonElement;
 
     const init = () => {
+        tools.checkLogin();
         tools.createHeader(oWrapper, "我的信息");
         initProfile();
         bindEvent();
@@ -34,14 +35,7 @@
         if (!data) return;
 
         try {
-            const response = await fetch("/api/user/update", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({...data, openid: tools.getOpenid()})
-            });
-            const {code} = await response.json();
+            const {code} = await tools.post("/api/user/update", data);
             if (code != 10000) {
                 tools.showAlert(oWrapper, "更新失败", false);
                 return;

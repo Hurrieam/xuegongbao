@@ -8,7 +8,7 @@ const model = {
     FEEDBACK: Feedback,
     REPAIR: Repair,
     RESERVATION: Reservation,
-    CANTEEN_EVAL: CanteenEval
+    CANTEEN_EVAL: CanteenEval,
 };
 
 export default model;

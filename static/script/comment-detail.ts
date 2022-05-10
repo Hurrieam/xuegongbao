@@ -3,8 +3,9 @@
         oItem = doc.getElementById("J_item") as HTMLDivElement;
 
     const init = async () => {
+        tools.checkLogin();
         tools.createHeader(oWrapper, "留言详情");
-        const params = tools.getPathParam();
+        const params = tools.getPathParams();
         // @ts-ignore
         const data = await fetchData(params["id"]);
         renderList(data);
@@ -14,8 +15,7 @@
     const fetchData = async (id: number | string) => {
         tools.showInitLoading(oWrapper);
         try {
-            const response = await fetch(`/api/comment/detail?id=${id}`);
-            const {code, data} = await response.json();
+            const {code, data} = await tools.get(`/api/comment/detail?id=${id}`);
             if (code != 10000) {
                 return [];
             }

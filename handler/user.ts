@@ -4,19 +4,24 @@ import {StatusCode, StatusMessage} from "../constant/status";
 import R from "../model/r";
 import {User} from "../dao/_init";
 import {IUserInfo} from "./authorize";
+import {getOpenidFromHeader} from "../util/openid";
 
 /**
  * @tag user admin
  * @description 获取用户信息
  */
 export const getUserinfoByOpenid: Handler = async (req, res) => {
-    const {openid} = req.query;
-    if (!isValidString(openid)) {
+    const openid = getOpenidFromHeader(req);
+    if (!openid) {
         return res.send(
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const user = await User.findOne({where: {openid}});
+    const user = await User.findOne({
+        where: {
+            openid
+        }
+    });
     if (!user) {
         return res.send(
             R.error(StatusCode.USER_NOT_EXIST, StatusMessage.USER_NOT_EXIST)
@@ -24,7 +29,6 @@ export const getUserinfoByOpenid: Handler = async (req, res) => {
     }
     const userInJson: IUserInfo = user.toJSON();
     const userInfo: IUserInfo = {
-        openid: userInJson.openid,
         nickname: userInJson.nickname,
         avatar: userInJson.avatar,
         stuName: userInJson.stuName,
@@ -40,8 +44,8 @@ export const getUserinfoByOpenid: Handler = async (req, res) => {
  */
 export const updateUserinfoByOpenid: Handler = async (req, res) => {
     const user: IUser = req.body;
-    const {openid, stuName, stuClass, stuId} = user;
-    if (!isValidString(openid) || !isValidString(stuName) || !isValidString(stuClass) || !isValidString(stuId)) {
+    const {stuName, stuClass, stuId} = user;
+    if (!isValidString(stuName) || !isValidString(stuClass) || !isValidString(stuId)) {
         return res.send(
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
@@ -50,7 +54,7 @@ export const updateUserinfoByOpenid: Handler = async (req, res) => {
         stuName, stuClass, stuId
     }, {
         where: {
-            openid
+            openid: getOpenidFromHeader(req)
         }
     });
 

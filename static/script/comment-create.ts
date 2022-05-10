@@ -4,6 +4,7 @@
         oSubmit = doc.getElementById('J_submit') as HTMLButtonElement;
 
     const init = async () => {
+        tools.checkLogin();
         tools.createHeader(oWrapper, '我要留言');
         bindEvent();
     }
@@ -20,14 +21,7 @@
             return;
         }
         try {
-            const response = await fetch("/api/comment/add", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(formData)
-            });
-            const {code} = await response.json();
+            const {code} = await tools.post('/api/comment/add', formData);
             if (code != 10000) {
                 tools.showAlert(oWrapper, "提交失败，请重试", false);
                 return;
@@ -49,10 +43,7 @@
             tools.hideAlert();
             return null;
         }
-        return {
-            openid: tools.getOpenid(),
-            content: content
-        }
+        return {content: content}
     }
 
     // Textarea输入事件
