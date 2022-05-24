@@ -11,6 +11,6 @@ export const getOpenidFromHeader = (req: Request): string => {
 /**
  * @description 浅校验openid
  */
-const isValidOpenid = (openid: string): boolean => {
-    return openid.length == 28;
+export const isValidOpenid = (openid: string): boolean => {
+    return !isNaN(Number(openid)) && openid.length >= 8;
 }

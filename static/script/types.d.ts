@@ -2,6 +2,7 @@ declare namespace API {
     type Comment = {
         id?: number;
         parentId?: string;
+        stuName: string;
         content: string;
         createdAt?: string;
         hasReply?: boolean;

@@ -53,9 +53,9 @@
     const updateStatus = async (e: Event) => {
         handleTemplate(oTemplate, "更新状态", "如果您找到了你的物品,请确认。", "update", async () => {
             try {
-                const {code} = await tools.post(`/api/laf/status?id=${state.id}`);
+                const {code} = await tools.post(`/api/laf/status`,{id: state.id});
                 if (code !== 10000) {
-                    tools.showAlert(oWrapper, "删除失败", false);
+                    tools.showAlert(oWrapper, "状态更新失败", false);
                     return;
                 }
                 tools.showAlert(oWrapper, "状态更新成功", true);
@@ -113,7 +113,7 @@
                     <ul class="weui-uploader__files"></ul>
                 </div>
                 <div class="weui-form-preview__item">
-                    <label class="weui-form-preview__label">姓名</label>
+                    <label class="weui-form-preview__label">联系人</label>
                     <span class="weui-form-preview__value">${data.stuName ? data.stuName : "保密"}</span>
                 </div>
                 <div class="weui-form-preview__item">

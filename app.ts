@@ -15,6 +15,8 @@ app.all("*", (req, res, next) => {
     req.method.toLowerCase() == 'options' ? res.status(200).end() : next();
 });
 
+app.disable('etag');
+
 // 静态页面
 app.use("/static", express.static(path.resolve(__dirname, "static")));
 

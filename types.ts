@@ -48,6 +48,7 @@ export interface ILostAndFound extends IModel {
 }
 
 export interface IComment extends IModel {
+    stuName: string;
     content: string;
     parentId?: number;
 }

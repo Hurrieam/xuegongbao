@@ -1,6 +1,7 @@
 (async (win, doc, tools) => {
     const oWrapper = doc.getElementById('J_wrapper') as HTMLDivElement,
         oTextarea = doc.getElementsByTagName('textarea')[0] as HTMLTextAreaElement,
+        oAnonymity = doc.getElementById('J_anonymity') as HTMLInputElement,
         oSubmit = doc.getElementById('J_submit') as HTMLButtonElement;
 
     const init = async () => {
@@ -43,7 +44,11 @@
             tools.hideAlert();
             return null;
         }
-        return {content: content}
+        const stuName = oAnonymity.checked ? "" : tools.getUserinfo()?.stuName || "";
+        return {
+            content,
+            stuName
+        }
     }
 
     // Textarea输入事件

@@ -12,3 +12,7 @@ body{
 .button_wrapper>button{
     width: 60%;
 }
+.anonymity{
+    display: flex;
+    margin-top: 20px;
+}

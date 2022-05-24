@@ -14,7 +14,6 @@ export const authAdmin: Middleware = (req, res, next) => {
 };
 
 export const authUser: Middleware = (req, res, next) => {
-    console.log("openid: ", getOpenidFromHeader(req));
     if (!getOpenidFromHeader(req)) {
         return res.send(
             R.error(StatusCode.UNAUTHORIZED, StatusMessage.UNAUTHORIZED)

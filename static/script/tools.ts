@@ -82,7 +82,7 @@ const tools = ((win, doc) => {
     };
 
     const getOpenid = (): string => {
-        return localStorage.getItem("openid") || "";
+        return localStorage.getItem("_openid") || "";
     }
 
     const showInitLoading = (parentElement: HTMLElement) => {
@@ -120,7 +120,7 @@ const tools = ((win, doc) => {
     }
 
     const getUserinfo = () => {
-        const userinfo = localStorage.getItem("userinfo");
+        const userinfo = localStorage.getItem("_userinfo");
         try {
             return userinfo ? JSON.parse(userinfo) : null;
         } catch (e) {
@@ -156,8 +156,9 @@ const tools = ((win, doc) => {
         const openid = getOpenid();
         const userinfo = getUserinfo();
         if (!userinfo || !openid) {
-            localStorage.removeItem("openid");
-            localStorage.removeItem("userinfo");
+            localStorage.removeItem("_openid");
+            localStorage.removeItem("_userinfo");
+            alert("请先填写个人信息");
             win.location.href = "index.html";
         }
     }
@@ -170,6 +171,7 @@ const tools = ((win, doc) => {
         computeWordCount,
         getPathParams,
         formatDate,
+        getOpenid,
         showInitLoading,
         hideInitLoading,
         showNoData,

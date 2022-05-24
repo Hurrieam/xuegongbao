@@ -37,12 +37,7 @@ export const User = sequelize.define('User', {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
-        comment: "微信用户唯一标识"
-    },
-    nickname: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        comment: "微信用户昵称"
+        comment: "用户唯一标识"
     },
     stuName: {
         type: DataTypes.STRING,
@@ -61,11 +56,6 @@ export const User = sequelize.define('User', {
         allowNull: true,
         defaultValue: "***",
         comment: "学生学号"
-    },
-    avatar: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        comment: "微信用户头像"
     },
     active: {
         type: DataTypes.BOOLEAN,
@@ -244,6 +234,12 @@ export const Comment = sequelize.define("Comment", {
         type: DataTypes.STRING,
         allowNull: false,
         comment: "用户唯一标识"
+    },
+    stuName: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: "***",
+        comment: "学生姓名"
     },
     content: {
         type: DataTypes.STRING(1024),

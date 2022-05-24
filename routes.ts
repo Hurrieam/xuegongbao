@@ -1,6 +1,6 @@
 import {Route} from './types';
 import {authentic} from "./handler/authentic";
-import {authorize, login} from "./handler/authorize";
+import {login} from "./handler/authorize";
 import {ping} from "./handler/ping";
 import {upload} from "./handler/upload";
 import {uploader} from "./middleware/uploader";
@@ -56,12 +56,12 @@ export const routes: Route[] = [
         middleware: [],
         handler: authentic,
     },
-    {
-        method: "get",
-        path: '/authorize',
-        middleware: [],
-        handler: authorize,
-    },
+    // {
+    //     method: "get",
+    //     path: '/authorize',
+    //     middleware: [],
+    //     handler: authorize,
+    // },
     {
         method: "post",
         path: '/login',
@@ -257,7 +257,7 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/user/update',
-        middleware: [authUser, xss, bodyParser],
+        middleware: [xss, bodyParser],
         handler: updateUserinfoByOpenid
     },
     {

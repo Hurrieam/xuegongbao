@@ -3,8 +3,14 @@ import {isValidString} from "../util/checker";
 import {StatusCode, StatusMessage} from "../constant/status";
 import R from "../model/r";
 import {User} from "../dao/_init";
-import {IUserInfo} from "./authorize";
-import {getOpenidFromHeader} from "../util/openid";
+import {getOpenidFromHeader, isValidOpenid} from "../util/openid";
+
+interface IUserInfo {
+    openid: string;
+    stuName: string;
+    stuClass: string;
+    stuId: string;
+}
 
 /**
  * @tag user admin
@@ -29,8 +35,7 @@ export const getUserinfoByOpenid: Handler = async (req, res) => {
     }
     const userInJson: IUserInfo = user.toJSON();
     const userInfo: IUserInfo = {
-        nickname: userInJson.nickname,
-        avatar: userInJson.avatar,
+        openid: userInJson.openid,
         stuName: userInJson.stuName,
         stuClass: userInJson.stuClass,
         stuId: userInJson.stuId
@@ -45,36 +50,25 @@ export const getUserinfoByOpenid: Handler = async (req, res) => {
 export const updateUserinfoByOpenid: Handler = async (req, res) => {
     const user: IUser = req.body;
     const {stuName, stuClass, stuId} = user;
-    if (!isValidString(stuName) || !isValidString(stuClass) || !isValidString(stuId)) {
+    if (!isValidString(stuName) || !isValidString(stuClass) || !isValidOpenid(stuId)) {
         return res.send(
             R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
         );
     }
-    const result = await User.update({
-        stuName, stuClass, stuId
-    }, {
+    User.findOrCreate({
         where: {
-            openid: getOpenidFromHeader(req)
+            openid: stuId
+        },
+        defaults: {
+            openid: stuId, stuName, stuClass, stuId
         }
-    });
-
-    return result[0] != 0 ? res.send(R.ok(null, StatusMessage.OK)) : res.send(R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR));
-}
-
-export const saveNewToDatabase = async (userinfo: IUserInfo, openid: string) => {
-    const [user, created] = await User.findOrCreate({
-        where: {openid},
-        defaults: {...userinfo, openid}
-    });
-
-    if (!created) {
-        User.update({
-            nickname: userinfo.nickname,
-            avatar: userinfo.avatar,
-        }, {
-            where: {
-                openid
-            }
+    }).then(async ([user, created]) => {
+        if (created) {
+            return res.send(R.ok(null, StatusMessage.OK));
+        }
+        await user.update({
+            stuName, stuClass
         });
-    }
+        return res.send(R.ok(null, StatusMessage.OK));
+    });
 }
