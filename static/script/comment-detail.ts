@@ -3,7 +3,6 @@
         oItem = doc.getElementById("J_item") as HTMLDivElement;
 
     const init = async () => {
-        tools.checkLogin();
         tools.createHeader(oWrapper, "留言详情");
         const params = tools.getPathParams();
         // @ts-ignore

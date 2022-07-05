@@ -5,7 +5,6 @@
         oSubmit = doc.getElementById('J_submit') as HTMLButtonElement;
 
     const init = async () => {
-        tools.checkLogin();
         tools.createHeader(oWrapper, '我要留言');
         bindEvent();
     }
@@ -17,6 +16,10 @@
 
     // 提交数据
     const onSubmit = async () => {
+        if(!oAnonymity.checked && !tools.getOpenid()) {
+            tools.showUserinfoCollector(oWrapper);
+            return;
+        }
         const formData = getInputData();
         if (!formData) {
             return;

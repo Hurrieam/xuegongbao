@@ -3,7 +3,6 @@
         oList = doc.getElementById('J_list') as HTMLDivElement;
 
     const init = async () => {
-        tools.checkLogin();
         initHeader();
 
         const data = await fetchData();

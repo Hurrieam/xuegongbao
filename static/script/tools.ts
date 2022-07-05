@@ -163,6 +163,57 @@ const tools = ((win, doc) => {
         }
     }
 
+    const showUserinfoCollector = (parentElement: HTMLElement) => {
+        const div = doc.createElement("div");
+        div.innerHTML = `
+            <div class="weui-cells form_list collector" id="J_list">
+                <label class="weui-cell">
+                    <div class="weui-cell__hd"><span class="weui-label">姓名</span></div>
+                    <div class="weui-cell__bd">
+                    <input class="weui-input" placeholder="填写你的真实姓名" name="stuName"/>
+                    </div>
+                </label>
+                <label class="weui-cell">
+                    <div class="weui-cell__hd"><span class="weui-label">班级</span></div>
+                    <div class="weui-cell__bd">
+                    <input class="weui-input" placeholder="填写你的班级" name="stuClass"/>
+                    </div>
+                </label>
+                <label class="weui-cell">
+                    <div class="weui-cell__hd"><span class="weui-label">学号</span></div>
+                    <div class="weui-cell__bd">
+                    <input class="weui-input" placeholder="填写你的学号" name="stuId"/>
+                    </div>
+                </label>
+                </div>
+                <div class="collector_button_wrapper">
+                <button class="weui-btn btn-color" id="J_save">保存</button>
+            </div>
+            </div>
+        `;
+        div.className = "userinfo_collector_wrapper";
+        parentElement.appendChild(div);
+        const oSaveBtn = doc.getElementById("J_save") as HTMLButtonElement;
+        const oInputs = doc.getElementsByTagName("input") as HTMLCollectionOf<HTMLInputElement>;
+        oSaveBtn!.addEventListener("click", () => {
+            const stuName = oInputs.namedItem("stuName")!.value;
+            const stuClass = oInputs.namedItem("stuClass")!.value;
+            const stuId = oInputs.namedItem("stuId")!.value;
+            if (tools.isBlank(stuName) || tools.isBlank(stuClass) || tools.isBlank(stuId)) {
+                tools.showAlert(parentElement, "无效数据", false);
+                tools.hideAlert();
+                return;
+            }
+            localStorage.setItem("_userinfo", JSON.stringify({stuName, stuClass, stuId}));
+            localStorage.setItem("_openid", stuId);
+            tools.showAlert(parentElement, "保存成功", true);
+            tools.hideAlert();
+            setTimeout(() => {
+                div.style.display = "none";
+            }, 1500);
+        })
+    }
+
     return {
         isBlank,
         createHeader,
@@ -179,6 +230,7 @@ const tools = ((win, doc) => {
         getUserinfo,
         get,
         post,
-        checkLogin
+        checkLogin,
+        showUserinfoCollector
     }
 })(window, document);

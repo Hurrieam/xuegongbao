@@ -5,7 +5,6 @@
         oInputs = doc.getElementsByTagName("input") as HTMLCollectionOf<HTMLInputElement>;
 
     const init = async () => {
-        tools.checkLogin();
         tools.createHeader(oWrapper, '宿舍报修');
         bindEvent();
     }
@@ -17,6 +16,10 @@
 
     // 提交数据
     const onSubmit = async () => {
+        if(!tools.getOpenid()) {
+            tools.showUserinfoCollector(oWrapper);
+            return;
+        }
         const formData = getInputData();
         if (!formData) return;
         try {

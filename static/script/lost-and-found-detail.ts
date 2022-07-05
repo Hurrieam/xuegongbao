@@ -8,7 +8,6 @@
     let state = {id: null, type: ""};
 
     const init = async () => {
-        tools.checkLogin();
         tools.createHeader(oWrapper, "寻物详情");
 
         const params = tools.getPathParams();

@@ -11,7 +11,6 @@
     let type: string;
 
     const init = async () => {
-        tools.checkLogin();
         initHeader();
         bindEvent();
         render(type);
@@ -28,6 +27,10 @@
     }
 
     const onSubmit = async () => {
+        if(!tools.getOpenid()){
+            tools.showUserinfoCollector(oWrapper);
+            return;
+        }
         // 1. 获取表单数据
         const formData: API.LostAndFound = getFormData() as API.LostAndFound;
         if (!formData) return;
@@ -44,7 +47,7 @@
         } catch (e) {
             tools.showAlert(oWrapper, "提交失败，请重试", false);
         } finally {
-            tools.hideAlert()
+            tools.hideAlert();
         }
     }
 

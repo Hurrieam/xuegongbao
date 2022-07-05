@@ -6,7 +6,6 @@
     let data: API.PhoneBook[] = [];
 
     const init = async () => {
-        tools.checkLogin();
         // 1. 创建Header
         tools.createHeader(oWrapper,"电话簿");
         // 2. 绑定事件函数

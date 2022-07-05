@@ -5,7 +5,6 @@
         oSubmit = doc.getElementById("J_submit") as HTMLButtonElement;
 
     const init = () => {
-        tools.checkLogin();
         tools.createHeader(oWrapper, "预约咨询");
         initRender();
         bindEvent();
@@ -21,6 +20,10 @@
     }
 
     const onSubmit = async () => {
+        if (!tools.getOpenid()) {
+            tools.showUserinfoCollector(oWrapper);
+            return;
+        }
         const formData = getInputData();
         if (!formData) return;
         try {

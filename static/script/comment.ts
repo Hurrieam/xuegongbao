@@ -5,7 +5,6 @@
     let data: API.Comment[] = [];
 
     const init = async () => {
-        tools.checkLogin();
         tools.createHeader(oWrapper, "我的留言")
         // 1. 获取所有数据
         data = await fetchData();
@@ -15,6 +14,9 @@
 
     // 从服务器获取数据
     const fetchData = async () => {
+        if(!tools.getOpenid()) {
+            return;
+        }
         tools.showInitLoading(oWrapper);
         try {
             const {code, data} = await tools.get(`/api/comment/by-user?start=0&limit=100`);

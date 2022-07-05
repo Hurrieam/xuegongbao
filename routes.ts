@@ -125,7 +125,7 @@ export const routes: Route[] = [
     {
         method: "get",
         path: '/laf/list',
-        middleware: [authUser],
+        middleware: [],
         handler: findLAFList
     },
     {
@@ -221,7 +221,7 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/eval/add',
-        middleware: [authUser, xss, bodyParser],
+        middleware: [xss, bodyParser],
         handler: addCanteenEval
     },
     {

@@ -3,7 +3,6 @@
         oList = doc.getElementById("J_list") as HTMLDivElement;
 
     const init = async () => {
-        tools.checkLogin();
         tools.createHeader(oWrapper, "我丢失的物品");
 
         const data = await fetchData();
@@ -13,6 +12,10 @@
     }
 
     const fetchData = async () => {
+        if(!tools.getOpenid()){
+            tools.showUserinfoCollector(oWrapper);
+            return;
+        }
         tools.showInitLoading(oWrapper);
         try {
             const {code, data} = await tools.get(`/api/laf/by-user?start=0&limit=10`);

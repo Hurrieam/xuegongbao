@@ -1,11 +1,8 @@
 ((win, doc, tools) => {
     interface IProfile {
-        openid: string;
-        nickname: string;
         stuName: string;
         stuClass: string;
         stuId: string;
-        avatar: string;
     }
 
     const oWrapper = doc.getElementById("J_wrapper") as HTMLDivElement,
@@ -62,13 +59,16 @@
             tools.hideAlert();
             return null;
         }
-        return {stuName, stuClass, stuId} as IProfile;
+        return {
+            stuName,
+            stuClass,
+            stuId
+        } as IProfile;
     }
 
-    const saveToLocalStorage = ({stuName, stuClass, stuId}: IProfile) => {
-        const userinfo: IProfile = tools.getUserinfo();
-        localStorage.setItem("_userinfo", JSON.stringify({...userinfo, stuName, stuClass, stuId}));
-        localStorage.setItem("_openid", stuId);
+    const saveToLocalStorage = (profile: IProfile) => {
+        localStorage.setItem("_userinfo", JSON.stringify(profile));
+        localStorage.setItem("_openid", profile.stuId);
     }
 
     const checkStuId = (stuId: string) => {

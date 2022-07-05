@@ -33,7 +33,6 @@
     ]
 
     const init = () => {
-        tools.checkLogin();
         tools.createHeader(oWrapper, "食堂评价");
         bindEvent();
         render();
