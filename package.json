@@ -8,7 +8,6 @@
     "mysql2": "^2.3.3",
     "node-schedule": "^2.1.0",
     "sequelize": "^6.19.0",
-    "sha1": "^1.1.1",
     "xss": "^1.0.11"
   },
   "scripts": {

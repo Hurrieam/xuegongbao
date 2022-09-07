@@ -1,5 +1,4 @@
 import {Route} from './types';
-import {authentic} from "./handler/authentic";
 import {login} from "./handler/authorize";
 import {ping} from "./handler/ping";
 import {upload} from "./handler/upload";
@@ -50,12 +49,12 @@ import {authAdmin, authUser} from "./middleware/auth";
 
 
 export const routes: Route[] = [
-    {
-        method: "get",
-        path: '/authentic',
-        middleware: [],
-        handler: authentic,
-    },
+    // {
+    //     method: "get",
+    //     path: '/authentic',
+    //     middleware: [],
+    //     handler: authentic,
+    // },
     // {
     //     method: "get",
     //     path: '/authorize',
@@ -65,7 +64,7 @@ export const routes: Route[] = [
     {
         method: "post",
         path: '/login',
-        middleware: [authUser, xss, bodyParser],
+        middleware: [xss, bodyParser],
         handler: login,
     },
     {
@@ -155,7 +154,7 @@ export const routes: Route[] = [
     {
         method: "get",
         path: '/phonebook/list',
-        middleware: [authUser],
+        middleware: [],
         handler: findAllPhoneItems
     },
     {
