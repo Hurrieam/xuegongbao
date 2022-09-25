@@ -2,83 +2,73 @@ import {Op} from "sequelize";
 import {Handler, ILostAndFound} from "../types";
 import R from "../model/r";
 import CommonDAO from "../dao/common";
-import model from "../dao/model";
-import {isDigit, isValidString, toValidDigit} from "../util/checker";
-import {StatusCode, StatusMessage} from "../constant/status";
+import model from "../dao/table";
+import {toDigit} from "../util/checker";
+import {StatusMessage} from "../constant/status";
 import {LostAndFound} from "../dao/_init";
-import {getOpenidFromHeader} from "../util/openid";
+import paramValidator from "../util/param-validator";
+import {getFingerprint, getStuId} from "../util/header-param";
+import {findUserByStuId} from "./user";
 
 /**
  * @tag user
- * @description 添加一条失物招领信息 参数: {openid, itemName, location?, lostTime?, description, images?, stuName?, contact}
+ * @description 添加一条失物/招领信息
+ * @params {stuId, itemName,  description,  contactNumber, type}
  */
-export const addLAFItem: Handler = async (req, res) => {
+export const createLAFItem: Handler = async (req, resp) => {
     const laf: ILostAndFound = req.body;
-    if (!isValidString(laf.itemName)
-        || !isValidString(laf.description)
-        || !isValidString(laf.contact)
-        || (laf.type != "lost" && laf.type != "found")) {
-        return res.send(
-            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
-        );
+    const {title, location, date, description, contactMethod, contactNumber, type, tags, images} = laf;
+    if (!paramValidator(resp, title, description, contactMethod, contactNumber, type)) {
+        return;
     }
-    const item = await CommonDAO.addOne(model.LOST_AND_FOUND, laf, getOpenidFromHeader(req));
-    const r = item ? R.ok(null, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
-    res.send(r);
+    await LostAndFound.create({
+        stuId: getStuId(req),
+        fingerprint: getFingerprint(req),
+        type: type.toUpperCase(),
+        title, location, date, description, contactMethod, contactNumber, tags, images
+    })
+    resp.send(R.ok(null, StatusMessage.OK));
 }
 
 /**
  * @tag admin
- * @description 根据id删除一条失物招领信息 参数: {id}
+ * @description 根据id删除一条失物招领信息
+ * @params {id}
  */
-export const delLAFById: Handler = async (req, res) => {
+export const deleteLAF: Handler = async (req, resp) => {
     const {id} = req.body;
-    if (!isDigit(id)) {
-        return res.send(
-            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
-        );
-    }
-    await CommonDAO.delOne(model.LOST_AND_FOUND, toValidDigit(id));
-    res.send(R.ok(null, StatusMessage.OK));
+    await CommonDAO.delOne(model.LOST_AND_FOUND, toDigit(id));
+    resp.send(R.ok(null, StatusMessage.OK));
 }
 
 
 /**
  * @tag user
- * @description 根据id更新失物招领的状态 未找到 —> 已找到 参数: {id}
+ * @description 根据id更新失物招领的状态 未找到 —> 已找到
+ * @params {id}
  */
-export const updateLAFStatusById: Handler = async (req, res) => {
+export const updateLAFStatus: Handler = async (req, resp) => {
     const {id} = req.body;
-    if (!isDigit(id)) {
-        return res.send(
-            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
-        );
-    }
-    const item = await CommonDAO.updateStatus(model.LOST_AND_FOUND, toValidDigit(id), true);
-    const r = item ? R.ok(null, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
-    res.send(r);
+    await CommonDAO.updateStatus(model.LOST_AND_FOUND, toDigit(id), true);
+    resp.send(R.ok(null, StatusMessage.OK));
 }
 
 /**
  * @tag user & admin
- * @description 分页查找失物招领信息列表 参数: {start, limit}
+ * @description 分页查找失物招领信息列表
+ * @params {page, pageSize}
  */
-export const findLAFList: Handler = async (req, res) => {
-    const {start, limit} = req.query;
-    if (!isDigit(start) || !isDigit(limit)) {
-        return res.send(
-            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
-        );
-    }
+export const findLAFList: Handler = async (req, resp) => {
+    const {page, pageSize} = req.query;
     const {rows, count: total} = await LostAndFound.findAndCountAll({
         where: {
             [Op.and]: {
-                isDeleted: 0,
-                status: 0
+                deleted: Number(false),
+                status: Number(false)
             }
         },
-        offset: toValidDigit(start),
-        limit: toValidDigit(limit),
+        offset: toDigit(page),
+        limit: toDigit(pageSize),
         order: [['id', 'DESC']]
     });
     const data = {
@@ -86,46 +76,43 @@ export const findLAFList: Handler = async (req, res) => {
         count: rows?.length,
         total: total
     }
-    const r = rows ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
-    res.send(r);
+    resp.send(R.ok(data, StatusMessage.OK));
 }
 
 /**
  * @tag user & admin
- * @description 根据id查找某条失物招领信息详情 参数: {id}
+ * @description 根据id查找某条失物招领信息详情
+ * @params {id}
  */
-export const findLAFbyId: Handler = async (req, res) => {
+export const findLAFDetail: Handler = async (req, resp) => {
     const {id} = req.query;
-    if (!isDigit(id)) {
-        return res.send(
-            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
-        );
+    const item = await CommonDAO.findOne(model.LOST_AND_FOUND, toDigit(id));
+    if (item) {
+        const stuId = item.getDataValue("stuId");
+        item.setDataValue("owner", await findUserByStuId(stuId));
     }
-    const laf = await CommonDAO.findOne(model.LOST_AND_FOUND, toValidDigit(id));
-    const r = laf ? R.ok(laf, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
-    res.send(r);
+    resp.send(R.ok(item, StatusMessage.OK));
 }
 
 /**
  * @tag user
- * @description 根据openid查找分页查找失物招领信息列表 参数: {openid, start, limit}
+ * @description 根据用户查找失物招领信息列表
+ * @params {page, pageSize}
  */
-export const findLAFsByUser: Handler = async (req, res) => {
-    const {start, limit} = req.query;
-    if (!isDigit(start) || !isDigit(limit)) {
-        return res.send(
-            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
-        );
-    }
+export const findUserLAFList: Handler = async (req, resp) => {
+    const {page, pageSize} = req.query;
     const {rows, count: total} = await LostAndFound.findAndCountAll({
         where: {
             [Op.and]: {
-                openid: getOpenidFromHeader(req),
-                isDeleted: 0
+                deleted: false,
+                [Op.or]: {
+                    stuId: getStuId(req),
+                    fingerprint: getFingerprint(req)
+                }
             }
         },
-        limit: toValidDigit(limit),
-        offset: toValidDigit(start),
+        offset: toDigit(page),
+        limit: toDigit(pageSize),
         order: [
             ['id', 'DESC']
         ]
@@ -135,6 +122,40 @@ export const findLAFsByUser: Handler = async (req, res) => {
         count: rows?.length,
         total: total
     }
-    const r = rows ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR);
-    res.send(r);
+    resp.send(R.ok(data, StatusMessage.OK));
+}
+
+/**
+ * @tag user
+ * @description 根据类型查找失物/招领列表
+ * @params {type, page, pageSize}
+ */
+export const findLAFByType: Handler = async (req, resp) => {
+    const {type, page, pageSize} = req.query;
+    if (!paramValidator(resp, type)) {
+        return;
+    }
+    const {rows, count: total} = await LostAndFound.findAndCountAll({
+        where: {
+            [Op.and]: {
+                type: (type as string).toUpperCase(),
+                deleted: false,
+                [Op.or]: {
+                    stuId: getStuId(req),
+                    fingerprint: getFingerprint(req)
+                }
+            }
+        },
+        offset: toDigit(page),
+        limit: toDigit(pageSize),
+        order: [
+            ['id', 'DESC']
+        ]
+    });
+    const data = {
+        items: rows,
+        count: rows?.length,
+        total: total
+    }
+    resp.send(R.ok(data, StatusMessage.OK));
 }

@@ -1,80 +1,90 @@
-((win, doc, tools) => {
-    const oWrapper = doc.getElementById("J_wrapper") as HTMLDivElement,
-        oRadios = oWrapper.getElementsByClassName("J_radio") as HTMLCollectionOf<HTMLInputElement>,
-        oInputs = oWrapper.getElementsByTagName("input") as HTMLCollectionOf<HTMLInputElement>,
-        oSubmit = doc.getElementById("J_submit") as HTMLButtonElement;
-
-    const init = () => {
-        tools.createHeader(oWrapper, "预约咨询");
-        initRender();
-        bindEvent();
-    }
-
-    const initRender = () => {
-       const userinfo =  tools.getUserinfo();
-        oInputs.namedItem("name")!.value = userinfo["stuName"];
-    }
-
-    const bindEvent = () => {
-        oSubmit.addEventListener("click", onSubmit, false);
-    }
-
-    const onSubmit = async () => {
-        if (!tools.getOpenid()) {
-            tools.showUserinfoCollector(oWrapper);
-            return;
-        }
-        const formData = getInputData();
-        if (!formData) return;
-        try {
-            const {code} = await tools.post("/api/reservation/add", formData);
-            if (code != 10000) {
-                tools.showAlert(oWrapper, "提交失败，请重试", false);
-                return;
+(() => {
+    const {Vue, vant} = window;
+    const {ref, onBeforeMount, onMounted, watch} = Vue;
+    const {Toast, Dialog} = vant;
+    Vue.createApp({
+        template: "#template",
+        setup() {
+            const state = ref({
+                type: "心理咨询",
+                contactMethod: "微信"
+            });
+            const contactMethods = ["QQ", "微信", "电话"];
+            const showPicker = ref(false);
+            const showCalendar = ref(false);
+            const loading = ref(false);
+            const disabled = ref(false);
+            onBeforeMount(() => {
+                commonTools.createHeader("咨询预约", {text: "", fn: commonTools.router.back});
+            })
+            onMounted(() => {
+                setTimeout(() => {
+                    Dialog.alert({
+                        message:
+                            "1. 心理咨询又称心理辅导，由专业人员即心理咨询师运用心理学以及相关知识，遵循心理学原则，借助语言、文字等媒介，给咨询对象以帮助、启发、暗示和教育的过程，解决其在学习、工作、生活、疾病和康复等方面出现的心理问题，促使咨询对象的自我调整，从而能够更好地适应环境，保持身心健康。" + "\n" +
+                            "2. 职业规划是对职业生涯乃至人生进行持续的系统的计划的过程，又叫职业生涯设计，是指个人与组织相结合，在对一个人职业生涯的主客观条件进行测定、分析、总结的基础上，对自己的兴趣、爱好、能力、特点进行综合分析与权衡，结合时代特点，根据自己的职业倾向，确定其最佳的职业奋斗目标，并为实现这一目标做出行之有效的安排。",
+                        messageAlign: "left"
+                    }).then(() => {
+                        // on close
+                    });
+                }, 1000);
+            })
+            watch(loading, () => {
+                if (loading.value) {
+                    Toast.loading({
+                        message: "请稍后...",
+                        forbidClick: true,
+                        duration: 0
+                    });
+                } else {
+                    Toast.clear();
+                }
+            })
+            const onSubmit = () => {
+                if (!commonTools.hasRealName()) {
+                    commonTools.showUserinfoSelector();
+                    return;
+                }
+                loading.value = true;
+                setTimeout(async () => {
+                    const {type, content, date, contactMethod, contactNumber} = state.value;
+                    const {code, data} = await commonTools.reqForPost("/api/reservation/create", {
+                        type, content, date, contactMethod, contactNumber
+                    });
+                    loading.value = false;
+                    if (code != 10000) {
+                        Toast.fail("提交失败");
+                        return;
+                    }
+                    loading.value = false;
+                    Dialog.alert({
+                        title: '成功',
+                        message: '您的留言已提交成功!',
+                    }).then(() => {
+                        disabled.value = true;
+                    });
+                }, 1000);
             }
-            tools.showAlert(oWrapper, "提交成功", true);
-            tools.disableButton(oSubmit);
-        } catch (e) {
-            tools.showAlert(oWrapper, "提交失败，请重试", false);
-        } finally {
-            tools.hideAlert();
-        }
-    }
-
-    // 获取表单数据
-    const getInputData = () => {
-        const type = getRadioValue(oRadios),
-            stuName = (oInputs.namedItem("name") as HTMLInputElement).value,
-            sdept = (oInputs.namedItem("sdept") as HTMLInputElement).value,
-            content = (oInputs.namedItem("content") as HTMLInputElement).value,
-            time = (oInputs.namedItem("time") as HTMLInputElement).value,
-            contact = (oInputs.namedItem("contact") as HTMLInputElement).value;
-        const {isBlank} = tools;
-        if (isBlank(type) || isBlank(stuName) || isBlank(sdept) || isBlank(content) || isBlank(time) || isBlank(contact)) {
-            tools.showAlert(oWrapper, "请填写完整信息", false);
-            tools.hideAlert();
-            return;
-        }
-        const data: API.Reservation = {
-            type,
-            stuName,
-            sdept,
-            content,
-            time,
-            contact
-        };
-        return data;
-    }
-
-    // 获取单选框值
-    const getRadioValue = (radios: HTMLCollectionOf<HTMLInputElement>) => {
-        for (let i = 0; i < radios.length; i++) {
-            if (radios[i].checked) {
-                return radios[i].value;
+            const onPickerConfirm = (value: string) => {
+                state.value.contactMethod = value;
+                showPicker.value = false;
+            }
+            const onCalendarConfirm = (date: Date) => {
+                state.value.date = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+                showCalendar.value = false;
+            };
+            return {
+                state,
+                contactMethods,
+                disabled,
+                onSubmit,
+                onPickerConfirm,
+                onCalendarConfirm,
+                showPicker,
+                showCalendar
             }
         }
-        return "";
-    }
-
-    init();
-})(window, document, tools)
+    })
+        .use(vant)
+        .mount("#root");
+})();

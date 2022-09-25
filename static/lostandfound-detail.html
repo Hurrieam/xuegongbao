@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="lib/vue.min.js"></script>
+    <script src="lib/vant.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/lostandfound-detail.js" defer></script>
+    <link rel="stylesheet" href="style/base.css">
+    <title>学工宝服务中心</title>
+</head>
+<body>
+<div id="root"></div>
+<template id="template">
+    <!--信息展示-->
+    <section id="detail-wrapper" style="margin-top: -15px">
+        <van-card class="background-white">
+            <template #title>
+                <div style="display: flex; justify-content: space-between; align-items: center">
+                    <span style="font-size: 16px; font-weight: bold">{{state.title}}</span><br/>
+                    <van-tag type="warning" v-if="state.type === 'LOST'">#寻物</van-tag>
+                    <van-tag type="success" v-if="state.type === 'FOUND'">#寻人</van-tag>
+                </div>
+            </template>
+            <template #desc>
+                <br/>
+                <span>丢失时间: {{state.date || "未知"}}</span>
+                <br/>
+                <span>丢失地点: {{state.location || "未知"}}</span>
+                <p>{{state.description}}</p>
+                <p>联系方式({{state.contactMethod}}): {{state.contactNumber}}</p>
+            </template>
+            <template #tags>
+                <van-space fill>
+                    <van-image
+                            v-for="image in state.images"
+                            fit="contain"
+                            radius="5"
+                            :src=`https://${image}`
+                            @click="imgOnClick(image)"
+                    >
+                        <template #loading>
+                            <van-loading type="spinner" size="20"></van-loading>
+                        </template>
+                        <template #error>加载失败</template>
+                    </van-image>
+                </van-space>
+                <van-space style="margin-top: 15px;" v-if="state.tags?.length">
+                    <van-tag v-for="(tag, idx) in state.tags" :color="colors[idx]">#{{tag}}</van-tag>
+                </van-space>
+            </template>
+        </van-card>
+        <van-overlay :show="showBigImage" @click="showBigImage = false"
+                     style="display: flex;align-items: center;justify-content: center;height: 100%;">
+            <div class="wrapper" @click.stop style="">
+                <van-image
+                        fit="cover"
+                        radius="5"
+                        :src=`https://${currentImage}`
+                >
+                    <template #loading>
+                        <van-loading type="spinner" size="20"></van-loading>
+                    </template>
+                    <template #error>加载失败</template>
+                </van-image>
+            </div>
+        </van-overlay>
+    </section>
+    <!--留言区域-->
+    <section>
+        <div class="background-white"
+             style="margin: 10px 0; height: 200px; display: flex; justify-content: center; align-items: center">
+            <span class="color-grey" style="font-size: 13px">快来评论吧。</span>
+        </div>
+    </section>
+    <section class="bottom-ops-wrapper">
+        <!--友善评论,理性发言-->
+        <van-search
+                show-action shape="round"
+                left-icon=""
+                disabled
+                style="width: 100%; padding: 0 0 0 5px"
+                placeholder="(评论功能暂未启用)"
+        >
+            <template #action>
+                <van-button type="primary" size="small" round disabled>发送</van-button>
+            </template>
+        </van-search>
+    </section>
+</template>
+</body>
+</html>

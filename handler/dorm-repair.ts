@@ -1,98 +1,91 @@
-import {Handler, IRepairItem} from "../types";
-import {isDigit, isValidString, toValidDigit} from "../util/checker";
+import {Handler, IDormRepair,} from "../types";
 import R from "../model/r";
-import {StatusCode, StatusMessage} from "../constant/status";
+import {StatusMessage} from "../constant/status";
 import CommonDAO from "../dao/common";
-import model from "../dao/model";
-import {getOpenidFromHeader} from "../util/openid";
+import model from "../dao/table";
+import {toDigit} from "../util/checker";
+import paramValidator from "../util/param-validator";
+import {DormRepair} from "../dao/_init";
+import {getFingerprint, getStuId} from "../util/header-param";
+import {findUserByStuId} from "./user";
 
 /**
  * @tag user
- * @description 添加一个保修订单 参数: {openid, itemName, description, dorm, room, stuName?, contact}
+ * @description 添加一个报修单
+ * @params  {stuId, itemName, description, dorm, room, contact}
  */
-export const addDormRepairItem: Handler = async (req, res) => {
-    const repairItem: IRepairItem = req.body;
-    const {itemName, description, dorm, room, stuName, contact} = repairItem;
-    if (!isValidString(itemName)
-        || !isValidString(description)
-        || !isValidString(dorm)
-        || !isValidString(room)
-        || !isValidString(stuName)
-        || !isValidString(contact)) {
-        return res.send(
-            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
-        );
+export const createDormRepairItem: Handler = async (req, resp) => {
+    const repairItem: IDormRepair = req.body;
+    const {itemName, description, dorm, room, contactNumber} = repairItem;
+    if (!paramValidator(resp, itemName, description, dorm, room, contactNumber)) {
+        return;
     }
-    const item = await CommonDAO.addOne(model.REPAIR, repairItem, getOpenidFromHeader(req));
-    const r = item ? R.ok(null, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
-    res.send(r);
+    await DormRepair.create({
+        fingerprint: getFingerprint(req),
+        stuId: getStuId(req),
+        itemName, description, dorm, room, contactNumber
+    });
+    resp.send(R.ok(null, StatusMessage.OK));
 };
 
 /**
  * @tag admin
- * @description 分页查询所有报修订单 参数: {start, limit}
+ * @description 分页查询报修单
+ * @params  {page, pageSize}
  */
-export const findAllRepairItems: Handler = async (req, res) => {
-    const {start, limit} = req.query;
-    if (!isDigit(start) || !isDigit(limit)) {
-        return res.send(
-            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
-        );
-    }
-    const {rows, count: total} = await CommonDAO.findSome(model.REPAIR, toValidDigit(start), toValidDigit(limit));
+export const findRepairList: Handler = async (req, resp) => {
+    const {page, pageSize} = req.query;
+    const {rows, count: total} = await DormRepair.findAndCountAll({
+        where: {
+            deleted: false,
+        },
+        offset: toDigit(page),
+        limit: toDigit(pageSize),
+        order: [
+            ['id', 'DESC']
+        ]
+    });
     const data = {
         items: rows,
         count: rows?.length,
         total: total
     };
-    const r = rows ? R.ok(data, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
-    res.send(r);
+    resp.send(R.ok(data, StatusMessage.OK));
 };
 
 /**
  * @tag admin & user
- * @description 根据id查询报修订单 参数: {id}
+ * @description 根据id查询报修单
+ * @params  {id}
  */
-export const findRepairItemById: Handler = async (req, res) => {
+export const findRepairItem: Handler = async (req, resp) => {
     const {id} = req.query;
-    if (!isDigit(id)) {
-        return res.send(
-            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
-        );
+    const item = await CommonDAO.findOne(model.REPAIR, toDigit(id));
+    if (item) {
+        const stuId = item.getDataValue("stuId");
+        item.setDataValue("owner", await findUserByStuId(stuId));
     }
-    const item = await CommonDAO.findOne(model.REPAIR, toValidDigit(id));
-    const r = item ? R.ok(item, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
-    res.send(r);
+    resp.send(R.ok(item, StatusMessage.OK));
 };
 
 /**
  * @tag admin
- * @description 根据id删除报修订单 参数: {id}
+ * @description 根据id删除报修订单
+ * @params  {id}
  */
-export const deleteRepairItemById: Handler = async (req, res) => {
+export const deleteRepairItem: Handler = async (req, resp) => {
     const {id} = req.body;
-    if (!isDigit(id)) {
-        return res.send(
-            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
-        );
-    }
-    const item = await CommonDAO.delOne(model.REPAIR, toValidDigit(id));
-    const r = item ? R.ok(null, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
-    res.send(r);
+    await CommonDAO.delOne(model.REPAIR, toDigit(id));
+    resp.send(R.ok(null, StatusMessage.OK));
 };
 
 /**
  * @tag admin
- * @description 根据id更新报修订单状态 参数: {id}
+ * @description 根据id更新报修单状态
+ * @params  {id}
  */
-export const updateRepairItemStatusById: Handler = async (req, res) => {
+export const updateRepairItemStatus: Handler = async (req, resp) => {
     const {id} = req.body;
-    if (!isDigit(id)) {
-        return res.send(
-            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
-        );
-    }
-    const item = await CommonDAO.updateStatus(model.REPAIR, toValidDigit(id), true);
-    const r = item ? R.ok(null, StatusMessage.OK) : R.error(StatusCode.UNKNOWN_ERROR, StatusMessage.UNKNOWN_ERROR)
-    res.send(r);
+    await CommonDAO.updateStatus(model.REPAIR, toDigit(id), true);
+    resp.send(R.ok(null, StatusMessage.OK));
 };

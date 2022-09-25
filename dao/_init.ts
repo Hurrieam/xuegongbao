@@ -3,17 +3,17 @@ import {DataTypes, Sequelize} from 'sequelize';
 import config from "../util/env-parser";
 
 const {DATABASE, USERNAME, PASSWORD, HOST, PORT, SECRET_ID, SECRET_KEY} = config;
-/**
- * 初始化数据库连接池
- */
-const sequelize = new Sequelize(DATABASE, USERNAME, PASSWORD, {
+
+export const sequelize = new Sequelize(DATABASE, USERNAME, PASSWORD, {
     host: HOST,
     port: Number(PORT),
     dialect: "mysql",
+    timezone: "+08:00",
     define: {
         charset: "utf8mb4",
         collate: "utf8mb4_unicode_ci",
-        timestamps: true
+        timestamps: true,
+        freezeTableName: true
     },
     pool: {
         max: 10,
@@ -28,47 +28,47 @@ export const cos = new COS({
     SecretKey: SECRET_KEY
 });
 
+// 以下都为数据库表模型
 /**
- * 初始化数据库表结构
+ * 数据库表: 用户表
  */
-// 数据库表: 用户表
-export const User = sequelize.define('User', {
-    openid: {
+export const User = sequelize.define('user', {
+    fingerprint: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
-        comment: "用户唯一标识"
-    },
-    stuName: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        defaultValue: "***",
-        comment: "学生姓名"
-    },
-    stuClass: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        defaultValue: "***",
-        comment: "学生班级"
+        comment: "客户端指纹"
     },
     stuId: {
         type: DataTypes.STRING,
         allowNull: true,
-        defaultValue: "***",
         comment: "学生学号"
+    },
+    stuClass: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        comment: "学生班级"
+    },
+    stuName: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        comment: "学生姓名"
     },
     active: {
         type: DataTypes.BOOLEAN,
-        allowNull: true,
+        allowNull: false,
         defaultValue: true,
-        comment: "当日是否活跃 true: 活跃 false: 不活跃"
+        comment: "当日是否活跃: true-活跃 false-不活跃"
     }
 }, {
-    freezeTableName: true
+    timestamps: true,
+    underscored: true
 });
 
-// 数据库表: 管理员表
-export const Admin = sequelize.define("Admin", {
+/**
+ *  数据库表: 管理员表
+ */
+export const Manager = sequelize.define("manager", {
     username: {
         type: DataTypes.STRING(30),
         allowNull: false,
@@ -80,56 +80,84 @@ export const Admin = sequelize.define("Admin", {
         allowNull: false,
         comment: "密码"
     },
+    superAdmin: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+        comment: "是否为超级管理员: true-是 false-否"
+    },
     status: {
         type: DataTypes.BOOLEAN,
-        allowNull: true,
+        allowNull: false,
         defaultValue: true,
-        comment: "账号状态 true:正常 false:禁用"
-    },
+        comment: "账号状态: true-正常 false-禁用"
+    }
 }, {
-    freezeTableName: true
+    timestamps: true,
+    underscored: true
 });
 
-// 数据库表: 电话簿
-export const PhoneBook = sequelize.define("PhoneBook", {
-    deptName: {
+/**
+ * 数据库表: 电话簿
+ */
+export const PhoneBook = sequelize.define("phonebook", {
+    type: {
+        type: DataTypes.ENUM,
+        values: ["DEPT", "PEOPLE"],
+        allowNull: false,
+        comment: "类型: DEPT-部门 PEOPLE-人员"
+    },
+    name: {
         type: DataTypes.STRING,
         allowNull: false,
-        comment: "部门名称"
+        comment: "名称"
     },
     phone: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(15),
         allowNull: false,
-        comment: "电话"
+        comment: "电话号码"
     },
-    isDeleted: {
+    deleted: {
         type: DataTypes.BOOLEAN,
-        allowNull: true,
+        allowNull: false,
         defaultValue: false,
         comment: "状态: true-已删除, false-正常"
     }
 }, {
-    freezeTableName: true
+    timestamps: true,
+    underscored: true
 });
 
-// 数据库表: 失物招领
-export const LostAndFound = sequelize.define("LostAndFound", {
-    openid: {
+/**
+ * 数据库表: 失物招领
+ */
+export const LostAndFound = sequelize.define("lostandfound", {
+    fingerprint: {
         type: DataTypes.STRING,
         allowNull: false,
-        comment: "用户唯一标识"
+        comment: "客户端指纹"
     },
-    itemName: {
+    stuId: {
         type: DataTypes.STRING,
         allowNull: false,
-        comment: "物品名称"
+        comment: "学生ID"
+    },
+    title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: "标题"
+    },
+    tags: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        comment: "相关标签"
     },
     location: {
         type: DataTypes.STRING,
         allowNull: true,
         comment: "丢失地点"
     },
-    time: {
+    date: {
         type: DataTypes.STRING,
         allowNull: true,
         comment: "丢失时间"
@@ -144,165 +172,197 @@ export const LostAndFound = sequelize.define("LostAndFound", {
         allowNull: true,
         comment: "图片列表"
     },
-    stuName: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        comment: "学生姓名"
+    contactMethod: {
+        type: DataTypes.ENUM,
+        values: ["QQ", "微信", "电话"],
+        allowNull: false,
+        comment: "联系方式类型"
     },
-    contact: {
+    contactNumber: {
         type: DataTypes.STRING,
         allowNull: false,
         comment: "联系方式"
     },
     type: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM,
+        values: ["LOST", "FOUND"],
         allowNull: false,
-        comment: "类型: lost-丢失, found-招领"
+        comment: "类型: LOST-丢失, FOUND-招领"
     },
     status: {
         type: DataTypes.BOOLEAN,
-        allowNull: true,
+        allowNull: false,
         defaultValue: false,
-        comment: "状态: true-已找到, false-未找到"
+        comment: "状态: true-完成, false-未完成"
     },
-    isDeleted: {
+    deleted: {
         type: DataTypes.BOOLEAN,
-        allowNull: true,
+        allowNull: false,
         defaultValue: false,
         comment: "状态: true-已删除, false-正常"
     }
 }, {
-    freezeTableName: true
+    timestamps: true,
+    underscored: true
 });
 
-// 数据库表: 咨询预约
-export const Reservation = sequelize.define("Reservation", {
-    openid: {
+/**
+ * 数据库表: 咨询预约
+ */
+export const Reservation = sequelize.define("reservation", {
+    fingerprint: {
         type: DataTypes.STRING,
         allowNull: false,
-        comment: "用户唯一标识"
+        comment: "客户端指纹"
+    },
+    stuId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: "学生ID"
     },
     type: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM,
+        values: ["心理咨询", "职业规划咨询"],
         allowNull: false,
-        comment: "咨询类型: 心理咨询 | 职业规划咨询"
-    },
-    stuName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        comment: "学生姓名"
-    },
-    sdept: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        comment: "学院名称"
+        comment: "咨询类型: 0-心理咨询, 1-职业规划咨询"
     },
     content: {
         type: DataTypes.STRING,
         allowNull: false,
         comment: "大致内容"
     },
-    time: {
-        type: DataTypes.STRING,
+    date: {
+        type: DataTypes.DATE,
         allowNull: false,
         comment: "预约时间"
     },
-    contact: {
+    contactMethod: {
+        type: DataTypes.ENUM,
+        values: ["QQ", "微信", "电话"],
+        allowNull: false,
+        comment: "联系方式类型"
+    },
+    contactNumber: {
         type: DataTypes.STRING,
         allowNull: false,
         comment: "联系方式"
     },
     status: {
         type: DataTypes.BOOLEAN,
-        allowNull: true,
+        allowNull: false,
         defaultValue: false,
         comment: "状态: true-已处理, false-未处理"
     },
-    isDeleted: {
+    deleted: {
         type: DataTypes.BOOLEAN,
-        allowNull: true,
+        allowNull: false,
         defaultValue: false,
         comment: "状态: true-已删除, false-正常"
     }
 }, {
-    freezeTableName: true
+    timestamps: true,
+    underscored: true
 });
 
-// 数据库表: 评论
-export const Comment = sequelize.define("Comment", {
-    openid: {
+/**
+ * 数据库表: 留言
+ */
+export const Message = sequelize.define("message", {
+    fingerprint: {
         type: DataTypes.STRING,
         allowNull: false,
-        comment: "用户唯一标识"
+        comment: "客户端指纹"
     },
-    stuName: {
+    stuId: {
         type: DataTypes.STRING,
         allowNull: true,
-        defaultValue: "***",
-        comment: "学生姓名"
+        comment: "学生ID",
     },
     content: {
         type: DataTypes.STRING(1024),
         allowNull: false,
-        comment: "评论内容"
+        comment: "留言内容"
     },
     parentId: {
         type: DataTypes.INTEGER,
         allowNull: true,
         comment: "父评论ID"
     },
-    hasReply: {
+    anonymous: {
         type: DataTypes.BOOLEAN,
-        allowNull: true,
+        allowNull: false,
         defaultValue: false,
-        comment: "是否被回复: true-有, false-无"
+        comment: "是否匿名"
     },
-    isDeleted: {
+    replied: {
         type: DataTypes.BOOLEAN,
-        allowNull: true,
+        allowNull: false,
         defaultValue: false,
-        comment: "状态: true-已删除, false-正常"
-    }
-}, {
-    freezeTableName: true
-});
-
-// 数据库表: 反馈
-export const Feedback = sequelize.define("Feedback", {
-    openid: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        comment: "用户唯一标识"
+        comment: "是否被回复: true-已回复, false-未回复"
     },
-    content: {
-        type: DataTypes.STRING(1024),
-        allowNull: false,
-        comment: "反馈内容"
-    },
-    contact: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        comment: "联系方式"
-    },
-    isDeleted: {
+    isReply: {
         type: DataTypes.BOOLEAN,
-        allowNull: true,
+        allowNull: false,
+        defaultValue: false,
+        comment: "是否是回复型留言: true-回复型留言, false-普通留言"
+    },
+    deleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
         defaultValue: false,
         comment: "状态: true-已删除, false-正常"
     }
 }, {
-    freezeTableName: true
+    timestamps: true,
+    underscored: true
 });
 
-// 数据库表: 宿舍报修
-export const Repair = sequelize.define("Repair", {
-    openid: {
+/**
+ * @deprecated
+ * 数据库表: 反馈
+ */
+// export const Feedback = sequelize.define("feedback", {
+//     openid: {
+//         type: DataTypes.STRING,
+//         allowNull: false,
+//         comment: "用户唯一标识"
+//     },
+//     content: {
+//         type: DataTypes.STRING(1024),
+//         allowNull: false,
+//         comment: "反馈内容"
+//     },
+//     contact: {
+//         type: DataTypes.STRING,
+//         allowNull: false,
+//         comment: "联系方式"
+//     },
+//     deleted: {
+//         type: DataTypes.BOOLEAN,
+//         allowNull: true,
+//         defaultValue: false,
+//         comment: "状态: true-已删除, false-正常"
+//     }
+// }, {
+//     freezeTableName: true
+// });
+
+/**
+ * 数据库表: 宿舍报修
+ */
+export const DormRepair = sequelize.define("dorm_repair", {
+    fingerprint: {
         type: DataTypes.STRING,
         allowNull: false,
-        comment: "用户唯一标识"
+        comment: "客户端指纹"
+    },
+    stuId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        comment: "学生ID"
     },
     itemName: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(25),
         allowNull: false,
         comment: "物品名称"
     },
@@ -314,80 +374,98 @@ export const Repair = sequelize.define("Repair", {
     dorm: {
         type: DataTypes.STRING,
         allowNull: false,
-        comment: "宿舍楼"
+        comment: "宿舍楼号"
     },
     room: {
         type: DataTypes.STRING,
         allowNull: false,
         comment: "宿舍号"
     },
-    stuName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        comment: "学生姓名"
-    },
-    contact: {
+    contactNumber: {
         type: DataTypes.STRING,
         allowNull: false,
         comment: "联系方式"
     },
     status: {
         type: DataTypes.BOOLEAN,
-        allowNull: true,
+        allowNull: false,
         defaultValue: false,
-        comment: "状态: true-完成, false-未完成"
+        comment: "状态: true-已处理, false-未处理"
     },
-    isDeleted: {
+    deleted: {
         type: DataTypes.BOOLEAN,
-        allowNull: true,
+        allowNull: false,
         defaultValue: false,
         comment: "状态: true-已删除, false-正常"
     }
 }, {
-    freezeTableName: true
+    timestamps: true,
+    underscored: true
 });
 
-// 数据库表: 食堂评价
-export const CanteenEval = sequelize.define("CanteenEval", {
-    openid: {
+/**
+ * 数据库表: 食堂评价
+ */
+export const CanteenEval = sequelize.define("canteen_eval", {
+    fingerprint: {
         type: DataTypes.STRING,
         allowNull: false,
-        comment: "用户唯一标识"
+        comment: "客户端指纹"
     },
-    canteenName: {
+    stuId: {
         type: DataTypes.STRING,
+        allowNull: false,
+        comment: "学生ID"
+    },
+    canteen: {
+        type: DataTypes.ENUM,
+        values: ["CS", "ZK", "MZ", "CY"],
         allowNull: false,
         comment: "食堂名称"
     },
-    content: {
+    ratings: {
         type: DataTypes.STRING(2048),
         allowNull: false,
-        comment: "评价内容"
+        comment: "评价分数"
     },
-    mainProblem: {
-        type: DataTypes.STRING,
+    idea: {
+        type: DataTypes.STRING(512),
+        allowNull: true,
+        comment: "建议或意见"
+    },
+    lowScoreItems: {
+        type: DataTypes.STRING(2048),
         allowNull: false,
-        comment: "主要问题"
+        comment: "低分项(小于等于4分)"
+    },
+    highScoreItems: {
+        type: DataTypes.STRING(2048),
+        allowNull: false,
+        comment: "高分项(满10分)"
     },
     totalScore: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        comment: "评价总分"
+        comment: "评价总分(共100分)"
     },
-    isDeleted: {
+    deleted: {
         type: DataTypes.BOOLEAN,
-        allowNull: true,
+        allowNull: false,
         defaultValue: false,
         comment: "状态: true-已删除, false-正常"
     }
 }, {
-    freezeTableName: true
+    timestamps: true,
+    underscored: true
 });
 
-// 数据库表: 食堂评价总结
-export const EvalSummary = sequelize.define("EvalSummary", {
-    canteenName: {
-        type: DataTypes.STRING,
+/**
+ * 数据库表: 食堂评价总结
+ */
+export const EvalSummary = sequelize.define("eval_summary", {
+    canteen: {
+        type: DataTypes.ENUM,
+        values: ["CS", "ZK", "MZ", "CY"],
         allowNull: false,
         comment: "食堂名称"
     },
@@ -403,18 +481,19 @@ export const EvalSummary = sequelize.define("EvalSummary", {
     },
     avgScore: {
         type: DataTypes.FLOAT,
-        allowNull: true,
+        allowNull: false,
         defaultValue: 0,
         comment: "平均分"
     },
-    rate: {
+    changeRate: {
         type: DataTypes.FLOAT,
-        allowNull: true,
+        allowNull: false,
         defaultValue: 0,
         comment: "分数变化率"
-    },
+    }
 }, {
-    freezeTableName: true,
+    timestamps: true,
+    underscored: true,
     hooks: {
         afterUpdate: (instance, options) => {
             // 更新后计算平均分
@@ -424,63 +503,67 @@ export const EvalSummary = sequelize.define("EvalSummary", {
             const nowAvgScore = totalScore / totalCount;
             EvalSummary.update({
                 avgScore: nowAvgScore,
-                rate: (nowAvgScore - beforeAvgScore) / beforeAvgScore
+                changeRate: (nowAvgScore - beforeAvgScore) / beforeAvgScore
             }, {
                 where: {
-                    canteenName: instance.getDataValue("canteenName")
+                    canteen: instance.getDataValue("canteen")
                 }
             });
         },
     }
 });
 
-// 数据库表: 每日系统使用量
-export const DailyUsage = sequelize.define("DailyUsage", {
-    users: {
+/**
+ * 数据库表: 每日系统使用量
+ */
+export const DailyUsage = sequelize.define("daily_usage", {
+    userCount: {
         type: DataTypes.INTEGER,
         allowNull: false,
         comment: "当日活跃用户数"
     },
-    comments: {
+    messageCount: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        comment: "当日评论数"
+        comment: "当日留言数"
     },
-    repairs: {
+    repairCount: {
         type: DataTypes.INTEGER,
         allowNull: false,
         comment: "当日报修数"
     },
-    reservations: {
+    reservationCount: {
         type: DataTypes.INTEGER,
         allowNull: false,
         comment: "当日预约数"
     }
 }, {
-    freezeTableName: true
+    timestamps: true,
+    underscored: true
 });
 
 /**
- * 初始化数据库模型
+ * 初始化数据库
  */
-const init = async () => {
-    await sequelize.sync({force: false});
+const init = async (force: boolean) => {
+    await sequelize.sync({force});
     EvalSummary.findOrCreate({
-        where: {canteenName: "CS"},
-        defaults: {canteenName: "CS", totalScore: 100, totalCount: 1, avgScore: 100}
+        where: {canteen: "CS"},
+        defaults: {canteen: "CS", totalScore: 100, totalCount: 1, avgScore: 100}
     });
     EvalSummary.findOrCreate({
-        where: {canteenName: "ZK"},
-        defaults: {canteenName: "ZK", totalScore: 100, totalCount: 1, avgScore: 100}
+        where: {canteen: "ZK"},
+        defaults: {canteen: "ZK", totalScore: 100, totalCount: 1, avgScore: 100}
     });
     EvalSummary.findOrCreate({
-        where: {canteenName: "MZ"},
-        defaults: {canteenName: "MZ", totalScore: 100, totalCount: 1, avgScore: 100}
+        where: {canteen: "MZ"},
+        defaults: {canteen: "MZ", totalScore: 100, totalCount: 1, avgScore: 100}
     });
     EvalSummary.findOrCreate({
-        where: {canteenName: "CY"},
-        defaults: {canteenName: "CY", totalScore: 100, totalCount: 1, avgScore: 100}
+        where: {canteen: "CY"},
+        defaults: {canteen: "CY", totalScore: 100, totalCount: 1, avgScore: 100}
     });
 }
 
-// init();
+// init(true);
+// init(false);

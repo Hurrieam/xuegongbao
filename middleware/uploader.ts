@@ -8,9 +8,10 @@ export const uploader: Middleware = (req, res, next) => {
     multer({
         storage: multer.memoryStorage(),
         limits: {
-            fileSize: 5 * 1024 * 1024,
+            fileSize: 10 * 1024 * 1024,
         },
-    }).single("image")(req, res, (err) => {
+    }).single("file")(req, res, (err) => {
+        console.log(err)
         if (err) {
             return res.send(
                 R.error(StatusCode.ILLEGAL_PARAM,StatusMessage.ILLEGAL_PARAM)

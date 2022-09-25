@@ -1,61 +1,59 @@
-import {Handler, IAdmin} from "../types";
-import {isValidString} from "../util/checker";
+import {Handler, IManager} from "../types";
 import {StatusCode, StatusMessage} from "../constant/status";
 import R from "../model/r";
-import {Admin} from "../dao/_init";
 import {encrypt} from "../util/encryptor";
 import {generateToken} from "../util/jwt";
+import {Manager} from "../dao/_init";
+import paramValidator from "../util/param-validator";
 
 /**
  * @description 微信授权, 获得微信用户的唯一凭证: openid
  */
-// export const authorize: Handler = async (req, res) => {
+// export const authorize: Handler = async (req, resp) => {
 //     // 1. 获取code
 //     const code = req.query.code as string;
 //     // 2. 获取用户信息
-//     const result: IAuthorize | null = await getAccessTokenFromWechat(code);
-//     if (!result) {
-//         return res.redirect(`/static/index.html?message=${encodeURIComponent("微信授权失败")}`);
+//     const respult: IAuthorize | null = await getAccessTokenFromWechat(code);
+//     if (!respult) {
+//         return resp.redirect(`/static/index.html?message=${encodeURIComponent("微信授权失败")}`);
 //     }
-//     const {access_token, openid} = result;
+//     const {access_token, openid} = respult;
 //     const userInfo: IUserInfo | null = await getUserInfoFromWechat(access_token, openid);
 //     if (!userInfo || userInfo.errcode) {
-//         return res.redirect(`/static/index.html?message=${encodeURIComponent("获取用户信息失败")}`);
+//         return resp.redirect(`/static/index.html?message=${encodeURIComponent("获取用户信息失败")}`);
 //     }
 //     // 3. 将用户信息存入数据库
 //     saveNewToDatabase(userInfo, openid);
 //     // 4. 返回数据给前端
-//     res.redirect(302, `/static/index.html?openid=${openid}`);
+//     resp.redirect(302, `/static/index.html?openid=${openid}`);
 // }
 
 /**
  * @description 管理员登陆
  */
-export const login: Handler = async (req, res) => {
+export const login: Handler = async (req, resp) => {
     const {username, password} = req.body;
-    if (!isValidString(username) || !isValidString(password)) {
-        return res.send(
-            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
-        );
+    if (!paramValidator(resp, username, password)) {
+        return;
     }
-    const result: IAdmin | any = await Admin.findOne({
+    const manager: IManager | any = await Manager.findOne({
         where: {
             username,
             password: encrypt(password)
         }
     });
 
-    if (!result) {
-        return res.send(
+    if (!manager) {
+        return resp.send(
             R.error(StatusCode.PASSWORD_ERROR, StatusMessage.PASSWORD_ERROR)
         );
-    } else if (result.status == false) {
-        return res.send(
+    } else if (manager.status == false) {
+        return resp.send(
             R.error(StatusCode.ACCOUNT_DISABLED, StatusMessage.ACCOUNT_DISABLED)
         );
     }
     const token = await generateToken(username);
-    res.send(
+    resp.send(
         R.ok({token}, StatusMessage.OK)
     );
 }
@@ -74,14 +72,14 @@ export const login: Handler = async (req, res) => {
 //         code: code
 //     }, "get");
 //
-//     let result;
+//     let respult;
 //     try {
-//         result = await promise;
+//         respult = await promise;
 //     } catch (e) {
 //         return null;
 //     }
 //     // @ts-ignore
-//     const {access_token, openid} = result;
+//     const {access_token, openid} = respult;
 //     return {
 //         access_token,
 //         openid
@@ -101,15 +99,15 @@ export const login: Handler = async (req, res) => {
 //         lang: "zh_CN",
 //     }, "get");
 //
-//     let result;
+//     let respult;
 //     try {
-//         result = await promise;
+//         respult = await promise;
 //     } catch (e) {
 //         return null;
 //     }
 //
 //     // @ts-ignore
-//     const {nickname, avatar} = result;
+//     const {nickname, avatar} = respult;
 //     return {
 //         nickname,
 //         avatar
@@ -117,7 +115,7 @@ export const login: Handler = async (req, res) => {
 // }
 
 // const doRequest = (url: string, data: any, method: string) => {
-//     return new Promise((resolve, reject) => {
+//     return new Promise((respolve, reject) => {
 //         request.defaults({
 //             strictSSL: false,
 //             rejectUnauthorized: false
@@ -125,11 +123,11 @@ export const login: Handler = async (req, res) => {
 //             method: method,
 //             url: url,
 //             qs: {...data}
-//         }, (err, response, body) => {
+//         }, (err, respponse, body) => {
 //             if (err) {
 //                 reject(err);
 //             } else {
-//                 resolve(JSON.parse(body));
+//                 respolve(JSON.parse(body));
 //             }
 //         })
 //     })

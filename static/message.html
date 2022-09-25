@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="lib/vue.min.js"></script>
+    <script src="lib/vant.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/message.js" defer></script>
+    <link rel="stylesheet" href="style/base.css">
+    <title>学工宝服务中心</title>
+</head>
+<body>
+<div id="root"></div>
+<template id="template">
+    <section>
+        <div class="nodata" v-show="!state.items.length" style="margin-top: 15px;">
+            <img src="asset/nodata.svg" alt="暂无数据">
+            <span>暂无数据</span>
+        </div>
+        <van-card v-for="item in state.items" class="background-white" @click="onClick(item.id)">
+            <template #desc>
+                <p class="van-multi-ellipsis--l2">{{item.content}}</p>
+            </template>
+            <template #price>
+                <span class="color-grey">{{commonTools.formatDate(item.createdAt)}}</span>
+            </template>
+            <template #num>
+                <van-tag type="success" v-if="item.replied">已回复</van-tag>
+                <van-tag type="warning" v-if="!item.replied">未回复</van-tag>
+            </template>
+        </van-card>
+    </section>
+    <section class="bottom-ops-wrapper">
+        <van-button type="primary" block class="width-90" url="/static/message-create.html">我要留言</van-button>
+    </section>
+</template>
+</body>
+</html>

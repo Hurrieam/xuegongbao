@@ -11,8 +11,8 @@
     "xss": "^1.0.11"
   },
   "scripts": {
-    "start": "nodemon app.ts",
-    "build": "tsc && node ./build/util/copier.js"
+    "start": "nodemon app.ts -i ./static",
+    "build": "tsc && node ./build/build.js"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="lib/vue.min.js"></script>
+    <script src="lib/vant.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/lostandfound-create.js" defer></script>
+    <link rel="stylesheet" href="style/base.css">
+    <title>学工宝服务中心</title>
+</head>
+<body>
+<div id="root"></div>
+<template id="template">
+    <van-form @submit="onSubmit">
+        <van-cell-group inset>
+            <van-field
+                    v-model="state.title"
+                    label="标题"
+                    placeholder="请填写标题"
+                    :rules="[{ required: true, message: '请填写标题' },{}]"
+            ></van-field>
+            <van-field
+                    v-model="state.location"
+                    :label="type === 'found' ? '拾物地点' : '丢失地点'"
+                    :placeholder="'请填写' + (type === 'found' ? '拾物地点' : '丢失地点') + '(选填)'"
+            ></van-field>
+            <van-field
+                    v-model="state.date"
+                    :label="type === 'found' ? '拾物时间' : '丢失时间'"
+                    :placeholder="'请填写' + (type === 'found' ? '拾物时间' : '丢失时间') + '(选填)'"
+            ></van-field>
+            <van-field
+                    v-model="state.description"
+                    rows="3"
+                    autosize
+                    type="textarea"
+                    maxlength="200"
+                    placeholder="请输入描述信息"
+                    show-word-limit
+                    :rules="[{ required: true, message: '请填写描述信息' }]"
+            ></van-field>
+            <van-field
+                    v-model="tag"
+                    clearable
+                    label="标签"
+                    placeholder="添加一个标签"
+                    :disabled="tags.length >= 5"
+            >
+                <template #button>
+                    <van-button size="mini" type="primary" icon="plus" plain @click="addTag"
+                                :disabled="tags.length >= 5"></van-button>
+                </template>
+            </van-field>
+            <van-cell v-show="tags.length > 0 && tags.length <= 5">
+                <van-space>
+                    <van-tag v-for="(tag,index) in tags" :color="colors[index]" closeable @close="onClose(tag)">
+                        #{{tag}}
+                    </van-tag>
+                </van-space>
+            </van-cell>
+            <van-field name="uploader" label="图片上传">
+                <template #input>
+                    <van-uploader v-model="images" :max-count="2" :max-size="10 * 1024 * 1024"
+                                  @oversize="onOversize">
+                    </van-uploader>
+                </template>
+            </van-field>
+            <van-field
+                    v-model="state.contactMethod"
+                    is-link
+                    readonly
+                    name="picker"
+                    label="联系方式"
+                    placeholder="选择联系方式"
+                    @click="showPicker = true"
+            ></van-field>
+            <van-popup v-model:show="showPicker" position="bottom">
+                <van-picker
+                        :columns="contactMethods"
+                        :default-index="1"
+                        @confirm="onConfirm"
+                        @cancel="showPicker = false"
+                ></van-picker>
+            </van-popup>
+            <van-field
+                    v-model="state.contactNumber"
+                    :placeholder="'请填写你的' + state.contactMethod + '号码'"
+                    :rules="[{ required: true, message: '请填写联系方式' }]"
+            ></van-field>
+        </van-cell-group>
+        <div style="margin: 16px;">
+            <van-button round block type="primary" native-type="submit" :disabled="disabled">
+                提交
+            </van-button>
+        </div>
+    </van-form>
+</template>
+</body>
+</html>

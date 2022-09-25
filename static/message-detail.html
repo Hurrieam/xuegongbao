@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="lib/vue.min.js"></script>
+    <script src="lib/vant.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/message-detail.js" defer></script>
+    <link rel="stylesheet" href="style/base.css">
+    <title>学工宝服务中心</title>
+</head>
+<body>
+<div id="root"></div>
+<template id="template">
+    <van-cell-group inset>
+        <van-card style="background-color: #FFFFFF">
+            <template #desc>
+                <p>{{state.message.value.content}}</p>
+            </template>
+            <template #num>
+                <p>{{commonTools.formatDate(state.message.value.createdAt)}}</p>
+            </template>
+        </van-card>
+        <van-card style="background-color: #FFFFFF" v-for="item in state.replies.value">
+            <template #desc>
+                <div class="van-hairline--top padding-bottom-10px"></div>
+                <van-row justify="space-between">
+                        <van-tag type="success">管理员</van-tag>
+                        <span class="color-grey">{{commonTools.formatDate(state.message.value.createdAt)}}</span>
+                </van-row>
+                <p>{{item.content}}</p>
+            </template>
+            <template #num>
+
+            </template>
+        </van-card>
+    </van-cell-group>
+</template>
+</body>
+</html>

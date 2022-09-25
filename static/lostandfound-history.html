@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="lib/vue.min.js"></script>
+    <script src="lib/vant.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/lostandfound-history.js" defer></script>
+    <link rel="stylesheet" href="style/base.css">
+    <title>学工宝服务中心</title>
+</head>
+<body>
+<div id="root"></div>
+<template id="template">
+    <section>
+        <van-tabs v-model:active="activatedTab" style="margin-top: -18px">
+            <van-tab title="我的失物" name="lost">
+                <van-swipe-cell>
+                    <div class="nodata" v-show="!state.myLost.value.length" style="margin-top: 15px;">
+                        <img src="asset/nodata.svg" alt="暂无数据">
+                        <span>暂无数据</span>
+                    </div>
+                    <van-card
+                            v-for="item in state.myLost.value"
+                            :title="item.title"
+                            :thumb="getThumb(item.images)"
+                            class="background-white"
+                            @click="commonTools.router.to(`lostandfound-detail.html?id=${item.id}`)"
+                    >
+                        <template #desc>
+                            <p class="van-multi-ellipsis--l2">{{item.description}}</p>
+                        </template>
+                        <template #price>
+                            <span>{{commonTools.formatDate(item.createdAt)}}</span>
+                        </template>
+                        <template #num>
+                            <van-tag type="warning">#寻物</van-tag>
+                        </template>
+                    </van-card>
+                </van-swipe-cell>
+            </van-tab>
+            <van-tab title="我的招领" name="found">
+                <van-swipe-cell>
+                    <div class="nodata" v-show="!state.myFound.value.length" style="margin-top: 15px;">
+                        <img src="asset/nodata.svg" alt="暂无数据">
+                        <span>暂无数据</span>
+                    </div>
+                    <van-card
+                            v-for="item in state.myFound.value"
+                            :title="item.title"
+                            :thumb="getThumb(item.images)"
+                            class="background-white"
+                            @click="commonTools.router.to(`lostandfound-detail.html?id=${item.id}`)"
+                    >
+                        <template #desc>
+                            <p class="van-multi-ellipsis--l2">{{item.description}}</p>
+                        </template>
+                        <template #price>
+                            <span>{{commonTools.formatDate(item.createdAt)}}</span>
+                        </template>
+                        <template #num>
+                            <van-tag type="success">#寻人</van-tag>
+                        </template>
+                    </van-card>
+                </van-swipe-cell>
+            </van-tab>
+        </van-tabs>
+    </section>
+
+    <!--    <section class="bottom-ops-wrapper">-->
+    <!--        <van-button type="primary" block class="width-90" @click="showPicker = true">我要发布</van-button>-->
+    <!--        <van-action-sheet v-model:show="showPicker" :actions="actions" @select="onSelect"></van-action-sheet>-->
+    <!--    </section>-->
+</template>
+</body>
+</html>

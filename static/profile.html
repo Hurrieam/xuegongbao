@@ -1,41 +1,54 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="style/base.css">
-    <link rel="stylesheet" href="style/profile.css">
-    <script src="js/tools.js"></script>
+    <script src="lib/vue.min.js"></script>
+    <script src="lib/vant.min.js"></script>
+    <script src="js/common.js"></script>
     <script src="js/profile.js" defer></script>
+    <link rel="stylesheet" href="style/base.css">
     <title>学工宝服务中心</title>
 </head>
-<body data-weui-theme="light">
-<div class="wrapper" id="J_wrapper">
-    <div class="weui-cells form_list" id="J_list">
-        <label class="weui-cell weui-cell_active">
-            <div class="weui-cell__hd"><span class="weui-label">姓名</span></div>
-            <div class="weui-cell__bd">
-                <input class="weui-input" placeholder="填写你的真实姓名" name="stuName"/>
-            </div>
-        </label>
-        <label class="weui-cell weui-cell_active">
-            <div class="weui-cell__hd"><span class="weui-label">班级</span></div>
-            <div class="weui-cell__bd">
-                <input class="weui-input" placeholder="填写你的班级" name="stuClass"/>
-            </div>
-        </label>
-        <label class="weui-cell weui-cell_active">
-            <div class="weui-cell__hd"><span class="weui-label">学号</span></div>
-            <div class="weui-cell__bd">
-                <input class="weui-input" placeholder="填写你的学号" name="stuId"/>
-            </div>
-        </label>
+<body>
+<div id="root"></div>
+<template id="template">
+    <van-form @submit="onSubmit">
+        <van-cell-group inset>
+            <van-field
+                    v-model="state.stuName.value"
+                    name="姓名"
+                    label="姓名"
+                    placeholder="姓名"
+                    :rules="[{ required: true, message: '请填写姓名' }]"
+            ></van-field>
+            <van-field
+                    v-model="state.stuClass.value"
+                    name="班级"
+                    label="班级"
+                    placeholder="班级"
+                    :rules="[{ required: true, message: '请填写班级' }]"
+            ></van-field>
+            <van-field
+                    v-model="state.stuId.value"
+                    type="number"
+                    name="学号"
+                    label="学号"
+                    placeholder="学号"
+                    :rules="[{ required: true, message: '请填写学号' }]"
+            ></van-field>
+        </van-cell-group>
+        <div style="margin: 16px;">
+            <van-button round block type="primary" native-type="submit">
+                提交
+            </van-button>
+        </div>
+    </van-form>
+    <div class="footer" style="display: flex; justify-content: center; align-items: center; position: fixed; bottom: 15px; width: 100%">
+        <span @click="clearCache" style="font-size: 12px;" class="color-grey">清空缓存</span>
     </div>
-    <div class="button_wrapper">
-        <button class="weui-btn btn-color" id="J_submit">保存</button>
-    </div>
-</div>
+</template>
 </body>
 </html>

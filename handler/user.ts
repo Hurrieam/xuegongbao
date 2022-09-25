@@ -1,74 +1,78 @@
 import {Handler, IUser} from "../types";
-import {isValidString} from "../util/checker";
-import {StatusCode, StatusMessage} from "../constant/status";
+import {StatusMessage} from "../constant/status";
 import R from "../model/r";
 import {User} from "../dao/_init";
-import {getOpenidFromHeader, isValidOpenid} from "../util/openid";
+import {getFingerprint} from "../util/header-param";
+import paramValidator from "../util/param-validator";
 
-interface IUserInfo {
-    openid: string;
-    stuName: string;
-    stuClass: string;
-    stuId: string;
+/**
+ * @tag user
+ * @description 创建用户
+ * @params {fingerprint}
+ */
+export const createUser: Handler = async (req, res) => {
+    const fingerprint = getFingerprint(req);
+    User.findOrCreate({
+        where: {
+            fingerprint
+        },
+        defaults: {
+            fingerprint
+        }
+    })
+    return res.send(R.ok(null, StatusMessage.OK));
 }
-
 /**
  * @tag user admin
  * @description 获取用户信息
+ * @params {fingerprint}
  */
-export const getUserinfoByOpenid: Handler = async (req, res) => {
-    const openid = getOpenidFromHeader(req);
-    if (!openid) {
-        return res.send(
-            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
-        );
-    }
+export const getUserinfo: Handler = async (req, res) => {
+    const fingerprint = getFingerprint(req);
     const user = await User.findOne({
         where: {
-            openid
+            fingerprint
         }
     });
-    if (!user) {
-        return res.send(
-            R.error(StatusCode.USER_NOT_EXIST, StatusMessage.USER_NOT_EXIST)
-        );
+
+    if (user) {
+        const userInJson: IUser = user.toJSON();
+        const userInfo: IUser = {
+            stuName: userInJson.stuName,
+            stuClass: userInJson.stuClass,
+            stuId: userInJson.stuId,
+            fingerprint: userInJson.fingerprint
+        }
+        return res.send(R.ok(userInfo, StatusMessage.OK));
     }
-    const userInJson: IUserInfo = user.toJSON();
-    const userInfo: IUserInfo = {
-        openid: userInJson.openid,
-        stuName: userInJson.stuName,
-        stuClass: userInJson.stuClass,
-        stuId: userInJson.stuId
-    }
-    return res.send(R.ok(userInfo, StatusMessage.OK));
 }
 
 /**
  * @tag user
  * @description 修改用户信息
  */
-export const updateUserinfoByOpenid: Handler = async (req, res) => {
-    const user: IUser = req.body;
-    const {stuName, stuClass, stuId} = user;
-    if (!isValidString(stuName) || !isValidString(stuClass) || !isValidOpenid(stuId)) {
-        return res.send(
-            R.error(StatusCode.ILLEGAL_PARAM, StatusMessage.ILLEGAL_PARAM)
-        );
+export const updateUser: Handler = async (req, res) => {
+    const userinfo: IUser = req.body;
+    const fingerprint = getFingerprint(req);
+    const {stuId, stuName, stuClass} = userinfo;
+    if (!paramValidator(res, stuId, stuName, stuClass)) {
+        return;
     }
-    User.findOrCreate({
+    await User.update({
+        stuId, stuName, stuClass
+    }, {
         where: {
-            openid: stuId
-        },
-        defaults: {
-            openid: stuId, stuName, stuClass, stuId
+            fingerprint
         }
-    }).then(async ([user, created]) => {
-        if (created) {
-            return res.send(R.ok(null, StatusMessage.OK));
-        }
-        await user.update({
-            stuName, stuClass
-        });
-        return res.send(R.ok(null, StatusMessage.OK));
     });
+    return res.send(R.ok(userinfo, StatusMessage.OK));
+}
+
+export const findUserByStuId = async (stuId: string) => {
+    if (stuId) {
+        return await User.findOne({
+            where: {stuId}
+        })
+    }
+    return null;
 }

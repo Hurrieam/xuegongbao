@@ -9,23 +9,23 @@ const CommonDAO = {
     /**
      * 获取多条数据
      * @param model 模型(数据表)
-     * @param start 开始位置
-     * @param limit 每页数量
+     * @param page 开始页
+     * @param pageSize 每页数量
      * @param orderByASC
      * @returns  数据列表
      */
     findSome: async (
         model: ModelCtor<any>,
-        start: number,
-        limit: number,
+        page: number,
+        pageSize: number,
         orderByASC?: boolean
     ): Promise<{ rows: IModel[], count: number }> => {
         return await model.findAndCountAll({
             where: {
-                isDeleted: 0
+                deleted: Number(false)
             },
-            offset: start,
-            limit: limit,
+            offset: page,
+            limit: pageSize,
             order: [
                 ['id', orderByASC ? "ASC" : "DESC"]
             ]
@@ -36,11 +36,11 @@ const CommonDAO = {
      * 添加一条记录
      * @param model 模型(数据表)
      * @param item 新记录
-     * @param openid
+     * @param stuId
      * @returns 此条记录
      */
-    addOne: async (model: ModelCtor<any>, item: IModel, openid?: string): Promise<IModel> => {
-        return await model.create({...item, openid});
+    addOne: async (model: ModelCtor<any>, item: IModel, stuId?: string): Promise<IModel> => {
+        return await model.create({...item, stuId});
     },
 
     /**
@@ -51,7 +51,7 @@ const CommonDAO = {
      */
     delOne: async (model: ModelCtor<any>, id: number): Promise<[affectedCount: number]> => {
         return await model.update({
-            isDeleted: 1
+            deleted: Number(true)
         }, {
             where: {
                 id: id
@@ -82,7 +82,7 @@ const CommonDAO = {
      */
     updateStatus: async (model: ModelCtor<any>, id: number, status: boolean): Promise<[affectedCount: number]> => {
         return await model.update({
-            status: status ? 1 : 0
+            status: Number(status)
         }, {
             where: {
                 id: id

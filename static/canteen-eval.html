@@ -1,48 +1,74 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="style/base.css">
-    <link rel="stylesheet" href="style/canteen-eval.css">
-    <script src="js/tools.js"></script>
+    <script src="lib/vue.min.js"></script>
+    <script src="lib/vant.min.js"></script>
+    <script src="js/common.js"></script>
     <script src="js/canteen-eval.js" defer></script>
+    <link rel="stylesheet" href="style/base.css">
     <title>学工宝服务中心</title>
 </head>
-<body data-weui-theme="light">
-<div class="wrapper" id="J_wrapper">
-    <div class="content">
-        <div class="tip"></div>
-        <div class="selection" id="J_selection">
-            <label><input type="radio" name="canteen" value="CS" checked/>城市餐厅</label>
-            <label><input type="radio" name="canteen" value="MZ"/>民族餐厅</label>
-            <label><input type="radio" name="canteen" value="ZK"/>中快餐厅</label>
-            <label><input type="radio" name="canteen" value="CY"/>城苑餐厅</label>
-        </div>
-        <div class="list" id="J_list"></div>
-        <div class="button_wrapper">
-            <button class="weui-btn btn-color" id="J_submit">提交</button>
-        </div>
-    </div>
-    <template id="J_template">
-        <div class="list-item J_item">
-            <h4></h4>
-            <div class="rating">
-                <label><input type="radio" value="0"/>0分</label>
-                <label><input type="radio" value="2"/>2分</label>
-                <label><input type="radio" value="4"/>4分</label>
-                <label><input type="radio" value="6"/>6分</label>
-                <label><input type="radio" value="8"/>8分</label>
-                <label><input type="radio" value="10"/>10分</label>
+<body>
+<div id="root"></div>
+<template id="template">
+    <van-form @submit="onSubmit">
+        <van-cell-group inset>
+            <van-field
+                    v-model="selectedCanteen"
+                    is-link
+                    readonly
+                    name="picker"
+                    label="选择餐厅"
+                    placeholder="选择你要评价的餐厅"
+                    @click="showPicker = true"
+            ></van-field>
+            <van-popup v-model:show="showPicker" position="bottom">
+                <van-picker
+                        :columns="Object.values(canteens)"
+                        :default-index="0"
+                        @confirm="onConfirm"
+                        @cancel="showPicker = false"
+                ></van-picker>
+            </van-popup>
+            <div v-for="(question, index) in questions">
+                <van-cell>
+                    <template #title>
+                        <van-space direction="vertical" fill>
+                            <span>{{(index + 1) + '. ' + question + '?'}}</span>
+                            <van-rate
+                                    v-model="ratings[index]"
+                                    :size="25"
+                                    color="#ffd21e"
+                                    void-icon="star"
+                                    void-color="#eee"
+                                    style="margin-left: 15px"
+                            ></van-rate>
+                        </van-space>
+                    </template>
+                </van-cell>
             </div>
-            <label class="explain_label">
-                <span>补充说明:</span> <br/>
-                <input type="text" class="weui-input" placeholder="请填写你的建议或意见">
-            </label>
+            <van-cell
+                    title="补充说明"></van-cell>
+            <van-field
+                    v-model="state.idea"
+                    rows="3"
+                    autosize
+                    type="textarea"
+                    maxlength="200"
+                    placeholder="您可以在此处补充更多建议或意见。"
+                    show-word-limit
+            ></van-field>
+        </van-cell-group>
+        <div style="margin: 16px;">
+            <van-button round block type="primary" native-type="submit" :disabled="disabled">
+                提交
+            </van-button>
         </div>
-    </template>
-</div>
+    </van-form>
+</template>
 </body>
 </html>

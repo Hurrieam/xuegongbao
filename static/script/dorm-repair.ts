@@ -1,71 +1,68 @@
-(async (win, doc, tools) => {
-    const oWrapper = doc.getElementById('J_wrapper') as HTMLDivElement,
-        oTextarea = doc.getElementById('J_textarea') as HTMLTextAreaElement,
-        oSubmit = doc.getElementById('J_submit') as HTMLButtonElement,
-        oInputs = doc.getElementsByTagName("input") as HTMLCollectionOf<HTMLInputElement>;
-
-    const init = async () => {
-        tools.createHeader(oWrapper, '宿舍报修');
-        bindEvent();
-    }
-
-    const bindEvent = () => {
-        oTextarea.addEventListener("input", onTextareaInput, false);
-        oSubmit.addEventListener("click", onSubmit, false);
-    }
-
-    // 提交数据
-    const onSubmit = async () => {
-        if(!tools.getOpenid()) {
-            tools.showUserinfoCollector(oWrapper);
-            return;
-        }
-        const formData = getInputData();
-        if (!formData) return;
-        try {
-            const {code} = await tools.post("/api/dorm-repair/add", formData);
-            if (code != 10000) {
-                tools.showAlert(oWrapper, "提交失败，请重试", false);
-                return;
+(() => {
+    const {Vue, vant} = window;
+    const {ref, onBeforeMount, watch} = Vue;
+    const {Dialog, Toast} = vant;
+    Vue.createApp({
+        template: "#template",
+        setup() {
+            const state = {
+                itemName: ref(""),
+                description: ref(""),
+                dorm: ref(""),
+                room: ref(""),
+                contactNumber: ref(""),
             }
-            tools.showAlert(oWrapper, "提交成功", true);
-            tools.disableButton(oSubmit);
-        } catch (e) {
-            tools.showAlert(oWrapper, "提交失败，请重试", false);
-        } finally {
-            tools.hideAlert();
+            const loading = ref(false);
+            const disabled = ref(false);
+
+            onBeforeMount(() => {
+                commonTools.createHeader("宿舍报修", {
+                    text: "", fn: () => commonTools.router.back()
+                });
+            })
+            watch(loading, () => {
+                Toast.loading({
+                    message: "请稍后...",
+                    forbidClick: true,
+                });
+            })
+            const onSubmit = () => {
+                if (!commonTools.hasRealName()) {
+                    commonTools.showUserinfoSelector();
+                    return;
+                }
+                loading.value = true;
+                setTimeout(async () => {
+                    const {code, data} = await commonTools.reqForPost("/api/dorm-repair/create", {
+                        itemName: state.itemName.value,
+                        description: state.description.value,
+                        dorm: state.dorm.value,
+                        room: state.room.value,
+                        contactNumber: state.contactNumber.value,
+                    });
+                    loading.value = false;
+                    if (code != 10000) {
+                        Toast.fail("保存失败");
+                        return;
+                    }
+                    Dialog.alert({
+                        title: '成功',
+                        message: '您的报修已提交成功，请等待工作人员为您处理!',
+                        messageAlign: "left"
+                    }).then(() => {
+                        disabled.value = true;
+                    });
+                }, 1000);
+            }
+
+            return {
+                state,
+                onSubmit,
+                disabled
+            }
         }
-    }
+    })
+        .use(vant)
+        .mount("#root");
 
-    // 获取表单数据
-    const getInputData = () => {
-        const itemName = (oInputs.namedItem("itemName") as HTMLInputElement).value,
-            description = oTextarea.value,
-            dorm = (oInputs.namedItem("dorm") as HTMLInputElement).value,
-            room = (oInputs.namedItem("room") as HTMLInputElement).value,
-            stuName = (oInputs.namedItem("name") as HTMLInputElement).value,
-            contact = (oInputs.namedItem("contact") as HTMLInputElement).value;
-        const {isBlank} = tools;
-        if (isBlank(itemName) || isBlank(description) || isBlank(dorm) || isBlank(room) || isBlank(stuName) || isBlank(contact)) {
-            tools.showAlert(oWrapper, "请填写完整信息", false);
-            tools.hideAlert();
-            return;
-        }
-        const data: API.RepairItem = {
-            itemName,
-            description,
-            dorm,
-            room,
-            stuName,
-            contact
-        };
-        return data;
-    }
-
-    // Textarea输入事件
-    const onTextareaInput = (e: Event) => {
-        tools.computeWordCount(e);
-    }
-
-    await init();
-})(window, document, tools);
+})();

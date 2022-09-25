@@ -1,7 +1,13 @@
 import {NextFunction, Request, Response} from 'express';
 import {Optional} from 'sequelize';
 
-type Method = "get" | "post" | "put" | "delete" | "patch";
+export enum Method {
+    GET = "get",
+    POST = "post",
+    PUT = "put",
+    DELETE = "delete",
+    PATCH = "patch"
+}
 
 export type Handler = (req: Request, res: Response, next?: NextFunction) => any;
 export type Middleware = (req: Request, res: Response, next: NextFunction) => any;
@@ -25,63 +31,87 @@ export interface IModel extends Optional<any, string> {
     [key: string]: any;
 }
 
-export interface IAdmin extends IModel {
+export interface IUser extends IModel {
+    fingerprint: string;
+    stuId?: string;
+    stuClass?: string;
+    stuName?: string;
+    active?: boolean;
+}
+
+export interface IManager extends IModel {
     username: string;
     password: string;
-    status: boolean;
+    superAdmin?: boolean
+    status?: boolean;
 }
 
 export interface IPhoneBook extends IModel {
-    deptName: string;
+    type: string;
+    name: string;
     phone: string;
+    deleted?: boolean;
 }
 
 export interface ILostAndFound extends IModel {
-    itemName: string;
+    fingerprint: string;
+    stuId?: string;
+    title: string;
+    tags?: string;
     location?: string;
-    time?: string;
+    date?: string;
     description: string;
     images?: string;
-    stuName?: string;
-    contact: string;
+    contactMethod: string;
+    contactNumber: string;
     type: string;
+    status?: boolean;
+    deleted?: string;
 }
 
-export interface IComment extends IModel {
-    stuName: string;
+export interface IReservation extends IModel {
+    fingerprint: string;
+    stuId?: string;
+    type: string;
     content: string;
-    parentId?: number;
+    date: string;
+    contactMethod: string;
+    contactNumber: string;
+    status?: boolean;
+    deleted?: boolean;
 }
 
-export interface IRepairItem extends IModel {
+export interface IMessage extends IModel {
+    fingerprint: string;
+    stuId?: string;
+    content: string;
+    parentId?: string;
+    anonymous: boolean;
+    replied?: boolean;
+    isReply?: boolean;
+    deleted?: boolean;
+}
+
+export interface IDormRepair extends IModel {
+    fingerprint: string;
+    stuId?: string;
     itemName: string;
     description: string;
     dorm: string;
     room: string;
-    stuName: string;
-    contact: string;
+    contactNumber: string;
+    status?: string;
+    deleted?: string;
 }
 
-export interface IReservation extends IModel {
-    type: string;
-    stuName: string;
-    sdept: string;
-    content: string;
-    time: string;
-    contact: string;
-}
-
-export interface IEvaluation extends IModel {
-    canteenName: string;
-    content: string;
-    mainProblem: string;
+export interface ICanteenEval extends IModel {
+    fingerprint: string;
+    stuId?: string;
+    canteen: string;
+    ratings: string;
+    idea?: string;
+    lowScoreItems: string;
+    highScoreItems: string;
     totalScore: number;
-}
-
-export interface IUser extends IModel {
-    nickname: string;
-    stuName: string;
-    stuClass: string;
-    stuId: string;
-    avatar: string;
+    deleted?: boolean;
 }

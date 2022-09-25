@@ -1,6 +1,6 @@
 import {Middleware} from "../types";
 import {verifyToken} from "../util/jwt";
-import {getOpenidFromHeader} from "../util/openid";
+import {getStuId} from "../util/header-param";
 import {StatusCode, StatusMessage} from "../constant/status";
 import R from "../model/r";
 
@@ -14,7 +14,7 @@ export const authAdmin: Middleware = (req, res, next) => {
 };
 
 export const authUser: Middleware = (req, res, next) => {
-    if (!getOpenidFromHeader(req)) {
+    if (!getStuId(req)) {
         return res.send(
             R.error(StatusCode.UNAUTHORIZED, StatusMessage.UNAUTHORIZED)
         );

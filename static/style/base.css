@@ -1,102 +1,64 @@
-@import "weui.min.css";
+@import "../lib/vant.css";
+/*@import "theme.css";*/
+@font-face {
+    font-family: 'PingFangB Bold';
+    src: url('../asset/PingFangB Bold.ttf') format('truetype');
+}
 
 body {
     background-color: rgb(241, 244, 249);
+    font-family: "PingFangB Bold", serif;
+    /*padding-top: 15px;*/
 }
 
-.nav-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #fff;
-    padding: 10px;
-    color: #333;
+#root {
+    margin-top: 15px;
 }
 
-.nav-header > .header-back {
+#root .bottom-ops-wrapper {
+    position: fixed;
     display: flex;
     justify-content: center;
-    align-items: center;
-    font-size: 17px;
-    padding-top: 1px;
-    color: #2c2c2c;
+    background-color: #FFFFFF;
+    padding: 10px 0;
+    width: 100%;
+    bottom: 0;
 }
 
-.nav-header > .header-extra {
-    width: 40px;
-    color: #2c2c2c;
+.width-90 {
+    width: 90%;
 }
 
-.nav-header svg {
-    padding-bottom: 3px;
+.padding-bottom-10px {
+    padding-bottom: 10px;
 }
 
-.weui-icon-warn {
-    color: hsla(0, 0%, 100%, .9);
+.color-grey {
+    color: var(--van-card-num-color);
 }
 
-.btn-color {
-    background-color: rgb(59, 108, 228);
+.background-white {
+    background-color: #FFFFFF;
 }
 
-.btn-color:not(.weui-btn_disabled):active {
-    background-color: rgb(104, 146, 242);
-}
-
-.loading_wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 50vh;
-    background-color: #fff;
-    border-radius: 5px;
-    margin: 8px;;
-    text-align: center;
-    color: #333;
-}
-
-.nodata_wrapper {
+.nodata {
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    margin: 8px;;
-    height: 80vh;
+    margin: 0 15px;
+    height: 70vh;
     background-color: #FFFFFF;
-    border-radius: 5px;
+    border-radius: 10px;
+    color: var(--van-card-num-color);
+    font-size: 14px;
 }
 
-.nodata_wrapper img {
+.nodata img {
     width: 100%;
     height: 200px;
 }
 
-.userinfo_collector_wrapper {
-    box-sizing: border-box;
-    position: fixed;
-    height: 80%;
-    width: 100%;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    border-radius: 10px 10px 0 0;
-    z-index: 999;
-    background-color: #fff;
-    animation: show_collector_wrapper 0.5s ease-in-out;
-    animation-fill-mode: forwards;
-}
-
-@keyframes show_collector_wrapper {
-    0% {
-        bottom: -80%;
-    }
-    100% {
-        bottom: 0;
-    }
-}
-
-.collector.weui-cells:before {
-    display: none;
-}
-
-.collector_button_wrapper {
-    margin-top: 100px;
+.van-coupon-list__list .van-empty{
+    display: none !important;
 }

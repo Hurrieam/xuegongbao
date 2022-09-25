@@ -1,30 +1,64 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="lib/vue.min.js"></script>
+    <script src="lib/vant.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/phonebook.js" defer></script>
     <link rel="stylesheet" href="style/base.css">
-    <link rel="stylesheet" href="style/phonebook.css">
-    <script src="js/tools.js"></script>
-    <script src="js/phonebook.js" defer="defer"></script>
     <title>学工宝服务中心</title>
+    <style>
+        .van-coupon-list__list {
+            height: 78vh !important;
+        }
+
+        .van-coupon-list__bottom {
+            display: none;
+        }
+    </style>
 </head>
-<body data-weui-theme="light">
-<div class="page__bd" id="J_wrapper">
-    <div class="weui-search-bar" id="searchBar">
-        <div id="searchForm" role="combobox" aria-haspopup="true" aria-expanded="false" aria-owns="searchResult"
-             class="weui-search-bar__form">
-            <div class="weui-search-bar__box">
-                <i class="weui-icon-search"></i>
-                <input type="search" aria-controls="searchResult" class="weui-search-bar__input" id="searchInput"
-                       placeholder="搜索"/>
-                <a href="" role="button" title="清除" class="weui-icon-clear" id="searchClear"></a>
-            </div>
-        </div>
-    </div>
-    <div class="weui-cells" id="J_list"></div>
-</div>
+<body>
+<div id="root"></div>
+<template id="template">
+    <section>
+        <van-coupon-list
+                style="margin-top: -15px;"
+                enabled-title="部门"
+                disabled-title="人员"
+                input-placeholder="请输入搜索关键词"
+                exchange-button-text="搜索"
+                :show-count="false"
+                :show-close-button="false"
+                @exchange="onSearch"
+        >
+            <template #list-footer>
+                <van-cell-group inset>
+                    <div class="nodata" v-if="!state.dept.value.length">
+                        <img src="asset/nodata.svg" alt="暂无数据">
+                        <span>暂无数据</span>
+                    </div>
+                    <van-cell v-else v-for="item in state.dept.value" :title="item.name" :value="item.phone"
+                              icon="cluster-o"
+                              class="background-white" @click="onCopy(item)"></van-cell>
+                </van-cell-group>
+            </template>
+            <template #disabled-list-footer>
+                <van-cell-group inset>
+                    <div class="nodata" v-if="!state.people.value.length">
+                        <img src="asset/nodata.svg" alt="暂无数据">
+                        <span>暂无数据</span>
+                    </div>
+                    <van-cell v-else v-for="item in state.people.value" :title="item.name" :value="item.phone"
+                              icon="user-o"
+                              class="background-white" @click="onCopy(item)"></van-cell>
+                </van-cell-group>
+            </template>
+        </van-coupon-list>
+    </section>
+</template>
 </body>
 </html>

@@ -1,9 +1,9 @@
 import {Middleware} from "../types";
-import {getOpenidFromHeader} from "../util/openid";
+import {getFingerprint, getStuId} from "../util/header-param";
 
 // Middleware: 日志
 const logger: Middleware = (req, res, next) => {
-    console.log("path: [", req.path, "]\t method: [", req.method, "]\t query: [", req.query, "]\t body: [", req.body, "]", "\t openid: [", getOpenidFromHeader(req), "]");
+    console.log("path: [", req.path, "], method: [", req.method, "], query: ", req.query, ", body: ", req.body, ", stuId: [", getStuId(req), "]", ", fingerprint: [", getFingerprint(req), "]");
     next();
 };
 
