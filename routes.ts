@@ -4,8 +4,8 @@ import {upload} from "./handler/upload";
 import {uploader} from "./middleware/uploader";
 import bodyParser from "./middleware/body-parser";
 import {xss} from "./middleware/xss";
-import {createUser, getUserinfo, updateUser} from "./handler/user";
-import {authAdmin, authUser} from "./middleware/auth";
+import {createUser, findUserinfo, recordUserVisit, updateUser} from "./handler/user";
+import {authAdmin} from "./middleware/auth";
 import {
     createMessage,
     deleteMessage,
@@ -64,7 +64,7 @@ const userRoutes: Route[] = [
         method: Method.GET,
         path: '/user/detail',
         middleware: [],
-        handler: getUserinfo
+        handler: findUserinfo
     },
     {
         method: Method.POST,
@@ -72,31 +72,37 @@ const userRoutes: Route[] = [
         middleware: [xss, bodyParser],
         handler: updateUser
     },
+    {
+        method: Method.POST,
+        path: '/user/visit',
+        middleware: [],
+        handler: recordUserVisit
+    },
 ]
 
 const messageRoutes: Route[] = [
     {
         method: Method.POST,
         path: '/message/create',
-        middleware: [authUser, xss, bodyParser],
+        middleware: [xss, bodyParser],
         handler: createMessage
     },
     {
         method: Method.POST,
         path: '/message/delete',
-        middleware: [authUser, authAdmin, bodyParser],
+        middleware: [authAdmin, bodyParser],
         handler: deleteMessage
     },
     {
         method: Method.POST,
         path: '/message/status',
-        middleware: [authUser, authAdmin, bodyParser],
+        middleware: [authAdmin, bodyParser],
         handler: updateMessageStatus
     },
     {
         method: Method.GET,
         path: '/message/detail',
-        middleware: [authUser],
+        middleware: [],
         handler: findMessageDetail
     },
     {
@@ -108,7 +114,7 @@ const messageRoutes: Route[] = [
     {
         method: Method.GET,
         path: '/message/list',
-        middleware: [authUser, authAdmin],
+        middleware: [authAdmin],
         handler: findMessageList
     },
 ]
@@ -117,19 +123,19 @@ const lafRoutes: Route[] = [
     {
         method: Method.POST,
         path: '/laf/create',
-        middleware: [authUser, xss, bodyParser],
+        middleware: [xss, bodyParser],
         handler: createLAFItem
     },
     {
         method: Method.POST,
         path: '/laf/delete',
-        middleware: [authUser, bodyParser],
+        middleware: [bodyParser],
         handler: deleteLAF
     },
     {
         method: Method.POST,
         path: '/laf/status',
-        middleware: [authUser, bodyParser],
+        middleware: [bodyParser],
         handler: updateLAFStatus
     },
     {
@@ -141,19 +147,19 @@ const lafRoutes: Route[] = [
     {
         method: Method.GET,
         path: '/laf/detail',
-        middleware: [authUser],
+        middleware: [],
         handler: findLAFDetail
     },
     {
         method: Method.GET,
         path: '/laf/by-user',
-        middleware: [authUser],
+        middleware: [],
         handler: findUserLAFList
     },
     {
         method: Method.GET,
         path: '/laf/by-type',
-        middleware: [authUser],
+        middleware: [],
         handler: findLAFByType
     },
 ]
@@ -162,13 +168,13 @@ const phonebookRoutes: Route[] = [
     {
         method: Method.POST,
         path: '/phonebook/create',
-        middleware: [authUser, authAdmin, xss, bodyParser],
+        middleware: [authAdmin, xss, bodyParser],
         handler: createPhoneItem
     },
     {
         method: Method.POST,
         path: '/phonebook/delete',
-        middleware: [authUser, authAdmin, bodyParser],
+        middleware: [authAdmin, bodyParser],
         handler: deletePhoneItem
     },
     {
@@ -195,31 +201,31 @@ const dormRepairRoutes: Route[] = [
     {
         method: Method.POST,
         path: '/dorm-repair/create',
-        middleware: [authUser, xss, bodyParser],
+        middleware: [xss, bodyParser],
         handler: createDormRepairItem
     },
     {
         method: Method.GET,
         path: '/dorm-repair/list',
-        middleware: [authUser, authAdmin],
+        middleware: [authAdmin],
         handler: findRepairList
     },
     {
         method: Method.GET,
         path: '/dorm-repair/detail',
-        middleware: [authUser],
+        middleware: [],
         handler: findRepairItem
     },
     {
         method: Method.POST,
         path: '/dorm-repair/delete',
-        middleware: [authUser, authAdmin, bodyParser],
+        middleware: [authAdmin, bodyParser],
         handler: deleteRepairItem
     },
     {
         method: Method.POST,
         path: '/dorm-repair/status',
-        middleware: [authUser, authAdmin, bodyParser],
+        middleware: [authAdmin, bodyParser],
         handler: updateRepairItemStatus
     },
 ]
@@ -228,31 +234,31 @@ const reservationRoutes: Route[] = [
     {
         method: Method.POST,
         path: '/reservation/create',
-        middleware: [authUser, xss, bodyParser],
+        middleware: [xss, bodyParser],
         handler: createReservationItem
     },
     {
         method: Method.GET,
         path: '/reservation/list',
-        middleware: [authUser, authAdmin],
+        middleware: [authAdmin],
         handler: findReservationList
     },
     {
         method: Method.GET,
         path: '/reservation/detail',
-        middleware: [authUser],
+        middleware: [],
         handler: findReservation
     },
     {
         method: Method.POST,
         path: '/reservation/delete',
-        middleware: [authUser, authAdmin, bodyParser],
+        middleware: [authAdmin, bodyParser],
         handler: deleteReservation
     },
     {
         method: Method.POST,
         path: '/reservation/status',
-        middleware: [authUser, authAdmin, bodyParser],
+        middleware: [authAdmin, bodyParser],
         handler: updateReservationStatus
     },
 ]
@@ -267,25 +273,25 @@ const canteenEvalRoutes: Route[] = [
     {
         method: Method.GET,
         path: '/canteen-eval/list',
-        middleware: [authUser, authAdmin],
+        middleware: [authAdmin],
         handler: findCanteenEvalList
     },
     {
         method: Method.GET,
         path: '/canteen-eval/detail',
-        middleware: [authUser, authAdmin],
+        middleware: [authAdmin],
         handler: findCanteenEvalDetail
     },
     {
         method: Method.POST,
         path: '/canteen-eval/delete',
-        middleware: [authUser, authAdmin, bodyParser],
+        middleware: [authAdmin, bodyParser],
         handler: deleteCanteenEval
     },
     {
         method: Method.GET,
         path: '/canteen-eval/summary',
-        middleware: [authUser, authAdmin],
+        middleware: [authAdmin],
         handler: findCanteenEvalSummary
     },
 ]
@@ -294,7 +300,7 @@ const fileRoutes: Route[] = [
     {
         method: Method.POST,
         path: '/upload',
-        middleware: [authUser, uploader, bodyParser],
+        middleware: [uploader, bodyParser],
         handler: upload
     },
 ]
@@ -309,13 +315,13 @@ const extRoutes: Route[] = [
     {
         method: Method.GET,
         path: '/day-usage',
-        middleware: [authUser, authAdmin],
+        middleware: [authAdmin],
         handler: getDayUsage
     },
     {
         method: Method.GET,
         path: '/month-usage',
-        middleware: [authUser, authAdmin],
+        middleware: [authAdmin],
         handler: getMonthUsage
     },
 ]

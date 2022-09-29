@@ -1,13 +1,13 @@
 @import "../lib/vant.css";
 /*@import "theme.css";*/
-@font-face {
-    font-family: 'PingFangB Bold';
-    src: url('../asset/PingFangB Bold.ttf') format('truetype');
-}
+/*@font-face {*/
+/*    font-family: 'PingFangB Bold';*/
+/*    src: url('../asset/PingFangB Bold.ttf') format('truetype');*/
+/*}*/
 
 body {
     background-color: rgb(241, 244, 249);
-    font-family: "PingFangB Bold", serif;
+    /*font-family: "PingFangB Bold", serif;*/
     /*padding-top: 15px;*/
 }
 

@@ -30,6 +30,7 @@ export const upload: Handler = async (req, res) => {
     const response = await cos.putObject({
         Bucket: BUCKET,
         Region: REGION,
+        ACL: 'public-read',
         Key: KEY_PREFIX + tempFilename,
         StorageClass: 'STANDARD',
         Body: file.buffer

@@ -10,7 +10,7 @@ const loadJS = async () => {
     })
 }
 (async () => {
-    // 进入页面，如果用户不存在则创建
+    // 1. 进入页面，如果用户不存在则创建
     const userinfo = localStorage.getItem("USERINFO");
     let fingerprint = localStorage.getItem("FINGERPRINT")
     if (!fingerprint) {
@@ -30,6 +30,12 @@ const loadJS = async () => {
             }
         });
     }
+    fetch("/api/user/visit", {
+        method: 'POST',
+        headers: {
+            "Fingerprint": fingerprint || ""
+        }
+    });
 })();
 (() => {
     const browser = {
@@ -155,11 +161,7 @@ const commonTools = {
                     fn: ref(rightProps?.fn)
                 };
                 onBeforeMount(() => {
-                    canBack.value = (
-                        document.referrer.includes("127.0.0.1") ||
-                        document.referrer.includes("localhost") ||
-                        document.referrer.includes("xgb.onezol.com")
-                    );
+                    canBack.value = document.referrer.includes(window.location.origin);
                 })
                 return {
                     canBack,
@@ -228,7 +230,7 @@ const commonTools = {
                 const show = ref(true);
                 const loading = ref(false);
                 onMounted(async () => {
-                        const {code, data} = await commonTools.reqForGet("/api/user/get");
+                        const {code, data} = await commonTools.reqForGet("/api/user/detail");
                         if (code === 10000) {
                             const {stuName, stuClass, stuId} = data;
                             state.stuName.value = stuName;

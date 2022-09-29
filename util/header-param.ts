@@ -4,7 +4,11 @@ import {Request} from "express";
  * @description 从请求中获取学生ID
  */
 export const getStuId = (req: Request): string => {
-    return  req.headers["stuid"] as string;
+    let stuId = req.headers["stuid"] as string || "";
+    if (stuId === "null" || stuId === "undefined") {
+        stuId = "";
+    }
+    return stuId;
 }
 
 /**

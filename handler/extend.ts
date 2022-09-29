@@ -34,53 +34,6 @@ export const getMonthUsage: Handler = async (req, resp) => {
     );
 }
 
-// /**
-//  * @tag user
-//  * @description 添加用户登录日志
-//  */
-// export const addOneUsageRecordByOpenid: Handler = async (req, resp) => {
-//     const openid = getOpenidFromHeader(req);
-//     const user = await User.findOne({
-//         where: {
-//             openid
-//         }
-//     })
-//     if (!user) {
-//         return resp.send(
-//             R.error(StatusCode.USER_NOT_EXIST, StatusMessage.USER_NOT_EXIST)
-//         );
-//     }
-//     User.update({
-//         active: 1
-//     }, {
-//         where: {
-//             openid: openid
-//         }
-//     });
-//     resp.send(
-//         R.ok(StatusCode.OK, StatusMessage.OK)
-//     );
-// }
-/**
- * 添加一个匿名用户或更新用户状态
- * @param openid
- */
-export const createOrUpdateStatus = (openid: string) => {
-    User.findOrCreate({
-        where: {
-            openid: openid
-        },
-        defaults: {
-            openid: openid
-        }
-    }).then(async ([user, created]) => {
-        if (!created) {
-            await user.update({
-                active: true
-            })
-        }
-    })
-}
 /**
  * @description 定时任务: 每天晚上23点58分执行(记录当日数据)
  */
@@ -91,8 +44,8 @@ rule.minute = 58;
 rule.second = 0;
 schedule.scheduleJob(rule, async () => {
     const data: DataType = await getDayUsageFromDB();
-    await addLogRecord(data);
-    await respetUserStatus();
+    await createLogRecord(data);
+    await resetUserStatus();
 });
 
 /**
@@ -110,12 +63,11 @@ const getDayUsageFromDB = async (): Promise<DataType> => {
     const dayMessages = await Message.count({
         where: {
             [Op.and]: {
-                created_at: {
+                createdAt: {
                     [Op.gte]: new Date(new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'})).setHours(0, 0, 0, 0)
                 },
-                isReply: {
-                    [Op.eq]: false
-                }
+                isReply: false,
+                deleted: false
             }
         }
     });
@@ -123,7 +75,7 @@ const getDayUsageFromDB = async (): Promise<DataType> => {
     // 3. 当日报修单数
     const dayRepairs = await DormRepair.count({
         where: {
-            created_at: {
+            createdAt: {
                 [Op.gte]: new Date(new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'})).setHours(0, 0, 0, 0)
             }
         }
@@ -132,7 +84,7 @@ const getDayUsageFromDB = async (): Promise<DataType> => {
     // 4. 当日预约数
     const dayReservations = await Reservation.count({
         where: {
-            created_at: {
+            createdAt: {
                 [Op.gte]: new Date(new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'})).setHours(0, 0, 0, 0)
             }
         }
@@ -161,12 +113,12 @@ const getMonthUsageFromDB = async () => {
 /**
  * @description 重置用户状态
  */
-const respetUserStatus = async () => {
+const resetUserStatus = async () => {
     await User.update({
-        active: Number(false)
+        active: false
     }, {
         where: {
-            active: Number(true)
+            active: true
         }
     });
 }
@@ -174,11 +126,11 @@ const respetUserStatus = async () => {
 /**
  * @description 添加日志记录
  */
-const addLogRecord = async (data: DataType) => {
+const createLogRecord = async (data: DataType) => {
     await DailyUsage.create({
-        users: data.dayUsers,
-        comments: data.dayMessages,
-        repairs: data.dayRepairs,
-        respervations: data.dayReservations
+        userCount: data.dayUsers,
+        messageCount: data.dayMessages,
+        repairCount: data.dayRepairs,
+        reservationCount: data.dayReservations
     });
 }

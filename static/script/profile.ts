@@ -23,7 +23,7 @@
                     state.stuClass.value = userinfo.stuClass;
                     state.stuId.value = userinfo.stuId;
                 } else {
-                    const {code, data} = await commonTools.reqForGet("/api/user/get");
+                    const {code, data} = await commonTools.reqForGet("/api/user/detail");
                     if (code === 10000) {
                         const {stuName, stuClass, stuId} = data;
                         state.stuName.value = stuName;
@@ -34,11 +34,16 @@
                     }
                 }
             })
-            watch(loading, (newValue: boolean, oldValue: boolean) => {
-                Toast.loading({
-                    message: "加载中...",
-                    forbidClick: true,
-                });
+            watch(loading, () => {
+                if (loading.value) {
+                    Toast.loading({
+                        message: "请稍后...",
+                        forbidClick: true,
+                        duration: 0
+                    });
+                } else {
+                    Toast.clear();
+                }
             })
             const onSubmit = () => {
                 if (!isChanged()) {
@@ -57,6 +62,7 @@
                     });
                     if (code != 10000) {
                         Toast.fail("保存失败");
+                        loading.value = false;
                         return;
                     }
                     loading.value = false;

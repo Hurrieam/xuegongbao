@@ -21,10 +21,15 @@
                 });
             })
             watch(loading, () => {
-                Toast.loading({
-                    message: "请稍后...",
-                    forbidClick: true,
-                });
+                if (loading.value) {
+                    Toast.loading({
+                        message: "请稍后...",
+                        forbidClick: true,
+                        duration: 0
+                    });
+                } else {
+                    Toast.clear();
+                }
             })
             const onSubmit = () => {
                 if (!commonTools.hasRealName()) {
@@ -40,11 +45,12 @@
                         room: state.room.value,
                         contactNumber: state.contactNumber.value,
                     });
-                    loading.value = false;
                     if (code != 10000) {
                         Toast.fail("保存失败");
+                        loading.value = false;
                         return;
                     }
+                    loading.value = false;
                     Dialog.alert({
                         title: '成功',
                         message: '您的报修已提交成功，请等待工作人员为您处理!',
