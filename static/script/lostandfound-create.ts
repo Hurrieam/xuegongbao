@@ -92,7 +92,7 @@
                     const file = fileObject.file as File;
                     const formData = new FormData();
                     formData.append("file", file);
-                    const response = await fetch("/api/upload", {
+                    const response = await fetch("/api/upload/image?type=lostandfound", {
                         method: "POST",
                         headers: {
                             'StuId': commonTools.getStuId(),

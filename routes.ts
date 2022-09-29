@@ -1,6 +1,6 @@
 import {Method, Route} from './types';
 import {login} from "./handler/authorize";
-import {upload} from "./handler/upload";
+import {uploadImage} from "./handler/upload";
 import {uploader} from "./middleware/uploader";
 import bodyParser from "./middleware/body-parser";
 import {xss} from "./middleware/xss";
@@ -299,9 +299,9 @@ const canteenEvalRoutes: Route[] = [
 const fileRoutes: Route[] = [
     {
         method: Method.POST,
-        path: '/upload',
+        path: '/upload/image',
         middleware: [uploader, bodyParser],
-        handler: upload
+        handler: uploadImage
     },
 ]
 
