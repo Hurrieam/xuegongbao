@@ -16,10 +16,10 @@ export const sequelize = new Sequelize(DATABASE, USERNAME, PASSWORD, {
         freezeTableName: true
     },
     pool: {
-        max: 10,
+        max: 20,
         min: 1,
-        acquire: 300,
-        idle: 20
+        acquire: 30000,
+        idle: 5
     }
 });
 

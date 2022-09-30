@@ -30,7 +30,7 @@
                 }
             })
             const onSubmit = () => {
-                if (!state.checked.value && !commonTools.hasRealName()) {
+                if (!state.checked.value && !commonTools.isActiveUser()) {
                     commonTools.showUserinfoSelector();
                     return;
                 }

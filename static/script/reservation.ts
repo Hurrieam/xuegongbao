@@ -41,7 +41,7 @@
                 }
             })
             const onSubmit = () => {
-                if (!commonTools.hasRealName()) {
+                if (!commonTools.isActiveUser()) {
                     commonTools.showUserinfoSelector();
                     return;
                 }

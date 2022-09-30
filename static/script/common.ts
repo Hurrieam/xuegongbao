@@ -178,14 +178,14 @@ const commonTools = {
      */
     showUserinfoSelector: () => {
         const {Vue, vant} = window;
-        const {ref, onMounted, watch} = Vue;
-        const {Toast} = vant;
+        const {ref, onMounted} = Vue;
+        const {Toast, Notify} = vant;
         const body = document.querySelector("#root");
         const div = document.createElement("div");
         div.id = "userinfo-selector"
         body?.appendChild(div);
         const template = `
-            <van-action-sheet v-model:show="show" title="填写信息" @cancel="onCancel"  @click-overlay="onCancel">
+            <van-action-sheet v-model:show="show" title="身份确认" @cancel="onCancel"  @click-overlay="onCancel">
                 <van-form @submit="onSubmit">
                     <van-cell-group inset>
                         <van-field
@@ -212,8 +212,8 @@ const commonTools = {
                         ></van-field>
                     </van-cell-group>
                     <div style="margin: 16px;">
-                        <van-button round block type="primary" native-type="submit">
-                            保存
+                        <van-button round block type="primary" native-type="submit" :loading="loading" loading-text="加载中...">
+                            确认
                         </van-button>
                     </div>
                 </van-form>
@@ -236,17 +236,11 @@ const commonTools = {
                             state.stuName.value = stuName;
                             state.stuClass.value = stuClass;
                             state.stuId.value = stuId;
-                            localStorage.setItem("USERINFO", JSON.stringify(data));
-                            localStorage.setItem("STU_ID", data.stuId);
+                            localStorage.setItem("USERINFO", JSON.stringify({stuName, stuClass, stuId}));
+                            localStorage.setItem("STU_ID", stuId);
                         }
                     }
                 )
-                watch(loading, () => {
-                    Toast.loading({
-                        message: "加载中...",
-                        forbidClick: true,
-                    });
-                })
                 const onSubmit = () => {
                     loading.value = true;
                     setTimeout(async () => {
@@ -256,12 +250,13 @@ const commonTools = {
                             stuId: state.stuId.value,
                         });
                         if (code != 10000) {
+                            loading.value = false;
                             Toast.fail("保存失败");
                             return;
                         }
                         loading.value = false;
                         setTimeout(() => {
-                            // Toast.success("保存成功");
+                            Notify({type: 'success', message: '身份已确认'});
                             localStorage.setItem("USERINFO", JSON.stringify(data));
                             localStorage.setItem("STU_ID", data.stuId);
                             onCancel();
@@ -274,6 +269,7 @@ const commonTools = {
                 return {
                     state,
                     show,
+                    loading,
                     onSubmit,
                     onCancel
                 }
@@ -326,16 +322,8 @@ const commonTools = {
         return newDate;
     },
 
-    /**
-     * 是否实名
-     */
-    hasRealName: () => {
-        const userinfo: Model.IUser = commonTools.getUserinfo();
-        return userinfo && userinfo.stuName.length > 0 && userinfo.stuClass.length > 0 && userinfo.stuId.length > 0;
-    },
-
     isActiveUser: () => {
         const userinfo: Model.IUser = commonTools.getUserinfo();
-        return userinfo && userinfo.stuName.length > 0 && userinfo.stuClass.length > 0 && userinfo.stuId.length > 0;
+        return userinfo && userinfo.stuName?.length > 0 && userinfo.stuClass?.length > 0 && userinfo.stuId?.length > 0;
     }
 }
