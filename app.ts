@@ -4,6 +4,7 @@ import {routes} from "./routes";
 import {API_PREFIX} from "./constant/common";
 import logger from "./middleware/logger";
 import {errorHandler} from "./util/error-handler";
+import ScheduleHelper from "./util/schedules";
 
 const app = express();
 const PORT = 3000;
@@ -25,6 +26,8 @@ routes.forEach((route) => {
         (req: Request, resp: Response) => handler(req, resp)?.catch((err: Error) => errorHandler(err, req, resp)));
 });
 
+// 定时任务
+ScheduleHelper.startAllSchedules();
 
 app.listen(PORT, () => {
     console.log(`Express with Typescript! http://localhost:${PORT}/static/index.html`);
