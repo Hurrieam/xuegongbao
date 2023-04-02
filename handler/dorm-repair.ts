@@ -8,6 +8,7 @@ import paramValidator from "../util/param-validator";
 import {DormRepair} from "../dao/_init";
 import {getFingerprint, getStuId} from "../util/header-param";
 import {findUserByStuId} from "./user";
+import {wrapWithOwner} from "../util/query-owner";
 
 /**
  * @tag user
@@ -45,6 +46,7 @@ export const findRepairList: Handler = async (req, resp) => {
             ['id', 'DESC']
         ]
     });
+    await wrapWithOwner(rows);
     const data = {
         items: rows,
         count: rows?.length,

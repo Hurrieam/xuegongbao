@@ -8,6 +8,7 @@ import {getFingerprint, getStuId} from "../util/header-param";
 import {toDigit} from "../util/checker";
 import {Reservation} from "../dao/_init";
 import {findUserByStuId} from "./user";
+import {wrapWithOwner} from "../util/query-owner";
 
 /**
  * @tag user
@@ -36,6 +37,7 @@ export const createReservationItem: Handler = async (req, resp) => {
 export const findReservationList: Handler = async (req, resp) => {
     const {page, pageSize} = req.query;
     const {rows, count: total} = await CommonDAO.findSome(model.RESERVATION, toDigit(page), toDigit(pageSize));
+    await wrapWithOwner(rows);
     const data = {
         items: rows,
         count: rows?.length,

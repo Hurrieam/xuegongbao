@@ -1,4 +1,4 @@
-    import {Op} from "sequelize";
+import {Op} from "sequelize";
 import {StatusMessage} from "../constant/status";
 import {Handler, IMessage, QueryKey} from "../types";
 import CommonDAO from "../dao/common";
@@ -9,6 +9,7 @@ import paramValidator from "../util/param-validator";
 import {getFingerprint, getStuId} from "../util/header-param";
 import {toDigit} from "../util/checker";
 import {findUserByStuId} from "./user";
+import {wrapWithOwner} from "../util/query-owner";
 
 /**
  * @tag user & admin
@@ -64,7 +65,7 @@ export const updateMessageStatus: Handler = async (req, resp) => {
  */
 export const findUserMessage: Handler = async (req, resp) => {
     const {page, pageSize} = req.query;
-    const queryKey : QueryKey = {
+    const queryKey: QueryKey = {
         fingerprint: getFingerprint(req)
     };
     const stuId = getStuId(req);
@@ -149,6 +150,7 @@ export const findMessageList: Handler = async (req, resp) => {
             ['id', 'DESC']
         ]
     })
+    await wrapWithOwner(rows);
     const data = {
         items: rows,
         count: rows?.length,
