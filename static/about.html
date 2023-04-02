@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="lib/vue.min.js"></script>
+    <script src="lib/vant.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/about.js" defer></script>
+    <link rel="stylesheet" href="style/base.css">
+    <title>学工宝服务中心</title>
+</head>
+<body>
+<div id="root" style="margin-top: 0;"></div>
+<template id="template">
+    <van-cell-group inset style="margin: 10px;">
+        <van-cell>
+            <van-row gutter="20">
+                <van-col span="6">
+                    <van-image
+                            round
+                            width="5rem"
+                            height="5rem"
+                            src="asset/xgb.png"
+                    >
+                        <template #loading>
+                            <van-loading type="spinner" size="20"></van-loading>
+                        </template>
+                    </van-image>
+                </van-col>
+                <van-col span="18">
+                    <h4 style="margin: 0;">学工宝服务中心</h4>
+                    <p style="margin: 6px 0 0;font-size: 13px;line-height: 1.2; color: #646566">
+                        每个同学都在用的校园生活服务平台，集合：留言反馈、宿舍报修、失物招领等多功能一体的服务平台。</p>
+                </van-col>
+            </van-row>
+        </van-cell>
+    </van-cell-group>
+
+    <van-cell-group inset style="margin: 10px;">
+        <van-cell title="功能反馈">
+            <template #label>
+                <span>如果你对此平台有任何意见或建议，或者在使用过程中遇到了BUG，你可在此进行反馈，我们会在第一时间进行处理。</span>
+                <a style="color: var(--van-danger-color); display: block;margin-top: 10px" href="feedback.html">立即反馈</a>
+            </template>
+        </van-cell>
+    </van-cell-group>
+
+    <van-cell-group inset style="margin: 10px;">
+        <van-cell title="贡献代码">
+            <template #label>
+                <span>此平台目前为个人项目, 由于本人时间和水平有限, 因此想要寻找一些小伙伴共同开发维护此项目。</span><br/>
+                <span>此项目的技术栈有: Nodejs / Vue3 / MySQL /...</span><br/>
+                <span>如果你有想法可以随时联系我们, 欢迎你的加入。</span><br/>
+            </template>
+        </van-cell>
+        <van-grid :border="false" :column-num="4">
+            <van-grid-item
+                    v-for="developer in developers"
+            >
+                <van-image
+                        round
+                        width="4rem"
+                        height="4rem"
+                        style="border: 1px dashed var(--van-gray-4)"
+                        :src=`https://avatars.githubusercontent.com/u/${developer.githubId}?v=4}`
+                >
+                    <template #loading>
+                        <van-loading type="spinner" size="20"></van-loading>
+                    </template>
+                </van-image>
+                <span class="color-grey" style="font-size: 12px; margin-top: 4px">{{developer.name}}</span>
+            </van-grid-item>
+            <van-grid-item @click="joinUs">
+                <van-icon name="add-o" size="2.5rem" color="var(--van-gray-5)"></van-icon>
+                <span style="font-size: 12px; margin-top: 4px;color:var(--van-gray-6)">加入我们</span>
+            </van-grid-item>
+        </van-grid>
+    </van-cell-group>
+</template>
+</body>
+</html>

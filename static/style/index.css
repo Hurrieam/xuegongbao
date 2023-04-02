@@ -1,102 +1,29 @@
-body {
-    background-color: rgb(241, 244, 249);
-    margin: 0;
-}
-
-.wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100vw;
-    height: 100vh;
-}
-
-h4 {
-    margin: 0;
-    padding: 0;
-}
-
-a {
-    color: rgb(12, 12, 12);
-    text-decoration: none;
-    font-size: 13px;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #FFFFFF;
-    border-radius: 5px 5px 0 0;
-    padding: 6px 10px;
-}
-
-header .herder-name {
-    color: #4c4c4c;
-}
-
-header .herder-profile {
-    padding: 5px;
-}
-
-header .herder-profile a {
-    line-height: 100%;
-    display: block;
-    width: 30px;
-    text-align: center;
-    border-radius: 5px;
-    padding: 3px;
-}
-
-main .card {
-    margin: 8px;
-    background-color: #FFFFFF;
-    border-radius: 5px;
-}
-
 .card {
+    margin: 10px;
     padding: 10px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.card .title {
+.other-service-grid > .van-grid-item:last-child > .van-grid-item__content--clickable:active {
+    background-color: #FFFFFF;
+}
+
+.title {
     display: block;
     color: rgb(110, 110, 110);
     font-size: 13px;
-    padding: 0 5px;
-    margin-bottom: 10px;
-}
-
-.card .row {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.row .item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: calc(100% / 4);
-    padding: 10px 0;
-    border-radius: 5px;
-}
-
-.row .item:hover {
-    background-color: #f5f5f5;
-}
-
-.items .item .item-name {
-    font-size: 12px;
-    color: rgb(227, 227, 227);
+    padding: 5px 10px;
 }
 
 footer {
+    position: absolute;
+    bottom: 0;
     padding: 20px;
-    text-align: center;
+    left: 50%;
+    transform: translate(-50%);
+    white-space: nowrap;
 }
 
-footer span, footer a {
+footer span {
     font-size: 13px;
-    color: rgb(110, 110, 110) !important;
+    color: var(--van-gray-7) !important;
 }

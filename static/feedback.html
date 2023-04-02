@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="lib/vue.min.js"></script>
+    <script src="lib/vant.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/feedback.js" defer></script>
+    <link rel="stylesheet" href="style/base.css">
+    <title>学工宝服务中心</title>
+</head>
+<body>
+<div id="root"></div>
+<template id="template">
+    <van-form @submit="onSubmit">
+        <van-space direction="vertical" fill>
+            <van-cell-group inset>
+                <van-field name="feedbackMethod" label="反馈类型">
+                    <template #input>
+                        <van-radio-group v-model="state.feedbackType" direction="horizontal">
+                            <van-radio name="功能建议">功能建议</van-radio>
+                            <van-radio name="BUG反馈">BUG反馈</van-radio>
+                        </van-radio-group>
+                    </template>
+                </van-field>
+                <van-field
+                        v-model="state.content"
+                        rows="8"
+                        autosize
+                        type="textarea"
+                        maxlength="400"
+                        placeholder="请输入反馈内容"
+                        show-word-limit
+                        :rules="[{ required: true, message: '反馈内容不可为空' }]"
+                ></van-field>
+                <van-field name="uploader" label="图片上传">
+                    <template #input>
+                        <van-uploader v-model="images" :max-count="2" :max-size="10 * 1024 * 1024"
+                                      @oversize="onOversize">
+                        </van-uploader>
+                    </template>
+                </van-field>
+            </van-cell-group>
+        </van-space>
+        <div style="margin: 16px;">
+            <van-button round block type="primary" native-type="submit" :disabled="disabled">
+                提交
+            </van-button>
+        </div>
+    </van-form>
+</template>
+</body>
+</html>

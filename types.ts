@@ -12,6 +12,10 @@ export enum Method {
 export type Handler = (req: Request, res: Response, next?: NextFunction) => any;
 export type Middleware = (req: Request, res: Response, next: NextFunction) => any;
 
+export interface QueryKey {
+    [key: string]: string
+}
+
 export type Route = {
     method: Method;
     path: string;

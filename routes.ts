@@ -52,6 +52,7 @@ import {
     findCanteenEvalSummary,
 } from "./handler/canteen-eval";
 import {getDayUsage, getMonthUsage} from "./handler/extend";
+import {createFeedback} from "./handler/feedback";
 
 const userRoutes: Route[] = [
     {
@@ -323,6 +324,12 @@ const extRoutes: Route[] = [
         path: '/month-usage',
         middleware: [authAdmin],
         handler: getMonthUsage
+    },
+    {
+        method: Method.POST,
+        path: '/feedback',
+        middleware: [bodyParser],
+        handler: createFeedback
     },
 ]
 

@@ -1,6 +1,6 @@
-import {Op} from "sequelize";
+    import {Op} from "sequelize";
 import {StatusMessage} from "../constant/status";
-import {Handler, IMessage} from "../types";
+import {Handler, IMessage, QueryKey} from "../types";
 import CommonDAO from "../dao/common";
 import table from "../dao/table";
 import R from "../model/r";
@@ -64,6 +64,13 @@ export const updateMessageStatus: Handler = async (req, resp) => {
  */
 export const findUserMessage: Handler = async (req, resp) => {
     const {page, pageSize} = req.query;
+    const queryKey : QueryKey = {
+        fingerprint: getFingerprint(req)
+    };
+    const stuId = getStuId(req);
+    if (stuId) {
+        queryKey["stuId"] = stuId;
+    }
     const {rows, count: total} = await Message.findAndCountAll({
         where: {
             [Op.and]: {
@@ -71,8 +78,7 @@ export const findUserMessage: Handler = async (req, resp) => {
                 parentId: null,
                 deleted: false,
                 [Op.or]: {
-                    stuId: getStuId(req),
-                    fingerprint: getFingerprint(req)
+                    ...queryKey
                 },
             }
         },

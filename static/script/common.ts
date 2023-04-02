@@ -1,7 +1,8 @@
 const loadJS = async () => {
     return new Promise(resolve => {
         const script = document.createElement("script");
-        script.src = "https://openfpcdn.io/fingerprintjs/v3/iife.min.js";
+        // script.src = "https://openfpcdn.io/fingerprintjs/v3/iife.min.js";
+        script.src = "lib/fingerprint.min.js";
         script.type = 'text/javascript';
         document.getElementsByTagName('head')[0].appendChild(script);
         script.onload = () => {
@@ -325,5 +326,35 @@ const commonTools = {
     isActiveUser: () => {
         const userinfo: Model.IUser = commonTools.getUserinfo();
         return userinfo && userinfo.stuName?.length > 0 && userinfo.stuClass?.length > 0 && userinfo.stuId?.length > 0;
-    }
+    },
+
+    /**
+     * 文件上传
+     * @param fileObjects 文件对象数组
+     * @param fileType 文件类型："image" or "file"
+     * @param remoteDir 远程存储目录
+     */
+    uploadFile: async (fileObjects: Object[], fileType: string, remoteDir: string) => {
+        const items = [];
+        for (const fileObject of fileObjects) {
+            // @ts-ignore
+            const file = fileObject.file as File;
+            const formData = new FormData();
+            formData.append("file", file);
+            const response = await fetch(`/api/upload/${fileType}?type=${remoteDir}`, {
+                method: "POST",
+                headers: {
+                    'StuId': commonTools.getStuId(),
+                    "Fingerprint": commonTools.getFingerprint()
+                },
+                body: formData
+            })
+            const {code, data: fileLink} = await response.json();
+            if (code != 10000) {
+                throw new Error("上传图片失败");
+            }
+            items.push(fileLink)
+        }
+        return items;
+    },
 }

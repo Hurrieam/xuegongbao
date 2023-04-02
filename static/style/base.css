@@ -1,14 +1,9 @@
 @import "../lib/vant.css";
-/*@import "theme.css";*/
-/*@font-face {*/
-/*    font-family: 'PingFangB Bold';*/
-/*    src: url('../asset/PingFangB Bold.ttf') format('truetype');*/
-/*}*/
+@import "theme.css";
 
 body {
     background-color: rgb(241, 244, 249);
     /*font-family: "PingFangB Bold", serif;*/
-    /*padding-top: 15px;*/
 }
 
 #root {
@@ -61,4 +56,8 @@ body {
 
 .van-coupon-list__list .van-empty{
     display: none !important;
+}
+
+.van-grid-item__content--clickable:active {
+    border-radius: 6px;
 }

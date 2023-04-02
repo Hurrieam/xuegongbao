@@ -1,5 +1,5 @@
 import {Op} from "sequelize";
-import {Handler, ILostAndFound} from "../types";
+import {Handler, ILostAndFound, QueryKey} from "../types";
 import R from "../model/r";
 import CommonDAO from "../dao/common";
 import model from "../dao/table";
@@ -101,13 +101,19 @@ export const findLAFDetail: Handler = async (req, resp) => {
  */
 export const findUserLAFList: Handler = async (req, resp) => {
     const {page, pageSize} = req.query;
+    const queryKey : QueryKey = {
+        fingerprint: getFingerprint(req)
+    };
+    const stuId = getStuId(req);
+    if (stuId) {
+        queryKey["stuId"] = stuId;
+    }
     const {rows, count: total} = await LostAndFound.findAndCountAll({
         where: {
             [Op.and]: {
                 deleted: false,
                 [Op.or]: {
-                    stuId: getStuId(req),
-                    fingerprint: getFingerprint(req)
+                    ...queryKey
                 }
             }
         },

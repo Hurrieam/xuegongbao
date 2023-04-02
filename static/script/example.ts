@@ -38,9 +38,6 @@
                         return;
                     }
                     loading.value = false;
-                    setTimeout(() => {
-                        Toast.success("");
-                    }, 0);
                     Dialog.alert({
                         title: '成功',
                         message: '您的xx已提交成功，xxxx!',
