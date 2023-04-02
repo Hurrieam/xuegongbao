@@ -11,7 +11,7 @@ const PORT = 3000;
 
 app.all("*", (req, resp, next) => {
     resp.header("Access-Control-Allow-Origin", "*");
-    resp.header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Authorization, StuId, Accept, X-Requested-With");
+    resp.header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Authorization, Accept, X-Requested-With");
     resp.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
     req.method.toLowerCase() == 'options' ? resp.status(200).end() : next();
 });

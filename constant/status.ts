@@ -6,7 +6,6 @@ export enum StatusCode {
     UPLOAD_FILE_NOT_FOUND,
     UPLOAD_FILE_TYPE_ERROR,
     UNKNOWN_ERROR,
-    UNAUTHORIZED
 }
 
 export enum StatusMessage {
@@ -17,5 +16,4 @@ export enum StatusMessage {
     UPLOAD_FILE_NOT_FOUND = "上传文件不存在",
     UPLOAD_FILE_TYPE_ERROR = "上传文件类型错误",
     UNKNOWN_ERROR = "失败",
-    UNAUTHORIZED = "你没有权限访问该资源"
 }
