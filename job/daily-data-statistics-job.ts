@@ -13,13 +13,11 @@ rule.minute = 58;
 rule.second = 0;
 
 export const DailyDataStatisticsJob = () => {
-    return () => {
-        schedule.scheduleJob("DailyDataStatisticsJob", rule, async () => {
-            const data: DataType = await getDayUsageFromDB();
-            await createLogRecord(data);
-            await resetUserStatus();
-        });
-    }
+    schedule.scheduleJob("DailyDataStatisticsJob", rule, async () => {
+        const data: DataType = await getDayUsageFromDB();
+        await createLogRecord(data);
+        await resetUserStatus();
+    });
 }
 
 /**
