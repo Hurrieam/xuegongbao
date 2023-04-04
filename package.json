@@ -14,7 +14,8 @@
   },
   "scripts": {
     "start": "nodemon app.ts -i ./static",
-    "build": "tsc && node ./build/build.js"
+    "build": "tsc && node ./build/build.js",
+    "build prod": "tsc && node ./build/build.js --prod"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",

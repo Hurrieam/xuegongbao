@@ -2,6 +2,14 @@ import path from 'path';
 import fs from 'fs';
 
 /**
+ * 根据资源的相对路径获取绝对路径(root path：build/)
+ * @param relativePath 相对路径
+ */
+const getResourcePath = (relativePath: string) => {
+    return path.resolve(__dirname, relativePath);
+}
+
+/**
  * 重置目录
  * @param dir 目录
  */
@@ -37,25 +45,29 @@ const copyFiles = (sourcePath: string, targetPath: string) => {
 
 (() => {
     // 1. 重置build目录
-    const sourceStaticDirPath = path.resolve(__dirname, '../static');
-    const targetStaticDirPath = path.resolve(__dirname, './static');
+    const sourceStaticDirPath = getResourcePath('../static');
+    const targetStaticDirPath = getResourcePath('./static');
     remakeDir(targetStaticDirPath);
 
     // 2. 将static目录复制到build目录下
     copyFiles(sourceStaticDirPath, targetStaticDirPath);
 
     // 3. 将Dockerfile文件复制到build目录下
-    const sourceDockerfilePath = path.resolve(__dirname, '../Dockerfile');
-    const targetDockerfilePath = path.resolve(__dirname, './Dockerfile');
+    const sourceDockerfilePath = getResourcePath('../Dockerfile');
+    const targetDockerfilePath = getResourcePath('./Dockerfile');
     fs.copyFileSync(sourceDockerfilePath, targetDockerfilePath)
 
     // 4. 将package.json文件复制到build目录下
-    const sourcePackageJSONPath = path.resolve(__dirname, '../package.json');
-    const targetPackageJSONPath = path.resolve(__dirname, './package.json');
+    const sourcePackageJSONPath = getResourcePath('../package.json');
+    const targetPackageJSONPath = getResourcePath('./package.json');
     fs.copyFileSync(sourcePackageJSONPath, targetPackageJSONPath)
 
     // 5. 将.env文件复制到build目录下
-    const sourceEnvPath = path.resolve(__dirname, '../.env');
-    const targetEnvPath = path.resolve(__dirname, './.env');
+    const args = process.argv.splice(2);
+    const targetEnvPath = getResourcePath('./.env');
+    let sourceEnvPath = getResourcePath('../.env');
+    if (args.length > 0 && args[0] === '--prod') {
+        sourceEnvPath = getResourcePath('../.env-prod');
+    }
     fs.copyFileSync(sourceEnvPath, targetEnvPath)
 })();
