@@ -5,9 +5,10 @@ import {API_PREFIX} from "./constant/common";
 import logger from "./middleware/logger";
 import {errorHandler} from "./util/error-handler";
 import ScheduleHelper from "./util/schedules";
+import config from "./util/env-parser";
 
 const app = express();
-const PORT = 3000;
+const port = config.APP_PORT;
 
 app.all("*", (req, resp, next) => {
     resp.header("Access-Control-Allow-Origin", "*");
@@ -29,6 +30,11 @@ routes.forEach((route) => {
 // 定时任务
 ScheduleHelper.startAllSchedules();
 
-app.listen(PORT, () => {
-    console.log(`Express with Typescript! http://localhost:${PORT}/static/index.html`);
+process.on('unhandledRejection', (reason, p) => {
+    console.error('Unhandled Rejection at: Promise', p, 'reason:', reason);
+  }
+);
+
+app.listen(port, () => {
+    console.log(`Express with Typescript! http://localhost:${port}/static/index.html`);
 });

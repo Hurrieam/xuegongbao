@@ -2,11 +2,11 @@ import COS from 'cos-nodejs-sdk-v5';
 import {DataTypes, Sequelize} from 'sequelize';
 import config from "../util/env-parser";
 
-const {DATABASE, USERNAME, PASSWORD, HOST, PORT, SECRET_ID, SECRET_KEY} = config;
+const {DATABASE, USERNAME, PASSWORD, HOST, DB_PORT, SECRET_ID, SECRET_KEY} = config;
 
 export const sequelize = new Sequelize(DATABASE, USERNAME, PASSWORD, {
     host: HOST,
-    port: Number(PORT),
+    port: Number(DB_PORT),
     dialect: "mysql",
     timezone: "+08:00",
     define: {
@@ -16,10 +16,10 @@ export const sequelize = new Sequelize(DATABASE, USERNAME, PASSWORD, {
         freezeTableName: true
     },
     pool: {
-        max: 20,
+        max: 5,
         min: 1,
         acquire: 30000,
-        idle: 5
+        idle: 10000,
     }
 });
 
